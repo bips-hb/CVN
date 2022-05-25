@@ -1,13 +1,4 @@
 
-createMatrix <- function(nrow = 5, ncol = 7) { 
-  matrix(rep(1, nrow * ncol), nrow = nrow) 
-}
-
-raw_data <- list(
-  createMatrix(nrow = 4), 
-  createMatrix(nrow = 8), 
-  createMatrix(nrow = 5)
-  )
 
 #lambda1, lambda2, rho = 1,
 
@@ -35,9 +26,18 @@ raw_data <- list(
 #' @param raw_data A list with matrices. The number of columns should be the 
 #'                 same for each matrix
 #' @param W The \code{m x m}-dimensional uppertriangular weight matrix
-#' @param normalized Data is normalized if TRUE. Otherwise the data is just 
+#' @param normalized Data is normalized if TRUE. Otherwise the data is only
 #'                   centered (Default: TRUE)
 #' @param Verbose Verbose (Default: FALSE) 
+#' 
+#' @return A CVN data object; a list with entries
+#'   \item{\code{data}}{The \code{raw_data}, but then normalized or centered}
+#'   \item{\code{W}}{The \eqn{m x m} weight matrix}
+#'   \item{\code{m}}{Number of graphs}
+#'   \item{\code{p}}{Number of variables}
+#'   \item{\code{n_obs}}{Number of observations for each graph}
+#'        
+#' @export
 createCVNDataObject <- function(raw_data, W, normalized = TRUE, verbose = TRUE) { 
   
   if (verbose) { 
@@ -53,7 +53,7 @@ createCVNDataObject <- function(raw_data, W, normalized = TRUE, verbose = TRUE) 
   m <- length(raw_data) 
   
   ncols_per_dataset <- sapply(raw_data, function(X) ncol(X))
-  if (var(ncols_per_data) != 0) { 
+  if (var(ncols_per_dataset) != 0) { 
     stop("The number of columns (variables) should 
               be the same for all datasets in raw_data") 
   }
@@ -68,15 +68,15 @@ createCVNDataObject <- function(raw_data, W, normalized = TRUE, verbose = TRUE) 
   # number of observations for each dataset
   n_obs <- sapply(raw_data, function(X) nrow(X))
   
-  if (any(n_obs) < 2) { 
+  if (any(n_obs < 2)) { 
     stop("Not enough observations") 
   }
   
-  if (verbose) { 
-    cat("\u2713 | Raw datasets valid" )
-    cat(sprintf("\tNumber of graphs: %d", m))
-    #cat(sprintf("\tNumber of observations: %s", m))
-  }
+  # if (verbose) { 
+  #   cat("\u2713 | Raw datasets valid\n" )
+  #   cat(sprintf("   --- Number of graphs: %d", m))
+  #   cat(sprintf("\tNumber of observations: %s", n_obs))
+  # }
     
   if (!is.matrix(W)) { 
     stop("W must be a matrix") 
@@ -101,6 +101,7 @@ createCVNDataObject <- function(raw_data, W, normalized = TRUE, verbose = TRUE) 
   
   
   list(
+      data = raw_data, 
       n_obs = n_obs, 
       m = m, 
       p = p, 
