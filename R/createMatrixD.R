@@ -1,15 +1,15 @@
 #' Create matrix D to be used for the Generalized LASSO
 #'
 #' Generates a matrix D to be used for the generalized LASSO. 
-#' We solve a generalized LASSO problem for each egde \code{(s,t)} 
-#' for each update step for \code{Z}. 
+#' We solve a generalized LASSO problem for each egde \eqn{(s,t)} 
+#' for each update step for \eqn{Z(k+1)}. 
 #' 
 #' @param W The \code{m x m}-dimensional uppertriangular weight matrix
-#' @param lambda1 The \eqn{\lambda_1} LASSO penalty term 
-#' @param lambda2 The \eqn{\lambda_2} global smoothing parameter 
+#' @param lambda1 The \eqn{\lambda1} LASSO penalty term 
+#' @param lambda2 The \eqn{\lambda2} global smoothing parameter 
 #' @param rho The \eqn{\rho} ADMM's penalty parameter (Default: 1)
 #' 
-#' @return A \code{(m*(m+1)/2) x m}-matrix 
+#' @return A \eqn{((m*(m+1)/2) x m)}-matrix 
 #'         
 #' @references Tibshirani, R. J., & Taylor, J. (2011). 
 #'             The solution path of the generalized lasso. 
