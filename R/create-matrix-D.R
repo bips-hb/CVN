@@ -16,7 +16,7 @@
 #'             Annals of Statistics, 39(3), 1335–1371. 
 #'             https://doi.org/10.1214/11-AOS878
 #' @export
-createMatrixD <- function(W, lambda1, lambda2, rho = 1) { 
+create_matrix_D <- function(W, lambda1, lambda2, rho = 1) { 
   
   eta1 <- lambda1 / rho 
   eta2 <- lambda2 / rho 

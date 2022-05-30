@@ -25,7 +25,7 @@
 #' 
 #' @param raw_data A list with matrices. The number of columns should be the 
 #'                 same for each matrix
-#' @param W The \code{m x m}-dimensional uppertriangular weight matrix
+#' @param W The \eqn{(m x m)}-dimensional uppertriangular weight matrix
 #' @param normalized Data is normalized if TRUE. Otherwise the data is only
 #'                   centered (Default: TRUE)
 #' @param Verbose Verbose (Default: FALSE) 
@@ -38,21 +38,27 @@
 #'   \item{\code{n_obs}}{Number of observations for each graph}
 #'        
 #' @export
-createCVNDataObject <- function(raw_data, W, normalized = TRUE, verbose = TRUE) { 
+create_CVN_data_object <- function(raw_data, W, normalized = TRUE, verbose = TRUE) { 
   
   if (verbose) { 
     cat("Creating CVN Data Object...")
   }
   
-  ### check the correctness of the datasets 
+  # Check the correctness of the datasets --------------------
   
-  if (!is.list(raw_data)) { stop("raw_data input should be a list") }
-  if (length(raw_data) == 0) { stop("raw_data is an empty list") }
+  if (!is.list(raw_data)) { 
+    stop("raw_data input should be a list") 
+  }
+  
+  if (length(raw_data) == 0) { 
+    stop("raw_data is an empty list") 
+  }
   
   # total number of graphs
   m <- length(raw_data) 
   
   ncols_per_dataset <- sapply(raw_data, function(X) ncol(X))
+  
   if (var(ncols_per_dataset) != 0) { 
     stop("The number of columns (variables) should 
               be the same for all datasets in raw_data") 
@@ -72,12 +78,6 @@ createCVNDataObject <- function(raw_data, W, normalized = TRUE, verbose = TRUE) 
     stop("Not enough observations") 
   }
   
-  # if (verbose) { 
-  #   cat("\u2713 | Raw datasets valid\n" )
-  #   cat(sprintf("   --- Number of graphs: %d", m))
-  #   cat(sprintf("\tNumber of observations: %s", n_obs))
-  # }
-    
   if (!is.matrix(W)) { 
     stop("W must be a matrix") 
   }
@@ -100,9 +100,15 @@ createCVNDataObject <- function(raw_data, W, normalized = TRUE, verbose = TRUE) 
   
   
   
-  list(
+  CVN <- list(
       data = raw_data, 
       n_obs = n_obs, 
+      Theta_new = lapply(1:m, function(i) {diag(p)}), # initial Theta's: identity matrices
+      Theta_old = lapply(1:m, function(i) {diag(p)}), 
+      Z_new = lapply(1:m, function(i) {matrix(0, p, p)}),
+      Z_old = lapply(1:m, function(i) {matrix(0, p, p)}),
+      Y_new = lapply(1:m, function(i) {matrix(0, p, p)}),
+      Y_old = lapply(1:m, function(i) {matrix(0, p, p)}),
       m = m, 
       p = p, 
       W = W,
