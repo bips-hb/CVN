@@ -7,17 +7,13 @@
 #' @param Theta A list with matrices with the current values of \eqn{\Theta}
 #' @param Y A list with matrices with the current values of \eqn{Y} 
 #' @param D A matrix used for solving the Generalized LASSO 
-#' @param n_obs A \eqn{m}-dimensional vector with the number of observations per graph 
-#' @param lambda1 LASSO penalization parameter \eqn{\lambda1} 
-#' @param lambda2 Global smoothing parameter \eqn{\lambda2} 
-#' @param rho The \eqn{\rho} ADMM's penalty parameter (Default: 1) 
 #' @param n_cores Number of cores used (Default: 1)
 #' 
 #' @return A list with matrices with the new values of \eqn{Z}
 #'
 #' @seealso \code{\link{create_matrix_D}}        
 #' @export
-updateZ <- function(m, Theta, Y, D, n_obs, lambda1, lambda2, rho = 1, n_cores = 1) { 
+updateZ <- function(m, Theta, Y, D, n_cores = 1) { 
   
   # Initialize the Z matrices and immediately update the diagonal 
   # entries given Theta and Y

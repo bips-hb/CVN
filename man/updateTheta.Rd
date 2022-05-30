@@ -4,12 +4,10 @@
 \alias{updateTheta}
 \title{The \eqn{\Theta}-update step for the ADMM}
 \usage{
-updateTheta(m, Theta, Z, Y, Sigma, n_obs, rho = 1, n_cores = 1)
+updateTheta(m, Z, Y, Sigma, n_obs, rho = 1, n_cores = 1)
 }
 \arguments{
 \item{m}{Number of graphs}
-
-\item{Theta}{A list with matrices with the current values of \eqn{\Theta}}
 
 \item{Z}{A list with matrices with the current values of \eqn{Z}}
 
@@ -21,7 +19,7 @@ updateTheta(m, Theta, Z, Y, Sigma, n_obs, rho = 1, n_cores = 1)
 
 \item{rho}{The \eqn{\rho} ADMM's penalty parameter (Default: 1)}
 
-\item{n_cores}{Number of cores used (Default: all cores available)}
+\item{n_cores}{Number of cores used (Default: 1)}
 }
 \value{
 A list with matrices with the new values of \eqn{\Theta}

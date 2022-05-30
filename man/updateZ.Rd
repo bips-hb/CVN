@@ -4,14 +4,18 @@
 \alias{updateZ}
 \title{The \eqn{Z}-update step for the ADMM}
 \usage{
-updateZ(Theta, Z, Y)
+updateZ(m, Theta, Y, D, n_cores = 1)
 }
 \arguments{
+\item{m}{Number of graphs}
+
 \item{Theta}{A list with matrices with the current values of \eqn{\Theta}}
 
-\item{Z}{A list with matrices with the current values of \eqn{Z}}
-
 \item{Y}{A list with matrices with the current values of \eqn{Y}}
+
+\item{D}{A matrix used for solving the Generalized LASSO}
+
+\item{n_cores}{Number of cores used (Default: 1)}
 }
 \value{
 A list with matrices with the new values of \eqn{Z}
@@ -19,4 +23,7 @@ A list with matrices with the new values of \eqn{Z}
 \description{
 Returns the updated value of \eqn{Z} for the ADMM given the previously 
 updated values of \eqn{\Theta} and \eqn{Y}
+}
+\seealso{
+\code{\link{create_matrix_D}}
 }

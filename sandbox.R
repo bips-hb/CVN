@@ -196,8 +196,8 @@ sapply(1:m, function(i) Sigma[[1]][i,i])
 
 b <- mapply(rep, 1:m, 2, SIMPLIFY = FALSE)
 lapply(b, function(i) get_all_entries(Sigma, i, i))
-combn(1:m, 2, simplify = FALSE)
-
+C = combn(1:m, 2, simplify = FALSE)
+lapply(C, function(co) co[1] * co[2])
 
 Theta 
 Y
