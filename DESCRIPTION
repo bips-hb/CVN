@@ -10,7 +10,8 @@ Description: A package for inferring high-dimensional
 Imports: 
 Depends: 
 	R (>= 3.2.3), 
-	parallel
+	parallel,
+	genlasso
 #LinkingTo: Rcpp
 License: GPL-3
 Encoding: UTF-8

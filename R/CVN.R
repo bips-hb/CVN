@@ -41,7 +41,7 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   # Compute the empirical covariance matrices --------------
   Sigma <- lapply(X, cov) 
   
-  # Initialize variables for the algorithm -------------------------
+  # Initialize variables for the algorithm -----------------
   # Generate matrix D for the generalized LASSO 
   D <- CVN::create_matrix_D(W, lambda1, lambda2, rho)
   

@@ -148,3 +148,63 @@ X1 <- mapply('-', X, mu, SIMPLIFY = FALSE)
 lapply(X1, mean)
 mean(X)
 lapply(X, function(x) mean(x))
+
+
+
+
+
+library(genlasso)
+
+set.seed(1)
+n = 100
+p = 10
+X = matrix(rnorm(n*p),nrow=n)
+y = 3*X[,1] + rnorm(n)
+D = diag(1,p)
+out = genlasso(y,X,D, minlam = 1)
+coef(out, lambda=1)
+
+
+
+
+m = 4
+p = 4
+
+Sigma <- toy_list_sym_matrices(m = m, p = p)
+Theta <- toy_list_sym_matrices(m = m, p = p)
+Z <- toy_list_sym_matrices(m = m, p = p)
+Y <- toy_list_sym_matrices(m = m, p = p)
+
+mapply[]
+get_all_entries <- function(list_matrices, s, t) { 
+   sapply(list_matrices, function(M) M[s,t])
+}
+
+set_entries_in_Z <- function(m, values, s, t) { 
+  for (i in 1:m) { 
+    Z[[i]][s,t] <<- values[i] 
+    Z[[i]][t,s] <<- values[i] 
+  }
+}
+
+
+get_all_entries(Z, 1,3)
+set_entries_in_Z(4, c('a', 'b', 'c', 'd'), 1,3)
+
+sapply(1:m, function(i) Sigma[[1]][i,i])
+
+
+b <- mapply(rep, 1:m, 2, SIMPLIFY = FALSE)
+lapply(b, function(i) get_all_entries(Sigma, i, i))
+combn(1:m, 2, simplify = FALSE)
+
+
+Theta 
+Y
+mapply()
+
+mapply(function(theta, y) {diag( diag(theta) + diag(y) ) }, 
+       Theta, Y, SIMPLIFY = FALSE)
+
+diag(Theta[[1]])
+Z <- rep(list(matrix(0, nrow = p, ncol = p)), m)
