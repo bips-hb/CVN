@@ -9,7 +9,8 @@ Description: A package for inferring high-dimensional
   multiple discrete covariates
 Imports: 
 Depends: 
-	R (>= 3.2.3)
+	R (>= 3.2.3), 
+	parallel
 #LinkingTo: Rcpp
 License: GPL-3
 Encoding: UTF-8
