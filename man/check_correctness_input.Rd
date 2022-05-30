@@ -12,7 +12,7 @@ same for each matrix}
 
 \item{W}{The \eqn{(m x m)}-dimensional uppertriangular weight matrix}
 
-\item{lambda1}{LASSO penalization parameter \eqn{\lambda_1}}
+\item{lambda1}{LASSO penalization parameter \eqn{\lambda1}}
 
 \item{lambda2}{Global smoothing parameter \eqn{\lambda2}}
 

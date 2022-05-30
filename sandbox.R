@@ -14,13 +14,25 @@ toy_generateRawDataset <- function(m = 5, n = rep(20,m), p = 30, mean = 0, sd = 
 
 # generate a weight matrix 
 toy_weightMatrix <- function(m = 5) { 
-  matrix(rep(1, m*m), nrow = m) 
+  matrix(1, nrow = m, ncol = m) 
 }
+
 
 
 normalized = FALSE
 
 X <- toy_generateRawDataset(mean = 2)
+
+Y_old <- toy_generateRawDataset(mean = 0)
+Theta_new <- toy_generateRawDataset(mean = 0)
+Z_new <- toy_generateRawDataset(mean = 0)
+  
+lapply()
+
+y = mapply(function(y, theta, z) {y + theta - z}, Y_old, Theta_new, Z_new)
+
+lapply(1:5, function(i) Y_old[[i]] + Theta_new[[i]] - Z_new[[i]])
+b = mapply(function(y, theta, z) {y + theta + z}, Y_old, Theta_new, Z_new, SIMPLIFY = FALSE)
 
 x = lapply(X, function(X) scale(X, center = TRUE, scale = normalized))
 

@@ -5,23 +5,23 @@
 \title{Create a CVN Data Object}
 \usage{
 CVN(
-  raw_data,
+  data,
   W,
-  lambda1 = c(1),
-  lambda2 = c(1),
+  lambda1 = 1,
+  lambda2 = 1,
   rho = 1,
-  normalized = TRUE,
+  normalized = FALSE,
   verbose = FALSE
 )
 }
 \arguments{
-\item{raw_data}{A list with matrices. The number of columns should be the 
-same for each matrix}
-
 \item{W}{The \eqn{(m x m)}-dimensional uppertriangular weight matrix}
 
 \item{normalized}{Data is normalized if TRUE. Otherwise the data is only
 centered (Default: TRUE)}
+
+\item{raw_data}{A list with matrices. The number of columns should be the 
+same for each matrix}
 
 \item{Verbose}{Verbose (Default: FALSE)}
 }
