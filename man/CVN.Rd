@@ -10,6 +10,9 @@ CVN(
   lambda1 = 1,
   lambda2 = 1,
   rho = 1,
+  epsilon = 10^(-5),
+  maxiter = 1000,
+  n_cores = 1,
   normalized = FALSE,
   verbose = FALSE
 )

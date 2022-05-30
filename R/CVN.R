@@ -24,6 +24,9 @@
 # TODO: change lambda1 and lambda2 to a grid!
 CVN <- function(data, W, lambda1 = 1, lambda2 = 1, 
                 rho = 1,
+                epsilon = 10^(-5),
+                maxiter = 1000, 
+                n_cores = 1, 
                 normalized = FALSE, 
                 verbose = FALSE) { 
   
@@ -51,18 +54,58 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   
   Z_old <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
   Z_new <- rep(list(matrix(0, nrow = p, ncol = p)), m)
-  
+
   Y_old <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
   Y_new <- rep(list(matrix(0, nrow = p, ncol = p)), m)
   
+  # Initialize a Temp variable for these matrices 
+  Temp <- rep(list(matrix(0, nrow = p, ncol = p)), m)
+  
+  # keep track whether the algorithm finished, either by 
+  # whether the stopping condition was met, or the maximum
+  # number of iterations was reached
+  converged <- FALSE 
+  iter <- 1 
+  
+  repeat{
+    
+    # Update Theta ---------------------------------
+    Temp <- updateTheta(m, Z_old, Y_old, Sigma, n_obs, rho, n_cores = n_cores)
+    Theta_old <- Theta_new 
+    Theta_new <- Temp 
+    
+    # Update Z -------------------------------------
+    Temp <- updateZ(m, Theta_new, Y_old, D, n_cores = n_cores) 
+    Z_old <- Z_new
+    Z_new <- Temp 
+    
+    # Update Y -------------------------------------
+    Temp <- updateY(Theta_new, Z_new, Y_old)  (m, Theta_new, Y_old, D, n_cores = n_cores) 
+    Y_new <- Y_old
+    Y_new <- Temp
+    
+    # Check whether the algorithm is ready ----------
+    if (relative_difference_precision_matrices(Theta_new, Theta_old, n_cores = 1) < epsilon) { 
+      converged <- TRUE
+      iter <- iter + 1
+      break() 
+    }
+    
+    if (iter >= maxiter) { 
+      warning("Maximum number of iterations reached. Stopping criterion not met")
+      break()
+    }
+  }
   
   
   res <- list(
-    data = raw_data, 
+    data = data, 
     W = W, 
     lambda1 = lambda1,
     lambda2 = lambda2,
     rho = rho, 
+    converged = converged,
+    n_iterations = iter, 
     m = m, 
     p = p, 
     n_obs = n_obs
