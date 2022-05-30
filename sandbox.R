@@ -1,6 +1,17 @@
 library(microbenchmark)
 
 # The sandbox to test ideas and code
+toy_sym_matrix <- function(p = 20, mean = 0, sd = 1) { 
+  s <- matrix(rnorm(p*p, mean = mean, sd = sd), p)
+  s[lower.tri(s)] = t(s)[lower.tri(s)]
+  s
+}
+
+toy_list_sym_matrices <- function(m = 10, p = 20, mean = 0, sd = 1) { 
+  lapply(1:m, function(i) {
+      toy_sym_matrix(p = p, mean = mean, sd = sd)
+    }) 
+}
 
 # generate a simple dataset X
 toy_generateX <- function(n = 20, p = 30, mean = 0, sd = 1) { 
@@ -40,14 +51,35 @@ norm(Y_old[[2]])
 
 # eigen decomposition ------
 # m, Theta, Z, Y, Sigma, n_obs, rho = 1, n_cores = 1
+
+
 m = 10
-Sigma <- toy_weightMatrix(m = m)
-Theta <- toy_weightMatrix(m = m)
-Z <- toy_weightMatrix(m = m)
-Y <- toy_weightMatrix(m = m)
+Sigma <- toy_list_sym_matrices()
+Theta <- toy_list_sym_matrices()
+Z <- toy_list_sym_matrices()
+Y <- toy_list_sym_matrices()
 rho = 1
 n_cores = 1
-n_obs = c(100)
+n_obs = rep(20, m)
+
+microbenchmark(updateTheta(m, Theta, Z, Y, Sigma, n_obs = n_obs), 
+               updateTheta(m, Theta, Z, Y, Sigma, n_obs = n_obs, n_cores = 3))
+
+mclapply(1:10, function(i) {
+  
+  # perform an eigendecomposition 
+  eigen_decomposition <- eigen(Sigma[[i]] - (rho / n_obs[i]) * Z[[i]] + (rho / n_obs[i]) * Y[[i]])
+  
+  # obtain matrices Q and Lambda (Lambda is a diagonal matrix, so first only the diagonal is stored)
+  Q <- eigen_decomposition$vectors 
+  Lambda <- eigen_decomposition$values
+  
+  # Lambda is updated 
+  Lambda <- n_obs[i]/(2 * rho) * (-Lambda + sqrt(Lambda^2 + 4*rho/n_obs[i]))
+  
+  # The new Theta matrix
+  Q %*% diag(Lambda) %*% t(Q)}, mc.cores = n_cores # number of cores used
+)
 
 A = Sigma - (rho / n_obs[1]) * Z + (rho / n_obs[1]) * Y
 
@@ -57,6 +89,11 @@ Lambda <- eigen_decomposition$values
 
 Lambda <- n_obs[1]/(2 * rho) * (-Lambda + sqrt(Lambda^2 + 4*rho / n_obs[1]))
 return(Q %*% diag(Lambda) %*% t(Q))
+
+
+
+
+
 
 microbenchmark(sum(mcmapply(function(theta_new, theta_old) {norm(theta_new - theta_old)}, 
                             Theta_new, Theta_old)) / sum(mcmapply(norm, Theta_old)), 

@@ -20,4 +20,3 @@ A list with matrices with the new values of \eqn{Z}
 Returns the updated value of \eqn{Z} for the ADMM given the previously 
 updated values of \eqn{\Theta} and \eqn{Y}
 }
-\keyword{internal}

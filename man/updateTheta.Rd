@@ -4,7 +4,7 @@
 \alias{updateTheta}
 \title{The \eqn{\Theta}-update step for the ADMM}
 \usage{
-updateTheta(m, Theta, Z, Y, n_obs, rho = 1, n_cores = 1)
+updateTheta(m, Theta, Z, Y, Sigma, n_obs, rho = 1, n_cores = 1)
 }
 \arguments{
 \item{m}{Number of graphs}
@@ -15,13 +15,13 @@ updateTheta(m, Theta, Z, Y, n_obs, rho = 1, n_cores = 1)
 
 \item{Y}{A list with matrices with the current values of \eqn{Y}}
 
+\item{Sigma}{A list with empirical covariance matrices \eqn{{\Sigma}}}
+
 \item{n_obs}{A \eqn{m}-dimensional vector with the number of observations per graph}
 
 \item{rho}{The \eqn{\rho} ADMM's penalty parameter (Default: 1)}
 
 \item{n_cores}{Number of cores used (Default: all cores available)}
-
-\item{Sigma}{A list with empirical covariance matrices $\eqn{{\Sigma}}$}
 }
 \value{
 A list with matrices with the new values of \eqn{\Theta}
@@ -30,4 +30,3 @@ A list with matrices with the new values of \eqn{\Theta}
 Returns the updated value of \eqn{\Theta} for the ADMM given the previously 
 updated values of \eqn{Z} and \eqn{Y}
 }
-\keyword{internal}

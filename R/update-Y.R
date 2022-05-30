@@ -9,7 +9,7 @@
 #' 
 #' @return A list with matrices with the new values of \eqn{Y}
 #'        
-#' @keywords internal
+#' @export
 updateY <- function(Theta, Z, Y) { 
    # Y_new = Y_old + Theta_new - Z_new
   mapply(function(theta, z, y) {y + theta - z}, 
