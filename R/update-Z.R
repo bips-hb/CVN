@@ -36,13 +36,13 @@ updateZ <- function(m, Theta, Y, D, n_cores = 1) {
       y <- sapply(B, function(M) M[combination[1], combination[2]])
       
       # apply the generalized LASSO 
-      out <- genlasso(y, diag(m, 1), D, minlam = 1)
+      out <- genlasso(y, diag(1, m), D, minlam = 1)
       beta <- coef(out, lambda = 1)$beta
       
       # update the matrix Z (use that it is symmetric)
       for (i in 1:m) { 
-        Z[[i]][s,t] <<- values[i] 
-        Z[[i]][t,s] <<- values[i] 
+        Z[[i]][combination[1], combination[2]] <<- beta[i] 
+        Z[[i]][combination[2], combination[1]] <<- beta[i] 
       }
     }, mc.cores = n_cores)
   

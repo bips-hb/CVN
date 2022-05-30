@@ -34,15 +34,15 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   check_correctness_input(data, W, lambda1, lambda2, rho)
   
   # Extract variables -------------------------------------
-  m <- length(raw_data)       # total number of graphs  
-  p <- ncol(raw_data[1])      # total number of variables
-  n_obs <- sapply(raw_data, function(X) nrow(X))    # no. of observations per graph 
+  m <- length(data)       # total number of graphs  
+  p <- ncol(data[[1]])    # total number of variables
+  n_obs <- sapply(data, function(X) nrow(X))    # no. of observations per graph 
   
   # Center or normalize data -------------------------------
   data <- lapply(data, function(X) scale(X, scale = normalized))
   
   # Compute the empirical covariance matrices --------------
-  Sigma <- lapply(X, cov) 
+  Sigma <- lapply(data, cov) 
   
   # Initialize variables for the algorithm -----------------
   # Generate matrix D for the generalized LASSO 
@@ -52,14 +52,17 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   Theta_old <- rep(list(diag(p)), m) # m (p x p)-dimensional identity matrices
   Theta_new <- rep(list(diag(p)), m)
   
-  Z_old <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
-  Z_new <- rep(list(matrix(0, nrow = p, ncol = p)), m)
-
-  Y_old <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
-  Y_new <- rep(list(matrix(0, nrow = p, ncol = p)), m)
+  #Z_old <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
+  #Z_new <- rep(list(matrix(0, nrow = p, ncol = p)), m)
+  Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
+  
+  Y <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
+  
+  #Y_old <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
+  #Y_new <- rep(list(matrix(0, nrow = p, ncol = p)), m)
   
   # Initialize a Temp variable for these matrices 
-  Temp <- rep(list(matrix(0, nrow = p, ncol = p)), m)
+  #Temp <- rep(list(matrix(0, nrow = p, ncol = p)), m)
   
   # keep track whether the algorithm finished, either by 
   # whether the stopping condition was met, or the maximum
@@ -70,22 +73,25 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   repeat{
     
     # Update Theta ---------------------------------
-    Temp <- updateTheta(m, Z_old, Y_old, Sigma, n_obs, rho, n_cores = n_cores)
+    # TDOD!!!!!! Make sure that Z_old and Y_old are updated!
+    Temp <- updateTheta(m, Z, Y, Sigma, n_obs, rho, n_cores = n_cores)
     Theta_old <- Theta_new 
     Theta_new <- Temp 
     
     # Update Z -------------------------------------
-    Temp <- updateZ(m, Theta_new, Y_old, D, n_cores = n_cores) 
-    Z_old <- Z_new
-    Z_new <- Temp 
+    Z <- updateZ(m, Theta_new, Y, D, n_cores = n_cores) 
+    #Z_old <- Z_new
+    #Z_new <- Temp 
     
     # Update Y -------------------------------------
-    Temp <- updateY(Theta_new, Z_new, Y_old)  (m, Theta_new, Y_old, D, n_cores = n_cores) 
-    Y_new <- Y_old
-    Y_new <- Temp
+    Y <- updateY(Theta_new, Z, Y) 
+    #Y_new <- Y_old
+    #Y_new <- Temp
     
     # Check whether the algorithm is ready ----------
-    if (relative_difference_precision_matrices(Theta_new, Theta_old, n_cores = 1) < epsilon) { 
+    difference <- relative_difference_precision_matrices(Theta_new, Theta_old, n_cores = 1)
+    print(difference)
+    if (difference < epsilon) { 
       converged <- TRUE
       iter <- iter + 1
       break() 

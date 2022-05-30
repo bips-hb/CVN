@@ -19,11 +19,7 @@ toy_generateX <- function(n = 20, p = 30, mean = 0, sd = 1) {
 }
 
 # generate list with square matrices
-toy_generateRawDataset <- function(m = 5, p = 30, mean = 0, sd = 1) { 
-  lapply(n, function(ni) { 
-    toy_generateX(ni, p = p, mean = mean, sd = sd)
-  }) 
-}
+
 
 toy_generateRawDataset <- function(m = 5, n = rep(20,m), p = 30, mean = 0, sd = 1) { 
   lapply(n, function(ni) { 
@@ -208,3 +204,22 @@ mapply(function(theta, y) {diag( diag(theta) + diag(y) ) },
 
 diag(Theta[[1]])
 Z <- rep(list(matrix(0, nrow = p, ncol = p)), m)
+
+data = toy_generateRawDataset(m = 10, n = rep(40, m), p = 20)
+W = toy_weightMatrix(m = 10)
+lambda1 = 1
+lambda2 = 1
+rho = 1
+  # Check correctness input -------------------------------
+check_correctness_input(data, W, lambda1, lambda2, rho)
+
+CVN(toy_generateRawDataset(m = 10, n = rep(40, m), p = 20), 
+    W = toy_weightMatrix(m = 10), 
+    lambda1 = 1, 
+    lambda2 = 1, 
+                rho = 1,
+                epsilon = 10^(-5),
+                maxiter = 1000, 
+                n_cores = 1, 
+                normalized = FALSE, 
+                verbose = FALSE)
