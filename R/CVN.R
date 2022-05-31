@@ -120,7 +120,7 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   
   res <- list(
     Theta = Theta_new,
-    adj_matrices <- lapply(Theta_new, function(X) X == 0), 
+    adj_matrices = lapply(Theta_new, function(X) X == 0), 
     m = m, 
     p = p, 
     n_obs = n_obs, 
