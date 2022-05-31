@@ -86,10 +86,12 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
     
     # Check whether the algorithm is ready ----------
     difference <- relative_difference_precision_matrices(Theta_new, Theta_old, n_cores = 1)
-    print(difference)
     
     if (verbose) { 
-      cat(sprintf("%d:\t\t%f", iter, difference)) 
+      if (((iter - 1) %% 10) == 0) { 
+        cat("-------------------------\n") 
+      }
+      cat(sprintf("iteration %d  |  %f\n", iter, difference)) 
     }
     
     if (difference < epsilon) { 
@@ -102,6 +104,8 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
       warning("Maximum number of iterations reached. Stopping criterion not met")
       break()
     }
+    
+    iter <- iter + 1
   }
   
   
