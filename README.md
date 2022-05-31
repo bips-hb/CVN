@@ -11,7 +11,7 @@ See the commentary for more information.
 To install, simply type in R
 
 ```R
-devtools::install_github("bips-hb/pvm")
+devtools::install_github("bips-hb/CVN")
 ```
 
 ### Contact
