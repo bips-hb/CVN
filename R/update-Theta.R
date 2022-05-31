@@ -21,7 +21,7 @@ updateTheta <- function(m, Z, Y, Sigma, n_obs, rho = 1, n_cores = 1) {
   mclapply(1:m, function(i) {
     
     # perform an eigendecomposition 
-    eigen_decomposition <- eigen(Sigma[[i]] - (rho / n_obs[i]) * Z[[i]] + (rho / n_obs[i]) * Y[[i]])
+    eigen_decomposition <- eigen(Sigma[[i]] - rho * Z[[i]]/ n_obs[i] + rho * Y[[i]] / n_obs[i])
     
     # obtain matrices Q and Lambda (Lambda is a diagonal matrix, so first only the diagonal is stored)
     Q <- eigen_decomposition$vectors 

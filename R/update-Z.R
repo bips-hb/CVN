@@ -39,6 +39,8 @@ updateZ <- function(m, Theta, Y, D, n_cores = 1) {
       out <- genlasso(y, diag(1, m), D, minlam = 1)
       beta <- coef(out, lambda = 1)$beta
       
+      beta[which(abs(beta) <= 10^-12)] <- 0
+      
       # update the matrix Z (use that it is symmetric)
       for (i in 1:m) { 
         Z[[i]][combination[1], combination[2]] <<- beta[i] 
