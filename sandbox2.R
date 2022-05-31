@@ -54,3 +54,13 @@ system.time(CVN(data,
     n_cores = 1, 
     normalized = FALSE, 
     verbose = TRUE))
+
+
+
+
+
+W <- matrix(0, 4, 4)
+D <- create_matrix_D(W, 1, .3)
+D
+row_with_only_zeros <- apply(D, 1, function(row) all(row == 0))
+D[!row_with_only_zeros, ]

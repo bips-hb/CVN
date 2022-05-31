@@ -3,12 +3,12 @@ library(CVN)
 load("../MdS/Tests/alladjacs.RData")
 load("../MdS/Tests/allsamples.RData")
 
-data <- BigListof_samples[[1]]
-true_adj_matrices <- BigListof_adjencies[[1]]
+data <- BigListof_samples[[1]][1:2]
+true_adj_matrices <- BigListof_adjencies[[1]][1:2]
 
-W <- matrix(.5, 9, 9)
+W <- matrix(1, 2, 2)
 
-res <- CVN(data, W = W, maxiter = 50, lambda1 = 1, lambda2 = 1, rho = 1, verbose = TRUE)
+res <- CVN(data, W = W, maxiter = 1000, lambda1 = 1, lambda2 = 2, rho = 1, verbose = TRUE)
 
 which( abs(res$Theta[[1]]) > 0.1)
 

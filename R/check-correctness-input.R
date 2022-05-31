@@ -28,7 +28,7 @@ check_correctness_input <- function(raw_data, W, lambda1, lambda2, rho) {
   
   ncols_per_dataset <- sapply(raw_data, function(X) ncol(X))
   
-  if (var(ncols_per_dataset) != 0) { 
+  if (m > 1 && var(ncols_per_dataset) != 0) { 
     stop("The number of columns (variables) should 
               be the same for all datasets in raw_data") 
   }
@@ -63,12 +63,12 @@ check_correctness_input <- function(raw_data, W, lambda1, lambda2, rho) {
     stop("The values in the weight matrix must lie between in the interval [0,1]") 
   }
   
-  if (any(lambda1 <= 0)) { 
-    stop("Values for lambda1 should be strictly positive") 
+  if (any(lambda1 < 0)) { 
+    stop("Values for lambda1 should be positive") 
   }
   
-  if (any(lambda2 <= 0)) { 
-    stop("Values for lambda2 should be strictly positive") 
+  if (any(lambda2 < 0)) { 
+    stop("Values for lambda2 should be positive") 
   }
   
   if (rho < 0) { 

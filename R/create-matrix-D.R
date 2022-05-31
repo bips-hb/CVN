@@ -47,5 +47,10 @@ create_matrix_D <- function(W, lambda1, lambda2, rho = 1) {
   # combinating the identity matrix with C
   D <- rbind(eta1 * I, eta2 * C)
   
+  # remove any unnecessary rows from matrix D, i.e., 
+  # rows with only zeros
+  row_with_only_zeros <- apply(D, 1, function(row) all(row == 0))
+  D <- D[!row_with_only_zeros, ]
+  
   return(D)
 }
