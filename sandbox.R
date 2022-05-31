@@ -45,6 +45,8 @@ Z_new <- toy_generateRawDataset(mean = 0)
   
 norm(Y_old[[2]])
 
+lapply(X, function(X) X == 0)
+
 # eigen decomposition ------
 # m, Theta, Z, Y, Sigma, n_obs, rho = 1, n_cores = 1
 
@@ -226,3 +228,6 @@ CVN(toy_generateRawDataset(m = 10, n = rep(40, m), p = 20),
 
 D <- create_matrix_D(W, 1, 1, 1)
 qr(D)
+
+
+

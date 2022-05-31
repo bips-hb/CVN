@@ -21,13 +21,22 @@
 #'                   centered (Default: FALSE)
 #' @param verbose Verbose (Default: FALSE) 
 #' 
-#' @return A CVN data object; a list with entries
-#'   \item{\code{data}}{The \code{raw_data}, but then normalized or centered}
+#' @return A CVN object; a list with entries
+#'    \item{\code{Theta}}{The estimated precision matrices}
+#'    \item{\code{adj_matrices}}{The estimated adjacency matrices; 1 if there is an edge, 0 otherwise}
+#'    \item{\code{m}}{Number of graphs}
+#'    \item{\code{p}}{Number of variables}
+#'    \item{\code{n_obs}}{Vector of length \eqn{m} with number of observations for each graph}
+#'   \item{\code{data}}{The \code{data}, but then normalized or centered}
+#'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
 #'   \item{\code{W}}{The \eqn{m x m} weight matrix}
-#'   \item{\code{m}}{Number of graphs}
-#'   \item{\code{p}}{Number of variables}
-#'   \item{\code{n_obs}}{Number of observations for each graph}
-#'        
+#'   \item{\code{lambda1}}{The \eqn{\lambda1} LASSO penalty term}
+#'   \item{\code{lambda2}}{The \eqn{\lambda2} global smoothing parameter} 
+#'   \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter} 
+#'   \item{\code{epsilon}}{The stopping criterion \eqn{\epsilon}} 
+#'   \item{\code{converged}}{If \code{TRUE}, stopping condition has been met}
+#'   \item{\code{n_iterations}}{Number of iterations}
+#'   
 #' @export
 # TODO: change lambda1 and lambda2 to a grid!
 CVN <- function(data, W, lambda1 = 1, lambda2 = 1, 
@@ -110,16 +119,20 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   
   
   res <- list(
+    Theta = Theta_new,
+    adj_matrices <- lapply(Theta_new, function(X) X == 0), 
+    m = m, 
+    p = p, 
+    n_obs = n_obs, 
     data = data, 
+    normalized = normalized,
     W = W, 
     lambda1 = lambda1,
     lambda2 = lambda2,
     rho = rho, 
+    epsilon = epsilon,
     converged = converged,
-    n_iterations = iter, 
-    m = m, 
-    p = p, 
-    n_obs = n_obs
+    n_iterations = iter
   )
   
   class(res) <- "CVN"

@@ -43,12 +43,21 @@ centered (Default: FALSE)}
 \item{verbose}{Verbose (Default: FALSE)}
 }
 \value{
-A CVN data object; a list with entries
-  \item{\code{data}}{The \code{raw_data}, but then normalized or centered}
+A CVN object; a list with entries
+   \item{\code{Theta}}{The estimated precision matrices}
+   \item{\code{adj_matrices}}{The estimated adjacency matrices; 1 if there is an edge, 0 otherwise}
+   \item{\code{m}}{Number of graphs}
+   \item{\code{p}}{Number of variables}
+   \item{\code{n_obs}}{Vector of length \eqn{m} with number of observations for each graph}
+  \item{\code{data}}{The \code{data}, but then normalized or centered}
+  \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
   \item{\code{W}}{The \eqn{m x m} weight matrix}
-  \item{\code{m}}{Number of graphs}
-  \item{\code{p}}{Number of variables}
-  \item{\code{n_obs}}{Number of observations for each graph}
+  \item{\code{lambda1}}{The \eqn{\lambda1} LASSO penalty term}
+  \item{\code{lambda2}}{The \eqn{\lambda2} global smoothing parameter} 
+  \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter} 
+  \item{\code{epsilon}}{The stopping criterion \eqn{\epsilon}} 
+  \item{\code{converged}}{If \code{TRUE}, stopping condition has been met}
+  \item{\code{n_iterations}}{Number of iterations}
 }
 \description{
 Estimates a covariate-varying network model (CVN), i.e., \eqn{m} 
