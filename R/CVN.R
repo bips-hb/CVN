@@ -30,6 +30,7 @@
 #'   \item{\code{data}}{The \code{data}, but then normalized or centered}
 #'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
 #'   \item{\code{W}}{The \eqn{m x m} weight matrix}
+#'   \item{\code{D}}{Matrix \eqn{D} used for the Generalized LASSO}
 #'   \item{\code{lambda1}}{The \eqn{\lambda1} LASSO penalty term}
 #'   \item{\code{lambda2}}{The \eqn{\lambda2} global smoothing parameter} 
 #'   \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter} 
@@ -92,7 +93,7 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
     
     # Update Y -------------------------------------
     Y <- updateY(Theta_new, Z, Y) 
-    
+
     # Check whether the algorithm is ready ----------
     difference <- relative_difference_precision_matrices(Theta_new, Theta_old, n_cores = 1)
     
@@ -127,6 +128,7 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
     data = data, 
     normalized = normalized,
     W = W, 
+    D = D, 
     lambda1 = lambda1,
     lambda2 = lambda2,
     rho = rho, 

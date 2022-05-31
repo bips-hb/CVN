@@ -52,6 +52,7 @@ A CVN object; a list with entries
   \item{\code{data}}{The \code{data}, but then normalized or centered}
   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
   \item{\code{W}}{The \eqn{m x m} weight matrix}
+  \item{\code{D}}{Matrix \eqn{D} used for the Generalized LASSO}
   \item{\code{lambda1}}{The \eqn{\lambda1} LASSO penalty term}
   \item{\code{lambda2}}{The \eqn{\lambda2} global smoothing parameter} 
   \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter} 
