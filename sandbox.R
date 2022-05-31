@@ -223,3 +223,6 @@ CVN(toy_generateRawDataset(m = 10, n = rep(40, m), p = 20),
                 n_cores = 1, 
                 normalized = FALSE, 
                 verbose = FALSE)
+
+D <- create_matrix_D(W, 1, 1, 1)
+qr(D)

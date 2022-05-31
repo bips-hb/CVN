@@ -2,7 +2,7 @@
 % Please edit documentation in R/CVN.R
 \name{CVN}
 \alias{CVN}
-\title{Create a CVN Data Object}
+\title{Inferring a Covariate-Varying Network (CVN)}
 \usage{
 CVN(
   data,
@@ -11,22 +11,36 @@ CVN(
   lambda2 = 1,
   rho = 1,
   epsilon = 10^(-5),
-  maxiter = 1000,
+  maxiter = 100,
   n_cores = 1,
   normalized = FALSE,
   verbose = FALSE
 )
 }
 \arguments{
+\item{data}{A list with matrices. The number of columns should be the 
+same for each matrix. Number of observations can differ}
+
 \item{W}{The \eqn{(m x m)}-dimensional uppertriangular weight matrix}
 
+\item{lambda1}{The \eqn{\lambda1} LASSO penalty term}
+
+\item{lambda2}{The \eqn{\lambda2} global smoothing parameter}
+
+\item{rho}{The \eqn{\rho} ADMM's penalty parameter (Default: 1)}
+
+\item{epsilon}{If the relative difference between two update steps is 
+smaller than \eqn{\epsilon}, the algorithm stops
+(Default: 10^-5)}
+
+\item{maxiter}{Maximum number of iterations (Default = 100)}
+
+\item{n_cores}{Number of cores used (Default: 1)}
+
 \item{normalized}{Data is normalized if TRUE. Otherwise the data is only
-centered (Default: TRUE)}
+centered (Default: FALSE)}
 
-\item{raw_data}{A list with matrices. The number of columns should be the 
-same for each matrix}
-
-\item{Verbose}{Verbose (Default: FALSE)}
+\item{verbose}{Verbose (Default: FALSE)}
 }
 \value{
 A CVN data object; a list with entries
@@ -37,9 +51,9 @@ A CVN data object; a list with entries
   \item{\code{n_obs}}{Number of observations for each graph}
 }
 \description{
-Creates a Covariate-varying network (CVN) object for estimating the 
-graphs. It only requires the \code{raw_data}: a list of \code{m} different
-matrices, each containing the observed data. Each column is a variable. Therefore,
-each matrix should have the same number of columns. The number of observations
-can differ between the datasets.
+Estimates a covariate-varying network model (CVN), i.e., \eqn{m} 
+Gaussian graphical models that change with (multiple) external covariate(s). 
+The smoothing between the graphs is specified by the \eqn{(m x m)}-dimensional
+weight matrix \eqn{W}. The function returns the estimated precision matrices 
+for each graph.
 }

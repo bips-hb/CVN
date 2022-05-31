@@ -1,17 +1,25 @@
-#' Create a CVN Data Object
+#' Inferring a Covariate-Varying Network (CVN)
 #' 
-#' Creates a Covariate-varying network (CVN) object for estimating the 
-#' graphs. It only requires the \code{raw_data}: a list of \code{m} different
-#' matrices, each containing the observed data. Each column is a variable. Therefore,
-#' each matrix should have the same number of columns. The number of observations
-#' can differ between the datasets. 
+#' Estimates a covariate-varying network model (CVN), i.e., \eqn{m} 
+#' Gaussian graphical models that change with (multiple) external covariate(s). 
+#' The smoothing between the graphs is specified by the \eqn{(m x m)}-dimensional
+#' weight matrix \eqn{W}. The function returns the estimated precision matrices 
+#' for each graph. 
 #' 
-#' @param raw_data A list with matrices. The number of columns should be the 
-#'                 same for each matrix
+#' @param data A list with matrices. The number of columns should be the 
+#'                 same for each matrix. Number of observations can differ
 #' @param W The \eqn{(m x m)}-dimensional uppertriangular weight matrix
+#' @param lambda1 The \eqn{\lambda1} LASSO penalty term 
+#' @param lambda2 The \eqn{\lambda2} global smoothing parameter 
+#' @param rho The \eqn{\rho} ADMM's penalty parameter (Default: 1)
+#' @param epsilon If the relative difference between two update steps is 
+#'                smaller than \eqn{\epsilon}, the algorithm stops
+#'                (Default: 10^-5)
+#' @param maxiter Maximum number of iterations (Default = 100)
+#' @param n_cores Number of cores used (Default: 1)
 #' @param normalized Data is normalized if TRUE. Otherwise the data is only
-#'                   centered (Default: TRUE)
-#' @param Verbose Verbose (Default: FALSE) 
+#'                   centered (Default: FALSE)
+#' @param verbose Verbose (Default: FALSE) 
 #' 
 #' @return A CVN data object; a list with entries
 #'   \item{\code{data}}{The \code{raw_data}, but then normalized or centered}
@@ -25,7 +33,7 @@
 CVN <- function(data, W, lambda1 = 1, lambda2 = 1, 
                 rho = 1,
                 epsilon = 10^(-5),
-                maxiter = 1000, 
+                maxiter = 100, 
                 n_cores = 1, 
                 normalized = FALSE, 
                 verbose = FALSE) { 
@@ -51,18 +59,11 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   # Generate matrices for ADMM iterations
   Theta_old <- rep(list(diag(p)), m) # m (p x p)-dimensional identity matrices
   Theta_new <- rep(list(diag(p)), m)
-  
-  #Z_old <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
-  #Z_new <- rep(list(matrix(0, nrow = p, ncol = p)), m)
   Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
+  Y <- rep(list(matrix(0, nrow = p, ncol = p)), m) 
   
-  Y <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
-  
-  #Y_old <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
-  #Y_new <- rep(list(matrix(0, nrow = p, ncol = p)), m)
-  
-  # Initialize a Temp variable for these matrices 
-  #Temp <- rep(list(matrix(0, nrow = p, ncol = p)), m)
+  # Initialize a Temp variable for Theta
+  Temp <- rep(list(matrix(0, nrow = p, ncol = p)), m)
   
   # keep track whether the algorithm finished, either by 
   # whether the stopping condition was met, or the maximum
@@ -73,24 +74,24 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   repeat{
     
     # Update Theta ---------------------------------
-    # TDOD!!!!!! Make sure that Z_old and Y_old are updated!
     Temp <- updateTheta(m, Z, Y, Sigma, n_obs, rho, n_cores = n_cores)
     Theta_old <- Theta_new 
     Theta_new <- Temp 
     
     # Update Z -------------------------------------
     Z <- updateZ(m, Theta_new, Y, D, n_cores = n_cores) 
-    #Z_old <- Z_new
-    #Z_new <- Temp 
     
     # Update Y -------------------------------------
     Y <- updateY(Theta_new, Z, Y) 
-    #Y_new <- Y_old
-    #Y_new <- Temp
     
     # Check whether the algorithm is ready ----------
     difference <- relative_difference_precision_matrices(Theta_new, Theta_old, n_cores = 1)
     print(difference)
+    
+    if (verbose) { 
+      cat(sprintf("%d:\t\t%f", iter, difference)) 
+    }
+    
     if (difference < epsilon) { 
       converged <- TRUE
       iter <- iter + 1
