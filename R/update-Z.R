@@ -29,7 +29,7 @@ updateZ <- function(m, Theta, Y, D, n_cores = 1) {
   B <- mapply('+', Theta, Y, SIMPLIFY = FALSE)
   
   # go over all unique pairs 
-  combinations <- combn(1:m, 2, simplify = FALSE)
+  combinations <- combn(1:p, 2, simplify = FALSE)
   
   mclapply(combinations, function(combination) {
       # obtain the vector y for the generalized LASSO
