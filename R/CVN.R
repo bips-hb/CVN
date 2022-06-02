@@ -24,6 +24,7 @@
 #' @return A CVN object; a list with entries
 #'    \item{\code{Theta}}{The estimated precision matrices}
 #'    \item{\code{adj_matrices}}{The estimated adjacency matrices; 1 if there is an edge, 0 otherwise}
+#'    \item{\code{Sigma}}{Empirical covariance matrices}
 #'    \item{\code{m}}{Number of graphs}
 #'    \item{\code{p}}{Number of variables}
 #'    \item{\code{n_obs}}{Vector of length \eqn{m} with number of observations for each graph}
@@ -126,8 +127,6 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   res <- list(
     Theta = Z,
     adj_matrices = adj_matrices, 
-    #Z = Z,
-    #Y = Y,
     Sigma = Sigma,
     m = m, 
     p = p, 
