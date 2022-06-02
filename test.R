@@ -18,7 +18,7 @@ res = CVN::CVN(data, W = W, maxiter = 100, epsilon = 1e-3, lambda1 = 20, lambda2
 
 
 profvis({
-res = CVN::CVN(data, W = W, maxiter = 40, epsilon = 1e-3, lambda1 = 20, lambda2 = 2, rho = 1, n_cores = 8, verbose = TRUE)
+res = CVN::CVN(data, W = W, maxiter = 100, epsilon = 1e-3, lambda1 = 20, lambda2 = 2, rho = 1, n_cores = 8, verbose = TRUE)
 })
 Z = res$Z
 Z[[1]]

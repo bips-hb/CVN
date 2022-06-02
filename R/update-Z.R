@@ -48,27 +48,27 @@ updateZ <- function(m, p, Theta, Y, D, n_cores = 1) {
     }
     
     # apply the generalized LASSO 
-    #out <- genlasso(y, diag(1, m), D, minlam = 1)
-    #beta <- coef(out, lambda = 1)$beta
-    
-    #beta[abs(beta) <= 1e-10] <- 0
-    
+    # out <- genlasso(y, diag(1, m), D, minlam = 1)
+    # beta <- coef(out, lambda = 1)$beta
+    # 
+    # beta[abs(beta) <= 1e-10] <- 0
+    # 
     #print(beta)
     
-    fn <- function(u, y, D) { 
-      .5 * t((t(D) %*% u - y))%*%(t(D) %*% u - y) 
+    fn <- function(u, y, D) {
+      .5 * t((t(D) %*% u - y))%*%(t(D) %*% u - y)
     }
-    
+
     r <- m*(m-1)/2
-    
+
     est = optim(par = rep(0,r+m), fn, method = "L-BFGS-B", lower = rep(-1,r+m), upper = rep(1,r+m), y = y, D = D)
     b = y - t(D) %*% est$par
-    # 
+    #
     b[abs(b) <= 1e-10] <- 0
     #print("value b")
     #print(b)
     beta <- b
-    
+
     # update the matrix Z (use that it is symmetric)
     for (i in 1:m) { 
       Z[[i]][s, t] <- beta[i] 
