@@ -1,11 +1,12 @@
 library(CVN) 
 library(CVNSim)
 library(parallel)
+library(profvis)
 
 set.seed(1)
 
 m = 2
-n = 1000
+n = 100
 p = 5
 
 graphs <- lapply(1:m, function(i) generate_graph(p = p))
@@ -13,8 +14,12 @@ data <- lapply(graphs, function(g) generate_data_given_adjaceny_matrix(n = n, g$
 
 W <- matrix(.5, m, m)
 
-res <- CVN::CVN(data, W = W, maxiter = 1000, epsilon = 1e-4, lambda1 = 20, lambda2 = 2, rho = 1, n_cores = 8, verbose = TRUE)
+res = CVN::CVN(data, W = W, maxiter = 100, epsilon = 1e-3, lambda1 = 20, lambda2 = 2, rho = 1, n_cores = 8, verbose = TRUE)
 
+
+profvis({
+res = CVN::CVN(data, W = W, maxiter = 40, epsilon = 1e-3, lambda1 = 20, lambda2 = 2, rho = 1, n_cores = 8, verbose = TRUE)
+})
 Z = res$Z
 Z[[1]]
 graphs[[1]]$adj_matrix
