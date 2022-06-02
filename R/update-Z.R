@@ -4,6 +4,7 @@
 #' updated values of \eqn{\Theta} and \eqn{Y}
 #' 
 #' @param m Number of graphs
+#' @param p Number of variables
 #' @param Theta A list with matrices with the current values of \eqn{\Theta}
 #' @param Y A list with matrices with the current values of \eqn{Y} 
 #' @param D A matrix used for solving the Generalized LASSO 
@@ -13,7 +14,7 @@
 #'
 #' @seealso \code{\link{create_matrix_D}}        
 #' @export
-updateZ <- function(m, Theta, Y, D, n_cores = 1) { 
+updateZ <- function(m, p, Theta, Y, D, n_cores = 1) { 
   
   # Initialize the Z matrices and immediately update the diagonal 
   # entries given Theta and Y
@@ -31,22 +32,67 @@ updateZ <- function(m, Theta, Y, D, n_cores = 1) {
   # go over all unique pairs 
   combinations <- combn(1:p, 2, simplify = FALSE)
   
-  mclapply(combinations, function(combination) {
-      # obtain the vector y for the generalized LASSO
-      y <- sapply(B, function(M) M[combination[1], combination[2]])
+  print("hello!")
+  
+  n_combinations <- length(combinations)
+  
+  # go over all combinations
+  for (k in 1:n_combinations) { 
+    
+    # get the individual indices (s,t)
+    s <- combinations[[k]][1]
+    t <- combinations[[k]][2]
+    
+    print(s)
+    print(t)
+    
+    # get the y-vector for the generalized LASSO
+    y <- c()
+    for (i in 1:m) { 
+       y[i] <- B[[i]][s, t]
+    }
+    
+    sprintf("(%d, %d)", s, t)
+    
+    # apply the generalized LASSO 
+    out <- genlasso(y, diag(1, m), D, minlam = 1)
+    beta <- coef(out, lambda = 1)$beta
+    
+    beta[abs(beta) <= 1e-10] <- 0
+    
+    print(beta)
+    
+    # update the matrix Z (use that it is symmetric)
+    for (i in 1:m) { 
+      Z[[i]][s, t] <- beta[i] 
+      Z[[i]][t, s] <- beta[i] 
       
-      # apply the generalized LASSO 
-      out <- genlasso(y, diag(1, m), D, minlam = 1)
-      beta <- coef(out, lambda = 1)$beta
-      
-      beta[which(abs(beta) <= 10^-12)] <- 0
-      
-      # update the matrix Z (use that it is symmetric)
-      for (i in 1:m) { 
-        Z[[i]][combination[1], combination[2]] <<- beta[i] 
-        Z[[i]][combination[2], combination[1]] <<- beta[i] 
-      }
-    }, mc.cores = n_cores)
+      print("inside function")
+      print(Z)
+    }
+  }
+
+  
+  # mclapply(combinations, function(combination) {
+  #     # obtain the vector y for the generalized LASSO
+  #     y <- sapply(B, function(M) M[combination[1], combination[2]])
+  #     
+  #     print("hello to you too!")
+  #     
+  #     # apply the generalized LASSO 
+  #     out <- genlasso(y, diag(1, m), D, minlam = 1)
+  #     beta <- coef(out, lambda = 1)$beta
+  #     
+  #     print(beta)
+  #     
+  #     #beta[which(abs(beta) <= 10^-12)] <- 0
+  #     
+  #     # update the matrix Z (use that it is symmetric)
+  #     for (i in 1:m) { 
+  #       Z[[i]][combination[1], combination[2]] <<- beta[i] 
+  #       Z[[i]][combination[2], combination[1]] <<- beta[i] 
+  #     }
+  #   }, mc.cores = n_cores)
   
   return(Z)
 }

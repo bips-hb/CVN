@@ -4,10 +4,12 @@
 \alias{updateZ}
 \title{The \eqn{Z}-update step for the ADMM}
 \usage{
-updateZ(m, Theta, Y, D, n_cores = 1)
+updateZ(m, p, Theta, Y, D, n_cores = 1)
 }
 \arguments{
 \item{m}{Number of graphs}
+
+\item{p}{Number of variables}
 
 \item{Theta}{A list with matrices with the current values of \eqn{\Theta}}
 

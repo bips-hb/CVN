@@ -60,7 +60,9 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   data <- lapply(data, function(X) scale(X, scale = normalized))
   
   # Compute the empirical covariance matrices --------------
-  Sigma <- lapply(data, cov) 
+  #Sigma <- lapply(data, cov) 
+  Sigma <- lapply(1:m, function(i) cov(data[[i]])*(n_obs[i] - 1) / n_obs[i]) 
+  #S = list(); for(k in 1:K){S[[k]] = cov(Y[[k]])*(ns[k]-1)/ns[k]}
   
   # Initialize variables for the algorithm -----------------
   # Generate matrix D for the generalized LASSO 
@@ -68,7 +70,7 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   
   # Generate matrices for ADMM iterations
   Theta_old <- rep(list(diag(p)), m) # m (p x p)-dimensional identity matrices
-  Theta_new <- rep(list(diag(p)), m)
+  Theta_new <- lapply(Sigma, function(S) diag(1/diag(S)))
   Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
   Y <- rep(list(matrix(0, nrow = p, ncol = p)), m) 
   
@@ -87,13 +89,19 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
     Temp <- updateTheta(m, Z, Y, Sigma, n_obs, rho, n_cores = n_cores)
     Theta_old <- Theta_new 
     Theta_new <- Temp 
+    print("Theta")
+    print(Theta_new)
     
     # Update Z -------------------------------------
-    Z <- updateZ(m, Theta_new, Y, D, n_cores = n_cores) 
+    Z <- updateZ(m, p, Theta_new, Y, D, n_cores = n_cores) 
+    print("Z")
+    print(Z)
     
     # Update Y -------------------------------------
     Y <- updateY(Theta_new, Z, Y) 
-
+    print("Y")
+    print(Y)
+    
     # Check whether the algorithm is ready ----------
     difference <- relative_difference_precision_matrices(Theta_new, Theta_old, n_cores = 1)
     
@@ -121,6 +129,9 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   
   res <- list(
     Theta = Theta_new,
+    Z = Z,
+    Y = Y,
+    Sigma = Sigma,
     adj_matrices = lapply(Theta_new, function(X) X == 0), 
     m = m, 
     p = p, 

@@ -12,6 +12,6 @@
 #' @export
 updateY <- function(Theta, Z, Y) { 
    # Y_new = Y_old + Theta_new - Z_new
-  mapply(function(theta, z, y) {y + theta - z}, 
+  mapply(function(theta, z, y) {y + (theta - z)}, 
          Theta, Z, Y, SIMPLIFY = FALSE)
 }
