@@ -60,10 +60,8 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   data <- lapply(data, function(X) scale(X, scale = normalized))
   
   # Compute the empirical covariance matrices --------------
-  #Sigma <- lapply(data, cov) 
   Sigma <- lapply(1:m, function(i) cov(data[[i]])*(n_obs[i] - 1) / n_obs[i]) 
-  #S = list(); for(k in 1:K){S[[k]] = cov(Y[[k]])*(ns[k]-1)/ns[k]}
-  
+ 
   # Initialize variables for the algorithm -----------------
   # Generate matrix D for the generalized LASSO 
   D <- CVN::create_matrix_D(W, lambda1, lambda2, rho)
@@ -89,18 +87,12 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
     Temp <- updateTheta(m, Z, Y, Sigma, n_obs, rho, n_cores = n_cores)
     Theta_old <- Theta_new 
     Theta_new <- Temp 
-    print("Theta")
-    print(Theta_new)
     
     # Update Z -------------------------------------
     Z <- updateZ(m, p, Theta_new, Y, D, n_cores = n_cores) 
-    print("Z")
-    print(Z)
     
     # Update Y -------------------------------------
     Y <- updateY(Theta_new, Z, Y) 
-    print("Y")
-    print(Y)
     
     # Check whether the algorithm is ready ----------
     difference <- relative_difference_precision_matrices(Theta_new, Theta_old, n_cores = 1)
@@ -125,14 +117,18 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
     
     iter <- iter + 1
   }
-  
-  
+
+  adj_matrices <- lapply(Z, function(X) { 
+    diag(X) <- 0 
+    Matrix( as.numeric( abs(X) >= 2*.Machine$double.eps), ncol = ncol(X) , sparse = TRUE)
+  })
+                       
   res <- list(
-    Theta = Theta_new,
-    Z = Z,
-    Y = Y,
+    Theta = Z,
+    adj_matrices = adj_matrices, 
+    #Z = Z,
+    #Y = Y,
     Sigma = Sigma,
-    adj_matrices = lapply(Theta_new, function(X) X == 0), 
     m = m, 
     p = p, 
     n_obs = n_obs, 
