@@ -24,13 +24,6 @@ Sigma <- lapply(1:m, function(i) cov(data[[i]])*(n_obs[i] - 1) / n_obs[i])
 
 W <- matrix(1, m, m)
 
-
-est <- huge(data[[1]], method = "glasso", verbose = FALSE)
-q = huge.select(est)
-  
-microbenchmark(CVN::CVN(data, W = W, maxiter = 1000, epsilon = 1e-2, lambda1 = 20, lambda2 = 2, rho = 1, n_cores = 8, warmstart = FALSE), 
-               CVN::CVN(data, W = W, maxiter = 1000, epsilon = 1e-2, lambda1 = 20, lambda2 = 2, rho = 1, n_cores = 8), times = 5)
-
 D <- as.matrix(res$D)
 y <- rnorm(m)
 
@@ -39,23 +32,6 @@ j = JGL(data,penalty="fused",.1,.1,
          rho=1,weights="equal",penalize.diagonal=FALSE,
     maxiter=500,tol=1e-5,warm=NULL,return.whole.theta=FALSE, screening="fast",
     truncate = 1e-5)
-
-print.CVN <- function(cvn, ...) { 
-  cat(sprintf("Covariate-varying Network (CVN)\n\n"))
-  
-  if (cvn$converged) {
-    cat(green(sprintf("\u2713 CONVERGED\n\n")))
-  } else { 
-    cat(red(sprintf("\u2717 DID NOT CONVERGE\n\n"))) 
-  }
-  
-  cat(sprintf("   -- No. of iterations: %d\n", cvn$n_iterations))
-  cat(sprintf("   -- Final relative difference: %g\n", cvn$value))
-  cat(sprintf("   -- No. of graphs (m): %d\n", cvn$m))
-  cat(sprintf("   -- No. of variables (p): %d\n", cvn$p))
-  cat(sprintf("   -- lambda1: %g\n", cvn$lambda1))
-  cat(sprintf("   -- lambda2: %g\n", cvn$lambda2))
-}
 
 cvn = CVN::CVN(data, 
                W = W, 

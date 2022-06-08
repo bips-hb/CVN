@@ -27,13 +27,6 @@ updateZ <- function(m, p, Theta, Y, D, n_cores = 1) {
   # we, therefore, need not solve the entire matrix, but only the upper 
   # diagonal. 
   
-  fn <- function(u, y, D) {
-    .5 * t((t(D) %*% u - y))%*%(t(D) %*% u - y)
-  }
-  
-  r <- m*(m-1)/2
-  
-  
   B <- mapply('+', Theta, Y, SIMPLIFY = FALSE)
   
   # go over all unique pairs 
