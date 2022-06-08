@@ -67,6 +67,7 @@ A CVN object; a list with entries
   \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter} 
   \item{\code{epsilon}}{The stopping criterion \eqn{\epsilon}} 
   \item{\code{converged}}{If \code{TRUE}, stopping condition has been met}
+  \item{\code{value}}{The final relative difference}
   \item{\code{n_iterations}}{Number of iterations}
   \item{\code{truncate}}{Truncation value for \eqn{\Theta}}
 }

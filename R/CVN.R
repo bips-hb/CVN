@@ -41,6 +41,7 @@
 #'   \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter} 
 #'   \item{\code{epsilon}}{The stopping criterion \eqn{\epsilon}} 
 #'   \item{\code{converged}}{If \code{TRUE}, stopping condition has been met}
+#'   \item{\code{value}}{The final relative difference}
 #'   \item{\code{n_iterations}}{Number of iterations}
 #'   \item{\code{truncate}}{Truncation value for \eqn{\Theta}}
 #'   
@@ -102,6 +103,7 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   # number of iterations was reached
   converged <- FALSE 
   iter <- 1 
+  difference <- 1 # stores the discrepancy 
   
   repeat{
     
@@ -140,8 +142,8 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
     iter <- iter + 1
   }
   
-  Z <- lapply(res$Theta, function(z) { 
-      ifelse(abs(z) <= 1e-5, 0, z)
+  Z <- lapply(Z, function(z) { 
+      ifelse(abs(z) <= truncate, 0, z)
     })
   
 
@@ -166,6 +168,7 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
     rho = rho, 
     epsilon = epsilon,
     converged = converged,
+    value = difference, 
     n_iterations = iter, 
     truncate = truncate
   )
@@ -173,4 +176,24 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   class(res) <- "CVN"
   
   return(res)
+}
+
+#' Print Function for the CVN Object Class
+#'
+#' @export
+print.CVN <- function(cvn, ...) { 
+  cat(sprintf("Covariate-varying Network (CVN)\n\n"))
+  
+  if (cvn$converged) {
+    cat(green(sprintf("\u2713 CONVERGED\n\n")))
+  } else { 
+    cat(red(sprintf("\u2717 DID NOT CONVERGE\n\n"))) 
+  }
+  
+  cat(sprintf("   -- No. of iterations:    %d\n", cvn$n_iterations))
+  cat(sprintf("   -- Relative difference:  %g\n", cvn$value))
+  cat(sprintf("   -- No. of graphs (m):    %d\n", cvn$m))
+  cat(sprintf("   -- No. of variables (p): %d\n", cvn$p))
+  cat(sprintf("   -- lambda1:              %g\n", cvn$lambda1))
+  cat(sprintf("   -- lambda2:              %g\n", cvn$lambda2))
 }

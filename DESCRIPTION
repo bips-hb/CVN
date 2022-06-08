@@ -12,7 +12,8 @@ Depends:
 	R (>= 3.2.3), 
 	parallel,
 	genlasso,
-	huge
+	huge, 
+	crayon
 #LinkingTo: Rcpp
 License: GPL-3
 Encoding: UTF-8
