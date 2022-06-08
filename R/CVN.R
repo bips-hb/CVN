@@ -197,3 +197,10 @@ print.CVN <- function(cvn, ...) {
   cat(sprintf("   -- lambda1:              %g\n", cvn$lambda1))
   cat(sprintf("   -- lambda2:              %g\n", cvn$lambda2))
 }
+
+#' Plot Function for CVN Object Class
+#' 
+#' @export
+plot.CVN <- function(cvn, ...) { 
+  cat("TO DO, see https://kateto.net/network-visualization\n")
+}
