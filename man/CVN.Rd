@@ -13,7 +13,9 @@ CVN(
   epsilon = 10^(-5),
   maxiter = 100,
   n_cores = 1,
+  truncate = 1e-05,
   normalized = FALSE,
+  warmstart = FALSE,
   verbose = FALSE
 )
 }
@@ -21,26 +23,32 @@ CVN(
 \item{data}{A list with matrices. The number of columns should be the 
 same for each matrix. Number of observations can differ}
 
-\item{W}{The \eqn{(m x m)}-dimensional uppertriangular weight matrix}
+\item{W}{The \code{(m x m)}-dimensional uppertriangular weight matrix}
 
 \item{lambda1}{The \eqn{\lambda1} LASSO penalty term}
 
 \item{lambda2}{The \eqn{\lambda2} global smoothing parameter}
 
-\item{rho}{The \eqn{\rho} ADMM's penalty parameter (Default: 1)}
+\item{rho}{The \eqn{\rho} ADMM's penalty parameter (Default = 1)}
 
 \item{epsilon}{If the relative difference between two update steps is 
 smaller than \eqn{\epsilon}, the algorithm stops
-(Default: 10^-5)}
+(Default: \code{1e-5})}
 
 \item{maxiter}{Maximum number of iterations (Default = 100)}
 
-\item{n_cores}{Number of cores used (Default: 1)}
+\item{n_cores}{Number of cores used (Default = 1)}
 
-\item{normalized}{Data is normalized if TRUE. Otherwise the data is only
-centered (Default: FALSE)}
+\item{truncate}{All values of the final Theta below \code{truncate} will be 
+set to \code{0}. (Default = \code{1e-5})}
 
-\item{verbose}{Verbose (Default: FALSE)}
+\item{normalized}{Data is normalized if \code{TRUE}. Otherwise the data is only
+centered (Default: \code{FALSE})}
+
+\item{warmstart}{If \code{TRUE}, use the \code{huge} package for estimating
+the individual graphs first (Default: \code{FALSE})}
+
+\item{verbose}{Verbose (Default: \code{FALSE})}
 }
 \value{
 A CVN object; a list with entries
@@ -52,7 +60,7 @@ A CVN object; a list with entries
    \item{\code{n_obs}}{Vector of length \eqn{m} with number of observations for each graph}
   \item{\code{data}}{The \code{data}, but then normalized or centered}
   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
-  \item{\code{W}}{The \eqn{m x m} weight matrix}
+  \item{\code{W}}{The \code{m x m} weight matrix}
   \item{\code{D}}{Matrix \eqn{D} used for the Generalized LASSO}
   \item{\code{lambda1}}{The \eqn{\lambda1} LASSO penalty term}
   \item{\code{lambda2}}{The \eqn{\lambda2} global smoothing parameter} 
@@ -60,6 +68,7 @@ A CVN object; a list with entries
   \item{\code{epsilon}}{The stopping criterion \eqn{\epsilon}} 
   \item{\code{converged}}{If \code{TRUE}, stopping condition has been met}
   \item{\code{n_iterations}}{Number of iterations}
+  \item{\code{truncate}}{Truncation value for \eqn{\Theta}}
 }
 \description{
 Estimates a covariate-varying network model (CVN), i.e., \eqn{m} 

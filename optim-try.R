@@ -1,47 +1,118 @@
+library(CVN) 
+library(CVNSim)
+library(parallel)
+library(profvis)
 library(quadprog)
+library(LowRankQP)
+library(microbenchmark)
+
+set.seed(1)
 
 m = 4
-fn <- function(u, y, D = diag(1,m)) { 
-  print(y)
-   .5 * t((t(D) %*% u - y))%*%(t(D) %*% u - y) 
+n = 100
+p = 5
+
+graphs <- lapply(1:m, function(i) CVNSim::generate_graph(p = p))
+data <- lapply(graphs, function(g) generate_data_given_adjaceny_matrix(n = n, g$adj_matrix))
+
+m <- length(data)       # total number of graphs  
+p <- ncol(data[[1]])    # total number of variables
+n_obs <- sapply(data, function(X) nrow(X))    # no. of observations per graph 
+
+
+Sigma <- lapply(1:m, function(i) cov(data[[i]])*(n_obs[i] - 1) / n_obs[i]) 
+
+W <- matrix(1, m, m)
+
+
+est <- huge(data[[1]], method = "glasso", verbose = FALSE)
+q = huge.select(est)
+  
+microbenchmark(CVN::CVN(data, W = W, maxiter = 1000, epsilon = 1e-2, lambda1 = 20, lambda2 = 2, rho = 1, n_cores = 8, warmstart = FALSE), 
+               CVN::CVN(data, W = W, maxiter = 1000, epsilon = 1e-2, lambda1 = 20, lambda2 = 2, rho = 1, n_cores = 8), times = 5)
+
+D <- as.matrix(res$D)
+y <- rnorm(m)
+
+library(JGL)
+j = JGL(data,penalty="fused",.1,.1,rho=1,weights="equal",penalize.diagonal=FALSE,
+    maxiter=500,tol=1e-5,warm=NULL,return.whole.theta=FALSE, screening="fast",
+    truncate = 1e-5)
+
+cvn = CVN::CVN(data, W = W, maxiter = 1000, verbose = TRUE, epsilon = 1e-5, lambda1 = 3, lambda2 = .1, rho = 1, n_cores = 8, warmstart = FALSE) 
+
+
+
+ROwnsOptim <- function(y, D) { 
+
+  fn <- function(u, y, D) {
+    .5 * t((t(D) %*% u - y))%*%(t(D) %*% u - y)
+  }
+
+  est = optim(par = as.matrix(rep(0 , nrow(D))), fn, 
+            method = "L-BFGS-B", 
+            lower = rep(-1,nrow(D)), 
+            upper = rep(1,nrow(D)), 
+            y = y, 
+            D = D)
+ 
+  b = y - t(D) %*% est$par
+  b[abs(b) <= 1e-10] <- 0
+  return(b)
 }
 
-x = optim(par = as.matrix(seq(.5,m)), fn, method = "L-BFGS-B", lower = rep(-1,m), upper = rep(1,m), y = rep(1:m))
+est = ROwnsOptim(y, D)
 
-
-D <- res$D
-m = res$m
-
-fn <- function(u, y, D) { 
-  .5 * t((t(D) %*% u - y))%*%(t(D) %*% u - y) 
+GENLASSO <- function(y, D) { 
+  out <- genlasso(y, diag(1, m), D, minlam = 1)
+  beta <- coef(out, lambda = 1)$beta
+  beta[abs(beta) <= 1e-10] <- 0
+  beta
 }
 
-t(D) %*% u
-dim(D)
-dim(t(D))
-dim(t(u))
+GENLASSO(y, D)
 
-r = m*(m-1)/2
 
-est = optim(par = rep(0,r+m), fn, method = "L-BFGS-B", lower = rep(-1,r+m), upper = rep(1,r+m), y = rep(.3,m), D = res$D)
-est$par
-u1 = rep(0,r+m)
-y1 = rep(.3,r+m)
-dim(u1)
-length(y1)
-length(t(D) %*% u1) - y1
 
-## Assume we want to minimize: -(0 5 0) %*% b + 1/2 b^T b
-## under the constraints:      A^T b >= b0
-## with b0 = (-8,2,0)^T
-## and      (-4  2  0) 
-##      A = (-3  1 -2)
-##          ( 0  0  1)
-## we can use solve.QP as follows:
-##
-Dmat       <- matrix(0,3,3)
-diag(Dmat) <- 1
-dvec       <- c(0,5,0)
-Amat       <- matrix(c(-4,-3,0,2,1,0,0,-2,1),3,3)
-bvec       <- c(-8,2,0)
-solve.QP(Dmat,dvec,Amat,bvec=bvec)
+OPTIMX <- function(y, D) { 
+  
+  fn <- function(u, y, D) {
+    .5 * t((t(D) %*% u - y))%*%(t(D) %*% u - y)
+  }
+  
+  m = length(y)
+  
+  # est = optimx::optimr(par = as.matrix(rep(0 , nrow(D))), fn, 
+  #                   method = "L-BFGS-B", 
+  #                   lower = rep(-1,nrow(D)), 
+  #                   upper = rep(1,nrow(D)), 
+  #                   y = y, 
+  #                   D = D)
+  
+  est = optimx::opm(par = as.matrix(rep(0 , nrow(D))), fn, 
+                       method = "L-BFGS-B", 
+                       lower = rep(-1,nrow(D)), 
+                       upper = rep(1,nrow(D)), 
+                       control = list(
+                         trace = 0,
+                         save.failures = FALSE, 
+                         all.methods = FALSE,
+                         kkt = FALSE
+                       ), 
+                       y = y, 
+                       D = D)
+  
+  #print(as.matrix(est[1:nrow(D)]))
+  #print(t(D))
+  
+  b = y - t(D) %*% t(as.matrix(est[1:nrow(D)]))
+  b[abs(b) <= 1e-10] <- 0
+  
+  #b = y - t(D) %*% est$par
+  #b[abs(b) <= 1e-10] <- 0
+  return(b)
+}
+
+est = OPTIMX(y, D)
+
+microbenchmark(ROwnsOptim(y,D), GENLASSO(y, D), OPTIMX(y,D))

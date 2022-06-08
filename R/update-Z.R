@@ -58,7 +58,7 @@ updateZ <- function(m, p, Theta, Y, D, n_cores = 1) {
     out <- genlasso(y, diag(1, m), D, minlam = 1)
     beta <- coef(out, lambda = 1)$beta
 
-    beta[abs(beta) <= 1e-10] <- 0
+    #beta[abs(beta) <= 1e-10] <- 0
     # 
     #print(beta)
     # 

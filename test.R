@@ -9,7 +9,7 @@ m = 2
 n = 100
 p = 5
 
-graphs <- lapply(1:m, function(i) generate_graph(p = p))
+graphs <- lapply(1:m, function(i) CVNSim::generate_graph(p = p))
 data <- lapply(graphs, function(g) generate_data_given_adjaceny_matrix(n = n, g$adj_matrix))
 
 W <- matrix(.5, m, m)

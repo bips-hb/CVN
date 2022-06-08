@@ -8,18 +8,22 @@
 #' 
 #' @param data A list with matrices. The number of columns should be the 
 #'                 same for each matrix. Number of observations can differ
-#' @param W The \eqn{(m x m)}-dimensional uppertriangular weight matrix
+#' @param W The \code{(m x m)}-dimensional uppertriangular weight matrix
 #' @param lambda1 The \eqn{\lambda1} LASSO penalty term 
 #' @param lambda2 The \eqn{\lambda2} global smoothing parameter 
-#' @param rho The \eqn{\rho} ADMM's penalty parameter (Default: 1)
+#' @param rho The \eqn{\rho} ADMM's penalty parameter (Default = 1)
 #' @param epsilon If the relative difference between two update steps is 
 #'                smaller than \eqn{\epsilon}, the algorithm stops
-#'                (Default: 10^-5)
+#'                (Default: \code{1e-5})
 #' @param maxiter Maximum number of iterations (Default = 100)
-#' @param n_cores Number of cores used (Default: 1)
-#' @param normalized Data is normalized if TRUE. Otherwise the data is only
-#'                   centered (Default: FALSE)
-#' @param verbose Verbose (Default: FALSE) 
+#' @param n_cores Number of cores used (Default = 1)
+#' @param truncate All values of the final Theta below \code{truncate} will be 
+#'                 set to \code{0}. (Default = \code{1e-5})
+#' @param normalized Data is normalized if \code{TRUE}. Otherwise the data is only
+#'                   centered (Default: \code{FALSE})
+#' @param warmstart If \code{TRUE}, use the \code{huge} package for estimating
+#'                  the individual graphs first (Default: \code{FALSE})
+#' @param verbose Verbose (Default: \code{FALSE}) 
 #' 
 #' @return A CVN object; a list with entries
 #'    \item{\code{Theta}}{The estimated precision matrices}
@@ -30,7 +34,7 @@
 #'    \item{\code{n_obs}}{Vector of length \eqn{m} with number of observations for each graph}
 #'   \item{\code{data}}{The \code{data}, but then normalized or centered}
 #'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
-#'   \item{\code{W}}{The \eqn{m x m} weight matrix}
+#'   \item{\code{W}}{The \code{m x m} weight matrix}
 #'   \item{\code{D}}{Matrix \eqn{D} used for the Generalized LASSO}
 #'   \item{\code{lambda1}}{The \eqn{\lambda1} LASSO penalty term}
 #'   \item{\code{lambda2}}{The \eqn{\lambda2} global smoothing parameter} 
@@ -38,6 +42,7 @@
 #'   \item{\code{epsilon}}{The stopping criterion \eqn{\epsilon}} 
 #'   \item{\code{converged}}{If \code{TRUE}, stopping condition has been met}
 #'   \item{\code{n_iterations}}{Number of iterations}
+#'   \item{\code{truncate}}{Truncation value for \eqn{\Theta}}
 #'   
 #' @export
 # TODO: change lambda1 and lambda2 to a grid!
@@ -46,7 +51,9 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
                 epsilon = 10^(-5),
                 maxiter = 100, 
                 n_cores = 1, 
+                truncate = 1e-5, 
                 normalized = FALSE, 
+                warmstart = FALSE, 
                 verbose = FALSE) { 
   
   # Check correctness input -------------------------------
@@ -71,7 +78,21 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   Theta_old <- rep(list(diag(p)), m) # m (p x p)-dimensional identity matrices
   Theta_new <- lapply(Sigma, function(S) diag(1/diag(S)))
   Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
-  Y <- rep(list(matrix(0, nrow = p, ncol = p)), m) 
+  Y <- rep(list(matrix(0, nrow = p, ncol = p)), m)
+  
+  # if warmstart, the individual graphs are estimated
+  # separately with huge
+  if (warmstart) { 
+    Theta_old <- Theta_new
+    
+    # estimate the graph with the GLASSO. The GLASSO is the only
+    # option here when we want to use huge.select for 
+    # selecting the optimal lambda value
+    Theta_new <- lapply(data, function(X) {
+        est <- huge(X, method = "glasso", verbose = FALSE)
+        huge.select(est, verbose = FALSE)$opt.icov
+      })
+  } 
   
   # Initialize a Temp variable for Theta
   Temp <- rep(list(matrix(0, nrow = p, ncol = p)), m)
@@ -118,6 +139,11 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
     
     iter <- iter + 1
   }
+  
+  Z <- lapply(res$Theta, function(z) { 
+      ifelse(abs(z) <= 1e-5, 0, z)
+    })
+  
 
   adj_matrices <- lapply(Z, function(X) { 
     diag(X) <- 0 
@@ -140,7 +166,8 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
     rho = rho, 
     epsilon = epsilon,
     converged = converged,
-    n_iterations = iter
+    n_iterations = iter, 
+    truncate = truncate
   )
   
   class(res) <- "CVN"
