@@ -2,7 +2,7 @@
 % Please edit documentation in R/check-correctness-input.R
 \name{check_correctness_input}
 \alias{check_correctness_input}
-\title{Check whether the Input is Valid}
+\title{Check whether Input is Valid}
 \usage{
 check_correctness_input(raw_data, W, lambda1, lambda2, rho)
 }
@@ -10,18 +10,19 @@ check_correctness_input(raw_data, W, lambda1, lambda2, rho)
 \item{raw_data}{A list with matrices. The number of columns should be the 
 same for each matrix}
 
-\item{W}{The \eqn{(m x m)}-dimensional uppertriangular weight matrix}
+\item{W}{The \eqn{(m \times m)}-dimensional upper-triangular 
+weight matrix \eqn{W}}
 
-\item{lambda1}{LASSO penalization parameter \eqn{\lambda1}}
+\item{lambda1}{The \eqn{\lambda_1} LASSO penalty term}
 
-\item{lambda2}{Global smoothing parameter \eqn{\lambda2}}
+\item{lambda2}{The \eqn{\lambda_2} global smoothing parameter}
 
-\item{rho}{ADMM's penalty parameter \eqn{\rho}}
+\item{rho}{The \eqn{\rho} ADMM's penalty parameter}
 }
 \description{
-Checks whether the input for the function \code{CVN} is valid.
+Checks whether the input for the function \code{\link{CVN}} is valid.
 This function does not return anything. The execution of the function
-halts when an issue has been detected
+halts when an issue has been detected.
 }
 \seealso{
 \code{\link{CVN}}

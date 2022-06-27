@@ -1,15 +1,16 @@
-#' Check whether the Input is Valid
+#' Check whether Input is Valid
 #' 
-#' Checks whether the input for the function \code{CVN} is valid.
+#' Checks whether the input for the function \code{\link{CVN}} is valid.
 #' This function does not return anything. The execution of the function
-#' halts when an issue has been detected
+#' halts when an issue has been detected.
 #' 
 #' @param raw_data A list with matrices. The number of columns should be the 
-#'                 same for each matrix
-#' @param W The \eqn{(m x m)}-dimensional uppertriangular weight matrix
-#' @param lambda1 LASSO penalization parameter \eqn{\lambda1}
-#' @param lambda2 Global smoothing parameter \eqn{\lambda2}
-#' @param rho ADMM's penalty parameter \eqn{\rho}
+#'                 same for each matrix 
+#' @param W The \eqn{(m \times m)}-dimensional upper-triangular 
+#'          weight matrix \eqn{W}
+#' @param lambda1 The \eqn{\lambda_1} LASSO penalty term 
+#' @param lambda2 The \eqn{\lambda_2} global smoothing parameter 
+#' @param rho The \eqn{\rho} ADMM's penalty parameter 
 #'        
 #' @seealso \code{\link{CVN}}
 #' @export

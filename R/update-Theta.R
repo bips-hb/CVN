@@ -1,7 +1,7 @@
 #' The \eqn{\Theta}-update step for the ADMM
 #' 
-#' Returns the updated value of \eqn{\Theta} for the ADMM given the previously 
-#' updated values of \eqn{Z} and \eqn{Y}
+#' \code{updateTheta} returns the updated value of \eqn{\Theta} for the 
+#' ADMM given the previously updated values of \eqn{Z} and \eqn{Y}
 #' 
 #' @param m Number of graphs
 #' @param Z A list with matrices with the current values of \eqn{Z}

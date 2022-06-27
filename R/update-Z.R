@@ -26,8 +26,7 @@ updateZ <- function(m, p, Theta, Y, D, n_cores = 1) {
   # In addition, we use the fact that these matrices are symmetric and 
   # we, therefore, need not solve the entire matrix, but only the upper 
   # diagonal. 
-  
-  B <- mapply('+', Theta, Y, SIMPLIFY = FALSE)
+  B <- lapply(1:m, function(i) { Theta[[i]] + Y[[i]] })
   
   # go over all unique pairs 
   combinations <- combn(1:p, 2, simplify = FALSE)
@@ -36,6 +35,7 @@ updateZ <- function(m, p, Theta, Y, D, n_cores = 1) {
   
   # go over all combinations
   for (k in 1:n_combinations) { 
+  #parLapply(cl, 1:n_combinations, function(k) { 
     
     # get the individual indices (s,t)
     s <- combinations[[k]][1]
@@ -48,7 +48,7 @@ updateZ <- function(m, p, Theta, Y, D, n_cores = 1) {
     }
     
     # apply the generalized LASSO 
-    out <- genlasso(y, diag(1, m), D, minlam = 1)
+    out <- genlasso::genlasso(y, diag(1, m), D, minlam = 1)
     beta <- coef(out, lambda = 1)$beta
 
     #beta[abs(beta) <= 1e-10] <- 0
@@ -68,7 +68,7 @@ updateZ <- function(m, p, Theta, Y, D, n_cores = 1) {
       Z[[i]][s, t] <- beta[i] 
       Z[[i]][t, s] <- beta[i] 
     }
-  }
+  }#)
   
   return(Z)
 }

@@ -25,6 +25,6 @@ updateTheta(m, Z, Y, Sigma, n_obs, rho = 1, n_cores = 1)
 A list with matrices with the new values of \eqn{\Theta}
 }
 \description{
-Returns the updated value of \eqn{\Theta} for the ADMM given the previously 
-updated values of \eqn{Z} and \eqn{Y}
+\code{updateTheta} returns the updated value of \eqn{\Theta} for the 
+ADMM given the previously updated values of \eqn{Z} and \eqn{Y}
 }

@@ -12,6 +12,7 @@ Depends:
 	R (>= 3.2.3), 
 	parallel,
 	genlasso,
+	Matrix,
 	huge, 
 	crayon
 #LinkingTo: Rcpp
