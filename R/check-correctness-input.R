@@ -64,11 +64,11 @@ check_correctness_input <- function(raw_data, W, lambda1, lambda2, rho) {
     stop("The values in the weight matrix must lie between in the interval [0,1]") 
   }
   
-  if (length(lambda1) >= 1) { 
+  if (length(lambda1) < 1) { 
     stop("lambda1 cannot be an empty vector") 
   }
   
-  if (length(lambda2) >= 1) { 
+  if (length(lambda2) < 1) { 
     stop("lambda2 cannot be an empty vector") 
   }
   

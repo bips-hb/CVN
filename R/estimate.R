@@ -1,7 +1,7 @@
 
 
 #' @export 
-estimate <- function(Theta, Z, Y, D, m, p, Sigma, n_obs, rho, epsilon, maxiter, truncate, verbose = FALSE) { 
+estimate <- function(Theta0, Z0, Y0, D, m, p, Sigma, n_obs, rho, epsilon, maxiter, truncate, verbose = FALSE) { 
   
   # keep track whether the algorithm finished, either by 
   # whether the stopping condition was met, or the maximum
@@ -10,12 +10,13 @@ estimate <- function(Theta, Z, Y, D, m, p, Sigma, n_obs, rho, epsilon, maxiter, 
   iter <- 1 
   difference <- 1 # stores the discrepancy 
   
+  # Initialize a Temp variable for Theta
+  Temp <- Theta0
+  Theta <- Theta0
+  Z <- Z0
+  Y <- Y0
+  
   repeat{
-    
-    # Update Theta ---------------------------------
-    Temp <- CVN::updateTheta(m, Z, Y, Sigma, n_obs, rho)
-    Theta_old <- Theta 
-    Theta <- Temp 
     
     # Update Z -------------------------------------
     Z <- CVN::updateZ(m, p, Theta, Y, D) 
@@ -23,8 +24,13 @@ estimate <- function(Theta, Z, Y, D, m, p, Sigma, n_obs, rho, epsilon, maxiter, 
     # Update Y -------------------------------------
     Y <- CVN::updateY(Theta, Z, Y) 
     
+    # Update Theta ---------------------------------
+    Temp <- CVN::updateTheta(m, Z, Y, Sigma, n_obs, rho)
+    Theta_previous <- Theta 
+    Theta <- Temp
+    
     # Check whether the algorithm is ready ----------
-    difference <- CVN::relative_difference_precision_matrices(Theta, Theta_old)
+    difference <- CVN::relative_difference_precision_matrices(Theta, Theta_previous)
     
     if (verbose) { 
       if (((iter - 1) %% 10) == 0) { 
@@ -61,8 +67,6 @@ estimate <- function(Theta, Z, Y, D, m, p, Sigma, n_obs, rho, epsilon, maxiter, 
     Z = Z, 
     Y = Y, 
     adj_matrices = adj_matrices, 
-    normalized = normalized,
-    D = D, 
     converged = converged, 
     value = difference, 
     n_iterations = iter

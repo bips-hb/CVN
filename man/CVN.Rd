@@ -16,7 +16,8 @@ CVN(
   truncate = 1e-05,
   normalized = FALSE,
   warmstart = FALSE,
-  verbose = FALSE
+  verbose = FALSE,
+  use_previous_version = FALSE
 )
 }
 \arguments{

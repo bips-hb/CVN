@@ -63,7 +63,8 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
                 truncate = 1e-5, 
                 normalized = FALSE, 
                 warmstart = FALSE, 
-                verbose = FALSE) { 
+                verbose = FALSE, 
+                use_previous_version = FALSE) { 
   
   # Check correctness input -------------------------------
   CVN::check_correctness_input(data, W, lambda1, lambda2, rho)
@@ -77,113 +78,89 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
   data <- lapply(data, function(X) scale(X, scale = normalized))
   
   # Compute the empirical covariance matrices --------------
-  Sigma <- lapply(1:m, function(i) cov(data[[i]])*(n_obs[i] - 1) / n_obs[i]) 
- 
-  # Initialize variables for the algorithm -----------------
-  # Generate matrix D for the generalized LASSO 
-  D <- CVN::create_matrix_D(W, lambda1, lambda2, rho)
+  Sigma <- lapply(1:m, function(i) cov(data[[i]])*(n_obs[i] - 1) / n_obs[i])
   
-  # Generate matrices for ADMM iterations
-  Theta_old <- rep(list(diag(p)), m) # m (p x p)-dimensional identity matrices
-  Theta_new <- lapply(Sigma, function(S) diag(1/diag(S)))
+  # Create initial values for the ADMM algorithm ----------
   Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
   Y <- rep(list(matrix(0, nrow = p, ncol = p)), m)
   
-  # if warmstart, the individual graphs are estimated
-  # separately with huge
+  # if warmstart, the individual graphs are first estimated using # GLASSO.
   if (warmstart) { 
-    Theta_old <- Theta_new
-    
-    # estimate the graph with the GLASSO. The GLASSO is the only
-    # option here when we want to use huge.select for 
-    # selecting the optimal lambda value
-    Theta_new <- lapply(data, function(X) {
-        est <- huge(X, method = "glasso", verbose = FALSE)
-        huge::huge.select(est, verbose = FALSE)$opt.icov
-      })
-  } 
-  
-  # Initialize a Temp variable for Theta
-  Temp <- rep(list(matrix(0, nrow = p, ncol = p)), m)
-  
-  # keep track whether the algorithm finished, either by 
-  # whether the stopping condition was met, or the maximum
-  # number of iterations was reached
-  converged <- FALSE 
-  iter <- 1 
-  difference <- 1 # stores the discrepancy 
-  
-  repeat{
-    
-    # Update Theta ---------------------------------
-    Temp <- CVN::updateTheta(m, Z, Y, Sigma, n_obs, rho, n_cores = n_cores)
-    Theta_old <- Theta_new 
-    Theta_new <- Temp 
-    
-    # Update Z -------------------------------------
-    Z <- CVN::updateZ(m, p, Theta_new, Y, D, n_cores = n_cores) 
-    
-    # Update Y -------------------------------------
-    Y <- CVN::updateY(Theta_new, Z, Y) 
-    
-    # Check whether the algorithm is ready ----------
-    difference <- CVN::relative_difference_precision_matrices(Theta_new, Theta_old, n_cores = 1)
-    
-    if (verbose) { 
-      if (((iter - 1) %% 10) == 0) { 
-        cat("-------------------------\n") 
-      }
-      cat(sprintf("iteration %d  |  %f\n", iter, difference)) 
-    }
-    
-    if (difference < epsilon) { 
-      converged <- TRUE
-      iter <- iter + 1
-      break() 
-    }
-    
-    if (iter >= maxiter) { 
-      warning("Maximum number of iterations reached. Stopping criterion not met")
-      break()
-    }
-    
-    iter <- iter + 1
+    # We use the first # lambda1 value
+    Theta <- lapply(Sigma, function(S) { 
+       est <- glasso::glasso(s = S,rho = lambda1[1])
+       est$w
+    })
+  }  else { 
+    Theta <- lapply(Sigma, function(S) diag(1/diag(S)))
   }
   
-  Z <- lapply(Z, function(z) { 
-      ifelse(abs(z) <= truncate, 0, z)
-    })
+  # initialize results list ------------
   
-
-  adj_matrices <- lapply(Z, function(X) { 
-    diag(X) <- 0 
-    Matrix( as.numeric( abs(X) >= 2*.Machine$double.eps), ncol = ncol(X) , sparse = TRUE)
-  })
-                       
-  res <- list(
-    Theta = Z, # multiple
-    adj_matrices = adj_matrices, # multiple
-    Sigma = Sigma,
-    m = m, 
-    p = p, 
-    n_obs = n_obs, 
-    data = data, 
+  global_res <- list(
+    Theta = list(), 
+    adj_matrices = list(),
+    Sigma    = Sigma,
+    m        = m, 
+    p        = p, 
+    n_obs    = n_obs,
+    data     = data,
     normalized = normalized,
-    W = W, 
-    D = D, 
-    lambda1 = lambda1, # multiple
-    lambda2 = lambda2, # multiple
-    rho = rho, 
-    epsilon = epsilon,
-    converged = converged, # multiple
-    value = difference, # multiple
-    n_iterations = iter, # multiple
+    W        = W, 
+    rho      = rho, 
+    epsilon  = epsilon,
     truncate = truncate
   )
   
-  class(res) <- "CVN"
+  # data frame with the results for each unique (lambda1,lambda2) pair
+  res <- data.frame(expand.grid(lambda1 = lambda1, 
+                                lambda2 = lambda2, 
+                                converged = FALSE, 
+                                value = NA, 
+                                n_iterations = NA, 
+                                aic = NA))
   
-  return(res)
+  for (i in 1:nrow(res)) { 
+    
+    # Initialize variables for the algorithm -----------------
+    # Generate matrix D for the generalized LASSO 
+    D <- CVN::create_matrix_D(W, res$lambda1[i], res$lambda2[i], rho)
+    
+    # Estimate the graphs ------------------------------------
+    est <- CVN::estimate(Theta, Z, Y, D, m, p, Sigma, n_obs, rho, 
+                         epsilon, maxiter, truncate, verbose = verbose)  
+    
+    # Process results -----------------------------------------
+    global_res$Theta[[i]] <- est$Z
+    global_res$adj_matrices[[i]] <- est$adj_matrices 
+    
+    res$converged[i]    <- est$converged
+    res$value[i]        <- est$value
+    res$n_iterations[i] <- est$n_iterations
+    
+    # determine the AIC
+    res$aic[i] <- CVN::AIC(Theta = est$Z, 
+                           adj_matrices = est$adj_matrices, 
+                           Sigma = Sigma, 
+                           n_obs = n_obs) 
+    
+    if (use_previous_version) { 
+      Theta <- lapply(Sigma, function(S) diag(1/diag(S)))
+      Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
+      Y <- rep(list(matrix(0, nrow = p, ncol = p)), m)
+    } else { 
+      Theta <- est$Theta
+      Z     <- est$Z
+      Y     <- est$Y
+    }
+  }
+     
+  # Collect all the results & input ---------------------------
+  global_res$results  <- res                  
+  
+  class(global_res) <- "CVN"
+  
+  return(global_res)
 }
 
 #' Print Function for the CVN Object Class
