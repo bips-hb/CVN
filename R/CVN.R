@@ -159,6 +159,8 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
       Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
       Y <- rep(list(matrix(0, nrow = p, ncol = p)), m)
     } else { 
+      # TODO can be even faster by using the estimates of the graphs with the closests
+      # lambda1, lambda2 values
       Theta <- est$Theta
       Z     <- est$Z
       Y     <- est$Y
