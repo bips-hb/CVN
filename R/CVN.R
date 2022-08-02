@@ -86,6 +86,11 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
   
   # if warmstart, the individual graphs are first estimated using # GLASSO.
   if (warmstart) { 
+    
+    if (verbose) { 
+      cat("Warm start...\n") 
+    }
+    
     # We use the first # lambda1 value
     Theta <- lapply(Sigma, function(S) { 
        est <- glasso::glasso(s = S,rho = lambda1[1])
@@ -119,8 +124,13 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
                                 value = NA, 
                                 n_iterations = NA, 
                                 aic = NA))
+  res$id <- 1:nrow(res)
   
   for (i in 1:nrow(res)) { 
+    
+    if (verbose) { 
+      cat(sprintf("\n(%.0f%%) lambda1: %g / lambda2: %g\n", (i-1)/nrow(res)*100, res$lambda1[i], res$lambda2[i])) 
+    }
     
     # Initialize variables for the algorithm -----------------
     # Generate matrix D for the generalized LASSO 
@@ -169,18 +179,15 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
 print.CVN <- function(cvn, ...) { 
   cat(sprintf("Covariate-varying Network (CVN)\n\n"))
   
-  if (cvn$converged) {
+  if (all(cvn$converged)) {
     cat(green(sprintf("\u2713 CONVERGED\n\n")))
   } else { 
     cat(red(sprintf("\u2717 DID NOT CONVERGE\n\n"))) 
   }
   
-  cat(sprintf("   -- No. of iterations:    %d\n", cvn$n_iterations))
-  cat(sprintf("   -- Relative difference:  %g\n", cvn$value))
   cat(sprintf("   -- No. of graphs (m):    %d\n", cvn$m))
-  cat(sprintf("   -- No. of variables (p): %d\n", cvn$p))
-  cat(sprintf("   -- lambda1:              %g\n", cvn$lambda1))
-  cat(sprintf("   -- lambda2:              %g\n", cvn$lambda2))
+  cat(sprintf("   -- No. of variables (p): %d\n\n", cvn$p))
+  print(cvn2$results)
 }
 
 #' Plot Function for CVN Object Class
