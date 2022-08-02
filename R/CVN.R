@@ -6,6 +6,10 @@
 #' weight matrix \eqn{W}. The function returns the estimated precision matrices 
 #' for each graph. 
 #' 
+#' @section Reusing Estimates: When estimating the graph for different values of 
+#' \eqn{\lambda_1} and \eqn{\lambda_2}, we use the graph estimated (if available) 
+#' for other \eqn{\lambda_1} and \eqn{\lambda_2} values closest to them. 
+#' 
 #' @param data A list with matrices. The number of columns should be the 
 #'                 same for each matrix. Number of observations can differ
 #' @param W The \eqn{(m \times m)}-dimensional upper-triangular 
@@ -157,8 +161,8 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
   })
                        
   res <- list(
-    Theta = Z,
-    adj_matrices = adj_matrices, 
+    Theta = Z, # multiple
+    adj_matrices = adj_matrices, # multiple
     Sigma = Sigma,
     m = m, 
     p = p, 
@@ -167,13 +171,13 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
     normalized = normalized,
     W = W, 
     D = D, 
-    lambda1 = lambda1,
-    lambda2 = lambda2,
+    lambda1 = lambda1, # multiple
+    lambda2 = lambda2, # multiple
     rho = rho, 
     epsilon = epsilon,
-    converged = converged,
-    value = difference, 
-    n_iterations = iter, 
+    converged = converged, # multiple
+    value = difference, # multiple
+    n_iterations = iter, # multiple
     truncate = truncate
   )
   

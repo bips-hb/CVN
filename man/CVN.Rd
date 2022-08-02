@@ -82,3 +82,9 @@ The smoothing between the graphs is specified by the \eqn{(m \times m)}-dimensio
 weight matrix \eqn{W}. The function returns the estimated precision matrices 
 for each graph.
 }
+\section{Reusing Estimates}{
+ When estimating the graph for different values of 
+\eqn{\lambda_1} and \eqn{\lambda_2}, we use the graph estimated (if available) 
+for other \eqn{\lambda_1} and \eqn{\lambda_2} values closest to them.
+}
+
