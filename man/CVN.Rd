@@ -7,8 +7,8 @@
 CVN(
   data,
   W,
-  lambda1 = 1,
-  lambda2 = 1,
+  lambda1 = c(1),
+  lambda2 = c(1),
   rho = 1,
   epsilon = 10^(-5),
   maxiter = 100,

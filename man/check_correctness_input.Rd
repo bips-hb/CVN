@@ -13,9 +13,9 @@ same for each matrix}
 \item{W}{The \eqn{(m \times m)}-dimensional upper-triangular 
 weight matrix \eqn{W}}
 
-\item{lambda1}{The \eqn{\lambda_1} LASSO penalty term}
+\item{lambda1}{A vector of \eqn{\lambda_1}'s LASSO penalty terms}
 
-\item{lambda2}{The \eqn{\lambda_2} global smoothing parameter}
+\item{lambda2}{A vector of \eqn{\lambda_2}'s global smoothing parameters}
 
 \item{rho}{The \eqn{\rho} ADMM's penalty parameter}
 }

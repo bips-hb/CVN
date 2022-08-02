@@ -51,7 +51,7 @@
 #'   
 #' @export
 # TODO: change lambda1 and lambda2 to a grid!
-CVN <- function(data, W, lambda1 = 1, lambda2 = 1, 
+CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1), 
                 rho = 1,
                 epsilon = 10^(-5),
                 maxiter = 100, 

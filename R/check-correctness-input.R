@@ -8,8 +8,8 @@
 #'                 same for each matrix 
 #' @param W The \eqn{(m \times m)}-dimensional upper-triangular 
 #'          weight matrix \eqn{W}
-#' @param lambda1 The \eqn{\lambda_1} LASSO penalty term 
-#' @param lambda2 The \eqn{\lambda_2} global smoothing parameter 
+#' @param lambda1 A vector of \eqn{\lambda_1}'s LASSO penalty terms 
+#' @param lambda2 A vector of \eqn{\lambda_2}'s global smoothing parameters
 #' @param rho The \eqn{\rho} ADMM's penalty parameter 
 #'        
 #' @seealso \code{\link{CVN}}
@@ -62,6 +62,14 @@ check_correctness_input <- function(raw_data, W, lambda1, lambda2, rho) {
   
   if (any(W > 1) || any(W < 0)) { 
     stop("The values in the weight matrix must lie between in the interval [0,1]") 
+  }
+  
+  if (length(lambda1) >= 1) { 
+    stop("lambda1 cannot be an empty vector") 
+  }
+  
+  if (length(lambda2) >= 1) { 
+    stop("lambda2 cannot be an empty vector") 
   }
   
   if (any(lambda1 < 0)) { 
