@@ -1,6 +1,7 @@
 library(CVNSim)
 library(tictoc)
 library(microbenchmark)
+library(profvis)
 
 p <- 5
 W = matrix(1, 9, 9)
@@ -15,18 +16,24 @@ grid3 <- create_grid_of_graphs(starting_graph = starting_graph,
 
 data <- CVNSim::generate_raw_data_grid(100, grid3)
 
-lambda1 = seq(.1,3, length.out = 10)
-lambda2 = seq(.1,3, length.out = 10)
+lambda1 = seq(.1,3, length.out = 2)
+lambda2 = seq(.1,3, length.out = 2)
+
+cvn <- CVN::CVN(data = data, W, lambda1 = lambda1, lambda2 = lambda2, 
+                epsilon = 10^-2, maxiter = 1000, 
+                verbose = TRUE, warmstart = T, use_previous_version = FALSE)
+
 
 
 cvn1 <- CVN::CVN(data = data, W, lambda1 = lambda1, lambda2 = lambda2, 
                  epsilon = 10^-3, maxiter = 1000, 
                  verbose = TRUE, warmstart = T, use_previous_version = TRUE)
 
-cvn2 <- CVN::CVN(data = data, W, lambda1 = lambda1, lambda2 = lambda2, 
-                 epsilon = 10^-3, maxiter = 1000, 
-                 verbose = TRUE, warmstart = T, use_previous_version = FALSE)
-
+tic()
+profvis(cvn2 <- CVN::CVN(data = data, W, lambda1 = lambda1, lambda2 = lambda2, 
+                 epsilon = 10^-2, maxiter = 1000, 
+                 verbose = TRUE, warmstart = T, use_previous_version = FALSE))
+toc()
 
 grid3$`(1,1)`
 cvn2$adj_matrices[[3]][1]
