@@ -5,7 +5,7 @@ library(microbenchmark)
 library(glmnet)
 
 # trial for new generalized LASSO estimation
-m <- 10 # number of graphs
+m <- 4 # number of graphs
 
 n1 = .2
 n2 = .7
@@ -32,6 +32,12 @@ y <- rnorm(m, mean = 0, sd = 1)
 out <- genlasso::genlasso(y, diag(1, m), D, minlam = 1)
 coef(out, lambda = 1)$beta
 
+altZ(y, D, W, n1, n2, diagA = n1^2 + 3*n2^2 + 20, max_iter = 1000)
+
+microbenchmark::microbenchmark(genlasso::genlasso(y, diag(1, m), D, minlam = 1), 
+                               altZ(y, D, W, n1, n2, diagA = n1^2 + 3*n2^2 + 20, max_iter = 1000), times = 3)
+
+
 #res <- glmnet::glmnet(diag(1,m), y)
 #coef(res, s = 30)
 microbenchmark::microbenchmark(genlasso::genlasso(y, diag(1, m), D, minlam = 1), 
@@ -41,7 +47,7 @@ microbenchmark::microbenchmark(genlasso::genlasso(y, diag(1, m), D, minlam = 1),
 microbenchmark::microbenchmark(altZ(y, D, diagA = n1^2 + 3*n2^2 + 4, max_iter = 1000), times = 3)
 
 
-altZ(y, D, diagA = n1^2 + 3*n2^2 + 20, max_iter = 1000)
+altZ(y, D, W, n1, n2, diagA = n1^2 + 3*n2^2 + 20, max_iter = 1000)
 
 
 altZ_fast <- function(y, D, A, m, rho = 1, max_iter = 100) { 
@@ -60,7 +66,7 @@ altZ_fast <- function(y, D, A, m, rho = 1, max_iter = 100) {
 }
 
 
-altZ <- function(y, D, diagA = 2, rho = 1, max_iter = 100) { 
+altZ <- function(y, D, W, eta1, eta2, diagA = 2, rho = 1, max_iter = 100) { 
   
   m <- length(y)
 
@@ -99,7 +105,34 @@ altZ <- function(y, D, diagA = 2, rho = 1, max_iter = 100) {
     
     #beta_new <- A1A0 %*% beta_old + A1y - tD %*% (2*alpha_old1 - alpha_old2)
     #beta_new <- beta_old + c*(y - beta_old - tD %*% (2*alpha_old1 - alpha_old2))
-    beta_new <- c1*beta_old + cy - crossprod(cD, (2*alpha_old1 - alpha_old2))
+    
+    x <- crossprod(cD, (2*alpha_old1 - alpha_old2))
+    
+    alpha <- (2*alpha_old1 - alpha_old2)
+    mm <- length(alpha)
+    delta <- rep(0, m)
+    for (i in 1:m) { 
+      #cat(sprintf("i = %d\n", i))
+      delta[i] <- eta1 * alpha[i] 
+      if (i != m) { 
+      for (j in ((i+1):m)) { 
+       # cat(sprintf('(%d, %d)\n', i,j))
+        #print(W[i,j])
+        #print(delta[i])
+        #print(alpha[i + j + m - 1])
+        
+        delta[i] <- delta[i] + eta2*W[i,j]*alpha[i+j+m-1]
+      }
+      }
+      if (i != 1) { 
+      for (j in (1:(i-1))) { 
+        delta[i] <- delta[i] - eta2*W[j,i]*alpha[i+j+m-1]
+      }
+      }
+    }
+    x <- c*delta
+    
+    beta_new <- c1*beta_old + cy - x
     
     #print(iter)
     #print(beta_new)
@@ -126,5 +159,3 @@ altZ <- function(y, D, diagA = 2, rho = 1, max_iter = 100) {
   
   beta_new
 }
-
-altZ(y, D, max_iter = 1000)
