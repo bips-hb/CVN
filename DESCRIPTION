@@ -1,7 +1,7 @@
 Package: CVN
 Title: Covariate-varying Networks
 Version: 1.1
-Date: 2018-07-01
+Date: 2022-09-05
 Author: Louis Dijkstra [aut, cre]
 Maintainer: Louis Dijkstra <dijkstra@leibniz-bips.de>
 Description: A package for inferring high-dimensional 
@@ -10,13 +10,14 @@ Description: A package for inferring high-dimensional
 Imports: 
 Depends: 
 	R (>= 3.2.3), 
+	Rcpp, 
 	parallel,
 	genlasso,
 	Matrix,
 	huge, 
 	glasso,
 	crayon
-#LinkingTo: Rcpp
+LinkingTo: Rcpp
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
