@@ -10,6 +10,27 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// aug_genlassoRcpp
+Rcpp::DoubleVector aug_genlassoRcpp(Rcpp::NumericVector y, const Rcpp::NumericMatrix W, const int m, const int c, const double lambda1, const double lambda2, const double global_rho, double a, const double rho, const int max_iter, const double eps);
+RcppExport SEXP _CVN_aug_genlassoRcpp(SEXP ySEXP, SEXP WSEXP, SEXP mSEXP, SEXP cSEXP, SEXP lambda1SEXP, SEXP lambda2SEXP, SEXP global_rhoSEXP, SEXP aSEXP, SEXP rhoSEXP, SEXP max_iterSEXP, SEXP epsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix >::type W(WSEXP);
+    Rcpp::traits::input_parameter< const int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< const int >::type c(cSEXP);
+    Rcpp::traits::input_parameter< const double >::type lambda1(lambda1SEXP);
+    Rcpp::traits::input_parameter< const double >::type lambda2(lambda2SEXP);
+    Rcpp::traits::input_parameter< const double >::type global_rho(global_rhoSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const double >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< const int >::type max_iter(max_iterSEXP);
+    Rcpp::traits::input_parameter< const double >::type eps(epsSEXP);
+    rcpp_result_gen = Rcpp::wrap(aug_genlassoRcpp(y, W, m, c, lambda1, lambda2, global_rho, a, rho, max_iter, eps));
+    return rcpp_result_gen;
+END_RCPP
+}
 // fisherTestGreater
 double fisherTestGreater(int a, int b, int c, int d);
 RcppExport SEXP _CVN_fisherTestGreater(SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP dSEXP) {
@@ -53,6 +74,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_CVN_aug_genlassoRcpp", (DL_FUNC) &_CVN_aug_genlassoRcpp, 11},
     {"_CVN_fisherTestGreater", (DL_FUNC) &_CVN_fisherTestGreater, 4},
     {"_CVN_midPFisherTestGreater", (DL_FUNC) &_CVN_midPFisherTestGreater, 4},
     {"_CVN_convertRawReports2TablesRcpp", (DL_FUNC) &_CVN_convertRawReports2TablesRcpp, 3},

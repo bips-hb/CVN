@@ -2,6 +2,115 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
+Rcpp::DoubleVector aug_genlassoRcpp(Rcpp::NumericVector y, 
+                                const Rcpp::NumericMatrix W, 
+                                const int m, 
+                                const int c, 
+                                const double lambda1, 
+                                const double lambda2, 
+                                const double global_rho, 
+                                double a, 
+                                const double rho, 
+                                const int max_iter,
+                                const double eps) { 
+  int i,j,k ;
+  
+  // initialize vectors
+  Rcpp::DoubleVector beta_new (m) ; 
+  Rcpp::DoubleVector beta_old (m) ; 
+  
+  Rcpp::DoubleVector alpha_new (c) ; 
+  Rcpp::DoubleVector alpha_old1 (c) ;
+  Rcpp::DoubleVector alpha_old2 (c) ;
+  Rcpp::DoubleVector alpha (c) ;
+  
+  Rcpp::DoubleVector delta (m) ;
+  
+  // initialize some values that are used repeatedly 
+  double eta1 = global_rho * lambda1 ; 
+  double eta2 = global_rho * lambda2 ; 
+  a = rho*a ; 
+  double C = 1 / (1 + a) ; 
+  
+  //Rprintf("%f, %f, %f, %f\n", eta1, eta2, a, C) ; 
+  
+  Rcpp::DoubleVector ya = C * y ; 
+  
+  int iter = 0 ; 
+  double diff = 0 ;
+  
+  while (iter < max_iter) { 
+    Rprintf("iter: %d\n", iter) ; 
+    
+    alpha = 2*alpha_old1 - alpha_old2 ; 
+    
+    for(i = 0; i < m; i++) { 
+      delta[i] = eta1 * alpha[i] ;  
+      
+      for (j = i; j < m; j++) { 
+         delta[i] = delta[i] + eta2*W[i,j]*alpha[i + j + m - 1] ; 
+      }
+      
+      for (j = 0; j < i; j++) { 
+        delta[i] = delta[i] - eta2*W[j,i]*alpha[i + j + m - 1] ; 
+      }
+      Rprintf("delta[%d]: %f\n", i, delta[i]) ; 
+    }
+    
+    beta_new = (1 - C)*beta_old + ya - C*delta ; 
+    
+    for (i = 0; i < m; i ++) { 
+      Rprintf("%f\t%f\t%f\n", beta_new[i], beta_old[i], ya[i]) ;  
+    }
+    
+    for (i = 0; i < m; i ++) { 
+      diff += abs(beta_new[i] - beta_old[i]) ;  
+    }
+    
+    if (diff < eps) { 
+      Rprintf("diff = %f\teps: %f\n", diff, eps) ; 
+      return(beta_new) ;  
+    }
+    
+    diff = 0 ; 
+    
+    for (i = 0; i < c; i++) { 
+      alpha_new[i] = alpha_old1[i] ;   
+    }
+    
+    for (i = 0; i < m; i++) { 
+       alpha_new[i] = eta1*beta_new[i] ; 
+    }
+    
+    k = m; 
+    for (i = 0; i < m-1; i++) { 
+      for (j = i+1; j < m; j++) { 
+        alpha_new[k] = rho * eta2*W[i,j]*(beta_new[i] - beta_new[j]) ; 
+        if (alpha_new[k] > 1) { 
+          alpha_new[k] = 1 ;  
+        } 
+        if (alpha_new[k] < -1) { 
+          alpha_new[k] = -1 ;  
+        } 
+        k++; 
+      }
+    }
+//alpha_new <- alpha_old1 + rho * D %*% beta_new
+    
+    for (i = 0; i < m; i++) { 
+      beta_old[i]   = beta_new[i] ; 
+      alpha_old2[i] = alpha_old1[i] ; 
+      alpha_old1[i] = alpha_new[i] ; 
+    }
+    
+    
+    iter ++; 
+  }
+  
+  return(beta_new) ;   
+}
+
+// [[Rcpp::export]]
 double fisherTestGreater(int a, int b, int c, int d) {
 
   // compute the marginal counts for the drug and the event
