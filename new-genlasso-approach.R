@@ -16,14 +16,8 @@ D <- create_matrix_D(W, lambda1, lambda2, rho = global_rho)
 
 y <- rnorm(m, mean = 0, sd = 1)
 
-# apply the generalized LASSO 
-out <- genlasso::genlasso(y, diag(1, m), D, minlam = 1)
-coef(out, lambda = 1)$beta
 
-altZ(y, D, W, lambda1, lambda2, global_rho, diagA = n1^2 + 3*n2^2 + 20, max_iter = 1000)
-
-
-altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_iter = 1000, eps = 10^-10) { 
+altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_iter = 1000, eps = 10^-10, old = TRUE) { 
   
   m <- length(y)
   mm <- nrow(D)
@@ -55,34 +49,69 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
     
     x <- crossprod(CD, (2*alpha_old1 - alpha_old2))
     
-    print(x)
+    alpha <- (2*alpha_old1 - alpha_old2)
+    delta <- rep(0, m)
+
     
-    # alpha <- (2*alpha_old1 - alpha_old2)
-    # delta <- rep(0, m)
+    # for (i in 1:m) {
+    #   cat(sprintf("i = %d\t m = %d\tmm = %d  -------------\n", i, m, mm))
     # 
-    # for (i in 1:m) { 
-    #   #cat(sprintf("i = %d\n", i))
-    #   delta[i] <- eta1 * alpha[i] 
-    #   if (i != m) { 
-    #     for (j in ((i+1):m)) { 
-    #       # cat(sprintf('(%d, %d)\n', i,j))
+    #   delta[i] <- eta1 * alpha[i]
+    #   if (i != m) {
+    #     for (j in ((i+1):m)) {
+    #       cat(sprintf('+ (%d, %d)\t%d\n', i,j, i+j+m-1))
     #       #print(W[i,j])
     #       #print(delta[i])
     #       #print(alpha[i + j + m - 1])
     #       delta[i] <- delta[i] + eta2*W[i,j]*alpha[i+j+m-1]
     #     }
     #   }
-    #   
-    #   if (i != 1) { 
-    #     for (j in (1:(i-1))) { 
+    # 
+    #   if (i != 1) {
+    #     for (j in (1:(i-1))) {
+    #       cat(sprintf('- (%d, %d)\t%d\n', j, i, i + j + m - 1))
     #       delta[i] <- delta[i] - eta2*W[j,i]*alpha[i+j+m-1]
     #     }
     #   }
     # }
-    # 
-    # print(delta)
-    # #x <- delta
-    # 
+    
+    k <- rev(c(seq(m-1:1))-1)
+    k <- cumsum(k)
+    k <- c(0,3,5,8)
+    
+    for (i in 1:m) {
+      cat(sprintf("i = %d\t m = %d\tmm = %d  -------------\n", i, m, mm))
+      
+      cat(sprintf("k: %d\n",k[i]))
+      delta[i] <- eta1 * alpha[i]
+      if (i != m) {
+        for (j in ((i+1):m)) {
+          cat(sprintf('+ (%d, %d)\t%d\n', i,j, m + k[i] + (j - i)))
+          #print(W[i,j])
+          #print(delta[i])
+          #print(alpha[i + j + m - 1])
+          delta[i] <- delta[i] + eta2*W[i,j]*alpha[i+j+m-2]
+        }
+      }
+      
+      if (i != 1) {
+        for (j in (1:(i-1))) {
+          cat(sprintf('- (%d, %d)\t%d\n', i, j, m + k[j] - (j - i)))
+          delta[i] <- delta[i] - eta2*W[j,i]*alpha[i+j+m-2]
+        }
+      }
+
+    }
+
+    cat(sprintf("orig:\n"))
+    print(x)
+    
+    cat(sprintf("new:\n"))
+    print(C*delta)
+    
+    if (!old) { 
+      x <- C*delta
+    }
     beta_new <- Cb*beta_old + Cy - x 
       
     #  c*(rho*a*beta_old + y - x)
@@ -105,3 +134,10 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
   
   beta_new
 }
+
+
+altZ(y, D, W, lambda1, lambda2, global_rho, diagA = 5, max_iter = 1000, old = FALSE)
+
+# apply the generalized LASSO 
+out <- genlasso::genlasso(y, diag(1, m), D, minlam = 1)
+coef(out, lambda = 1)$beta
