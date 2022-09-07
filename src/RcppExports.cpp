@@ -11,7 +11,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // aug_genlassoRcpp
-Rcpp::DoubleVector aug_genlassoRcpp(Rcpp::NumericVector y, const Rcpp::NumericMatrix W, const int m, const int c, const double lambda1, const double lambda2, const double global_rho, double a, const double rho, const int max_iter, const double eps);
+Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y, const Rcpp::NumericMatrix W, const int m, const int c, const double lambda1, const double lambda2, const double global_rho, double a, const double rho, const int max_iter, const double eps);
 RcppExport SEXP _CVN_aug_genlassoRcpp(SEXP ySEXP, SEXP WSEXP, SEXP mSEXP, SEXP cSEXP, SEXP lambda1SEXP, SEXP lambda2SEXP, SEXP global_rhoSEXP, SEXP aSEXP, SEXP rhoSEXP, SEXP max_iterSEXP, SEXP epsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
