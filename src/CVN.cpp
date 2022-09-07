@@ -46,7 +46,7 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
   a = rho*a ; 
   double C = 1 / (1 + a) ; 
   
-  Rprintf("%f, %f, %f, %f\n", eta1, eta2, a, C) ; 
+  //Rprintf("%f, %f, %f, %f\n", eta1, eta2, a, C) ; 
   
   for (i = 0; i < m; i ++) { 
      ya[i] = C*y[i] ; 
@@ -120,20 +120,23 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
       for (j = i+1; j < m; j++) { 
         //Rprintf("k: %d\t (i,j) = (%d,%d)\n", k, i, j) ;
         alpha_new[k] = alpha_old1[k] + rho * eta2*W[i,j]*(beta_new[i] - beta_new[j]) ; 
-        if (alpha_new[k] > 1) { 
-          alpha_new[k] = 1 ;  
-        } 
-        if (alpha_new[k] < -1) { 
-          alpha_new[k] = -1 ;  
-        } 
         k++; 
       }
     }
     
-    Rf_PrintValue(alpha_new) ; 
-    Rf_PrintValue(alpha_old1) ;
-    Rf_PrintValue(alpha_old2) ;
-    Rprintf("\n") ; 
+    for (i = 0; i < c; i ++) { 
+      if (alpha_new[i] > 1) { 
+        alpha_new[i] = 1 ;  
+      } 
+      if (alpha_new[i] < -1) { 
+        alpha_new[i] = -1 ;  
+      } 
+    }
+    
+    //Rf_PrintValue(alpha_new) ; 
+    //Rf_PrintValue(alpha_old1) ;
+    //Rf_PrintValue(alpha_old2) ;
+    //Rprintf("\n") ; 
     
 //alpha_new <- alpha_old1 + rho * D %*% beta_new
     
@@ -152,10 +155,10 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
     Rf_PrintValue(alpha_old1);
     Rf_PrintValue(alpha_old2);*/
     
-    /*for (i = 0; i < m; i ++) { 
-      beta_old[i] = beta_new[i] ;  
-    }
-    
+    //for (i = 0; i < m; i ++) { 
+    //  beta_old[i] = beta_new[i] ;  
+    //}
+    /*
     for (i = 0; i < c; i ++) { 
       alpha_old2[i] = alpha_old1[i] ; 
       alpha_old1[i] = alpha_new[i] ; 
@@ -170,22 +173,22 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
     Rf_PrintValue(beta_old);
     Rf_PrintValue(alpha_new);
     Rf_PrintValue(alpha_old1);
-    Rf_PrintValue(alpha_old2);*?
+    Rf_PrintValue(alpha_old2);*/
     
-    /*for (i = 0; i < c; i++) { 
-      alpha_old2[i] = alpha_old1[i] ; 
-      alpha_old1[i] = alpha_new[i] ; 
-    }
+    //for (i = 0; i < c; i++) { 
+    //  alpha_old2[i] = alpha_old1[i] ; 
+    //  alpha_old1[i] = alpha_new[i] ; 
+    //}
     
-    Rprintf("beta_new:\n") ; 
+   /* Rprintf("beta_new:\n") ; 
     for(i = 0; i < m; i ++) { 
       Rprintf("%g  ", beta_new[i]) ; 
     }
     Rprintf("\n") ; */
     
-    if (iter == 2) { 
-      return(beta_old) ; 
-    }
+    //if (iter == 2) { 
+    //  return(beta_old) ; 
+    //}
     
     iter ++; 
   }

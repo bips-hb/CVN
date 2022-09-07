@@ -10,6 +10,9 @@ m <- 4 # number of graphs
 lambda1 = .2
 lambda2 = .7
 global_rho = 1
+rho = 1
+eta1 = lambda1 / global_rho
+eta2 = lambda2 / global_rho
 a = 50
 
 W <- matrix(1, m, m)
@@ -124,7 +127,31 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
       
     #  c*(rho*a*beta_old + y - x)
     
-    alpha_new <- alpha_old1 + rho * D %*% beta_new
+    #alpha_new <- alpha_old1 + rho * D %*% beta_new
+    
+    
+    
+    for (i in 1:m) { 
+      alpha_new[i] <- alpha_old1[i] + rho * eta1 * beta_new[i]  
+    }
+    
+    k = m+1
+    cat("\n")
+    for (i in 1:(m-1)) {
+      for(j in (i+1):m) { 
+        cat(sprintf("k: %d\t(i,j) = (%d, %d)\n", k, i, j))
+        alpha_new[k] = alpha_old1[k] + rho * eta2*W[i,j]*(beta_new[i] - beta_new[j]) ; 
+        cat(sprintf("old: %g\t new: %g\t W: %g\teta2: %g\n", alpha_old1[k], alpha_new[k], W[i,j], eta2))
+        if (alpha_new[k] > 1) { 
+          alpha_new[k] = 1 ;  
+        } 
+        if (alpha_new[k] < -1) { 
+          alpha_new[k] = -1 ;  
+        } 
+        k <- k+1  
+      }
+    }
+    
     alpha_new <- pmax(pmin(alpha_new, 1), -1)
     
     #print(alpha_new) 
@@ -155,13 +182,13 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
 }
 
 
-f = function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = a, max_iter = 500, old = FALSE)}
+f = function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = a, max_iter = 1000, old = FALSE)}
 
 # apply the generalized LASSO 
 g = function(){out <- genlasso::genlasso(y, diag(1, m), D, minlam = 1)
 coef(out, lambda = 1)$beta}
 
-h = function(){CVN::aug_genlasso(y, W, as.integer(m), nrow(D), lambda1, lambda2, global_rho, as.integer(a), global_rho, as.integer(500), 10^-10)}
+h = function(){CVN::aug_genlasso(y, W, as.integer(m), nrow(D), lambda1, lambda2, global_rho, a, global_rho, as.integer(3), 10^-10)}
 
 
 
