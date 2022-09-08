@@ -5,7 +5,7 @@ library(microbenchmark)
 library(glmnet)
 
 # trial for new generalized LASSO estimation
-m <- 4 # number of graphs
+m <- 9 # number of graphs
 
 repetitions = 1; 
 
@@ -15,25 +15,25 @@ bg = matrix(rep(0, repetitions*m), nrow = repetitions)
 
 for (r in 1:repetitions) { 
 
-
 lambda1 = .2
 lambda2 = .5
 global_rho = 1
 rho = 1
 eta1 = lambda1 / global_rho
 eta2 = lambda2 / global_rho
-a = 20
+a = 2
 
-W <- matrix(.2, m, m)
-e = 0
-W <- matrix(c(0, 1, e, 1,
-              1, 0, 1, e,
-              e, 1, 0, 1,
-              1, e, 1, 0), ncol = 4 )
+W <- matrix(.1, m, m)
+  # e = 0.2
+  # W <- matrix(c(0, 1, e, e,
+  #               1, 0, 1, e,
+  #               e, 1, 0, 1,
+  #               e, e, 1, 0), ncol = 4 )
 # W <- matrix(runif(m*m), ncol = m)
 # W <- W %*% t(W) 
 # W <- W / max(W) 
-# W <- W - diag(W)
+# W <- W 
+# diag(W) <- 0
 #W <- matrix(rbinom(m*m, 1, .5), ncol = m) * matrix(runif(m*m), ncol = m)
 #W <- matrix(rbinom(m*m, 1, .5), ncol = m)
 #W <- W %*% t(W) 
@@ -143,14 +143,12 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
     #print(x)
     
     #cat(sprintf("new:\n"))
-    #print(C*delta)
     
     if (!old) { 
       x <- C*delta
     }
   
     beta_new <- Cb*beta_old + Cy - x 
-    
       
     #  c*(rho*a*beta_old + y - x)
     
@@ -217,13 +215,6 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
   beta_new
 }
 
-b = c(10^-9, 1, 4)
-sapply(b, function(x) 
-  if (x < 10^-7) {
-    return(0)
-  } else {
-    return(x)
-    })
 
 f = function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = a, max_iter = 1000, old = FALSE)}
 
@@ -232,7 +223,7 @@ g = function(){out <- genlasso::genlasso(y, diag(1, m), create_matrix_D(W, lambd
 , minlam = 1)
 coef(out, lambda = 1)$beta}
 
-h = function(){CVN::aug_genlasso(y, W, as.integer(m), nrow(D), lambda1 / global_rho, lambda2 / global_rho, a, global_rho, as.integer(1000), 10^-10)}
+h = function(){CVN::aug_genlasso(y, W, as.integer(m), nrow(D), lambda1 / global_rho, lambda2 / global_rho, a, global_rho, 1000, 10^-10)}
 
 
 
@@ -249,15 +240,15 @@ bg[r, ] = g()
 # sum(abs(bh - bg))
 # 
 # 
-# max(abs(bf - bg))
-# max(abs(bh - bg))
-# max(abs(bf - bh))
+max(abs(bf - bg))
+max(abs(bh - bg))
+max(abs(bf - bh))
 # #res = glmnet(diag(1, m,m), y = y, lambda = c(lambda1)) 
 # #res$beta
 # 
-# microbenchmark(f(), g(), h(), times = 4)
-
-
 f()
-g()
+t(g())
 h()
+
+#microbenchmark(f(), g(), h(), times = 4)
+

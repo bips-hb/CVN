@@ -11,10 +11,6 @@
 #' \eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c \geq m}. 
 #' We solve this optimization problem using an adaption of the ADMM
 #' algorithm presented in Zhu (2017). 
-#' 
-#' @param reports A binary matrix. Each row is a report
-#' @param n_drugs The number of drugs
-#' @param n_events The number of events
 #'
 #' @return The estimated vector \eqn{\hat{\beta}}
 #'

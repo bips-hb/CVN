@@ -11,10 +11,6 @@ using namespace Rcpp;
 //' \eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c \geq m}. 
 //' We solve this optimization problem using an adaption of the ADMM
 //' algorithm presented in Zhu (2017). 
-//' 
-//' @param reports A binary matrix. Each row is a report
-//' @param n_drugs The number of drugs
-//' @param n_events The number of events
 //'
 //' @return The estimated vector \eqn{\hat{\beta}}
 //'
@@ -41,6 +37,8 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
   a = rho*a ; 
   double C = 1 / (1 + a) ; 
   
+  //Rf_PrintValue(W) ; 
+  
   /* initialize vectors for beta-update step in the ADMM */
   Rcpp::NumericVector beta_new (m) ; // beta^(k + 1)
   Rcpp::NumericVector beta_old (m) ; // beta^k
@@ -53,13 +51,13 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
   Rcpp::NumericVector alpha (c) ; // used to store (2*alpha^k - alpha^(k-1))
 
   /* Indices used for the alpha-update step */
-  Rcpp::IntegerVector steps (m) ; 
+  Rcpp::IntegerVector steps (m-1) ; 
   steps[0] = 0 ; 
   
-  for (i = 1; i < m; i ++) { 
+  for (i = 1; i < (m-1); i ++) { 
     steps[i] = m - i + steps[i - 1] ; 
   }
-
+  
   int iter = 0 ;    // number of iterations 
   double diff = 0 ; // absolute difference between beta^(k+1) and beta^k
   
@@ -74,17 +72,19 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
     }
     
     // go over all possible pairs (i,j), same as D^T %*% (2 alpha^(k) - alpha^(k-1)) 
-    for(i = 0; i < m; i++) { 
+    for (i = 0; i < m; i++) { 
       delta[i] = eta1 * alpha[i] ;  
       
       for (j = i+1; j < m; j++) { 
-         delta[i] = delta[i] + eta2*W[i,j]*alpha[m + steps[i] + (j - i) - 1] ; 
+         delta[i] = delta[i] + eta2*W(i,j)*alpha[m + steps[i] + (j - i) - 1] ; 
       }
       
       for (j = 0; j < i; j++) { 
-        delta[i] = delta[i] - eta2*W[i,j]*alpha[m + steps[j] - (j - i) - 1] ; 
+        delta[i] = delta[i] - eta2*W(j,i)*alpha[m + steps[j] - (j - i) - 1] ; 
       }
     }
+    
+    //Rf_PrintValue(delta);
     
     // update beta with the computed delta and determine difference
     diff = 0 ;
@@ -95,6 +95,12 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
     
     // determine whether converged or not
     if (diff < eps) { 
+      /* Turn to zero when really close */
+      for (i = 0; i < m; i ++) { 
+        if (abs(beta_new[i]) < 10e-7) { 
+          beta_new[i] = 0 ;  
+        } 
+      }
       return(beta_new) ;  
     }
     
@@ -107,7 +113,8 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
     // go over all unique pairs (i,j)
     for (i = 0; i < m-1; i++) { 
       for (j = i+1; j < m; j++) { 
-        alpha_new[k] = alpha_old1[k] + rho * eta2*W[i,j]*(beta_new[i] - beta_new[j]) ; 
+        alpha_new[k] = alpha_old1[k] + rho * eta2*W(i,j)*(beta_new[i] - beta_new[j]) ; 
+        //Rprintf("k = %d\t(i,j) = (%d,%d)\tW[%d,%d] = %g\t%g --> %g\n", k, i, j, i+1, j+1, W[i,j], alpha_old1[k], alpha_new[k]) ; 
         k++; 
       }
     }
