@@ -5,7 +5,7 @@ library(microbenchmark)
 library(glmnet)
 
 # trial for new generalized LASSO estimation
-m <- 4 # number of graphs
+m <- 8 # number of graphs
 
 global_rho <- 1
 lambda1 <- .2

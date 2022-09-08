@@ -83,6 +83,7 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
     for (i in 2:(m-1)) { 
       k[i] <- k[i] + k[i-1]
     }
+
    # k 
     
     #k <- rev(c(seq(m-1:1))-1)
@@ -122,6 +123,15 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
     if (!old) { 
       x <- C*delta
     }
+    
+    if (iter < 4) { 
+      print(x)  
+    }
+    
+    if (iter == 4) { 
+      return(beta_new)  
+    }
+    
     beta_new <- Cb*beta_old + Cy - x 
     
       
@@ -188,7 +198,7 @@ f = function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = a, max_iter =
 g = function(){out <- genlasso::genlasso(y, diag(1, m), D, minlam = 1)
 coef(out, lambda = 1)$beta}
 
-h = function(){CVN::aug_genlasso(y, W, as.integer(m), nrow(D), lambda1, lambda2, global_rho, a, global_rho, as.integer(3), 10^-10)}
+h = function(){CVN::aug_genlasso(y, W, as.integer(m), nrow(D), lambda1, lambda2, global_rho, a, global_rho, as.integer(1000), 10^-10)}
 
 
 

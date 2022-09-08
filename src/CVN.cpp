@@ -26,7 +26,7 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
   Rcpp::NumericVector alpha_old2 (c) ;
   Rcpp::NumericVector alpha (c) ;
   
-  for (i = 1; i < m; i ++) { 
+  for (i = 1; i < c; i ++) { 
     alpha_old1[i] = 0 ;  
   }
   
@@ -80,8 +80,9 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
       //Rprintf("delta[%d]: %f\n", i, delta[i]) ; 
     }
     
+    
     for (i = 0; i < m; i ++) { 
-      beta_new[i] = a*beta_old[i] + ya[i] - delta[i] ; 
+      beta_new[i] = C*a*beta_old[i] + ya[i] - delta[i] ; 
       //Rprintf("%g  ", beta_new[i]) ; 
     }
     //Rprintf("\n") ; 
