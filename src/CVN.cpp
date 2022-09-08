@@ -1,6 +1,29 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
+//' Solving Generalized LASSO with fixed \eqn{\lambda = 1}
+//' 
+//' Solves efficiently the generalized LASSO problem of the form 
+//' \deqn{
+//'   \hat{\beta} = \text{argmin } \frac{1}{2} || y - \beta ||_2^2 + ||D\beta||_1 
+//' }
+//' where \eqn{\beta} and \eqn{y} are \eqn{m}-dimensional vectors and 
+//' \eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c \geq m}. 
+//' We solve this optimization problem using an adaption of the ADMM
+//' algorithm presented in Zhu (2017). 
+//' 
+//' @param reports A binary matrix. Each row is a report
+//' @param n_drugs The number of drugs
+//' @param n_events The number of events
+//'
+//' @return The estimated vector \eqn{\hat{\beta}}
+//'
+//' @references 
+//' Zhu, Y. (2017). An Augmented ADMM Algorithm With Application to the 
+//' Generalized Lasso Problem. Journal of Computational and Graphical Statistics, 
+//' 26(1), 195–204. https://doi.org/10.1080/10618600.2015.1114491
+//' 
+//' @seealso \code{\link{convertRawReports2Tables}}
 // [[Rcpp::export]]
 Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y, 
                                 const Rcpp::NumericMatrix W, 
@@ -13,11 +36,11 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
                                 const double rho, 
                                 const int max_iter,
                                 const double eps) { 
-  int i,j,k ;
+  int i,j,k ; // indices
   
-  // initialize vectors
-  Rcpp::NumericVector beta_new (m) ; 
-  Rcpp::NumericVector beta_old (m) ; 
+  /* initialize vectors for ADMM */
+  Rcpp::NumericVector beta_new (m) ; // beta^(k + 1)
+  Rcpp::NumericVector beta_old (m) ; // beta^k
   
   Rcpp::NumericVector ya (m) ; 
   
@@ -26,9 +49,9 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
   Rcpp::NumericVector alpha_old2 (c) ;
   Rcpp::NumericVector alpha (c) ;
   
-  for (i = 1; i < c; i ++) { 
+  /*for (i = 1; i < c; i ++) { 
     alpha_old1[i] = 0 ;  
-  }
+  }*/
   
   Rcpp::NumericVector delta (m) ;
   
@@ -73,7 +96,7 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
       
       for (j = 0; j < i; j++) { 
         //Rprintf("- (%d, %d)\t%d\n", i, j, m + steps[j] - (j - i) - 1) ;   
-        delta[i] = delta[i] - eta2*W[j,i]*alpha[m + steps[j] - (j - i) - 1] ; 
+        delta[i] = delta[i] - eta2*W[i,j]*alpha[m + steps[j] - (j - i) - 1] ; 
       }
       
       delta[i] = C*delta[i] ; 
@@ -97,14 +120,14 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
       diff += abs(beta_new[i] - beta_old[i]) ;  
     }
     
-    Rprintf("diff: %g\n", diff) ; 
+    //Rprintf("diff: %g\n", diff) ; 
     
     //if(iter == 2) { 
     //  return(beta_new) ;  
     //}
     
     if (diff < eps) { 
-      Rprintf("finished. iter = %d\tdiff = %f\teps: %f\n", iter, diff, eps) ; 
+      //Rprintf("finished. iter = %d\tdiff = %f\teps: %f\n", iter, diff, eps) ; 
       return(beta_new) ;  
     }
     
@@ -194,6 +217,9 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
     iter ++; 
   }
   
+  for (i = 0; i < m; i ++) { 
+    beta_new[i] = 5; 
+  }
   return(beta_new) ;   
 }
 

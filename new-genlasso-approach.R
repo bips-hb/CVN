@@ -5,18 +5,40 @@ library(microbenchmark)
 library(glmnet)
 
 # trial for new generalized LASSO estimation
-m <- 4 # number of graphs
+m <- 9 # number of graphs
+
+repetitions = 100; 
+
+bf = matrix(rep(0, repetitions*m), nrow = repetitions)
+bh = matrix(rep(0, repetitions*m), nrow = repetitions)
+bg = matrix(rep(0, repetitions*m), nrow = repetitions)
+
+for (r in 1:repetitions) { 
+
 
 lambda1 = .2
-lambda2 = .7
+lambda2 = 0
 global_rho = 1
 rho = 1
 eta1 = lambda1 / global_rho
 eta2 = lambda2 / global_rho
-a = 50
+a = 2
 
-W <- matrix(1, m, m)
-D <- create_matrix_D(W, lambda1, lambda2, rho = global_rho)
+W <- matrix(.2, m, m)
+e = 0
+# W <- matrix(c(0, 1, e, 1,
+#               1, 0, 1, e,
+#               e, 1, 0, 1,
+#               1, e, 1, 0), ncol = 4 )
+W <- matrix(runif(m*m), ncol = m)
+W <- W %*% t(W) 
+W <- W / max(W) 
+W <- W - diag(W)
+#W <- matrix(rbinom(m*m, 1, .5), ncol = m) * matrix(runif(m*m), ncol = m)
+#W <- matrix(rbinom(m*m, 1, .5), ncol = m)
+#W <- W %*% t(W) 
+#diag(W) <- 0
+D <- create_matrix_D(W, lambda1, lambda2, rho = global_rho, remove_zero_row = FALSE)
 
 y <- rnorm(m, mean = 0, sd = 1)
 
@@ -83,6 +105,7 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
     for (i in 2:(m-1)) { 
       k[i] <- k[i] + k[i-1]
     }
+    #print(k)
 
    # k 
     
@@ -97,18 +120,20 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
       delta[i] <- eta1 * alpha[i]
       if (i != m) {
         for (j in ((i+1):m)) {
-          #cat(sprintf('+ (%d, %d)\t%d\n', i,j, m + k[i] + (j - i)))
+       #   cat(sprintf('+ (%d, %d)\t%d\n', i,j, m + k[i] + (j - i)))
           #print(W[i,j])
           #print(delta[i])
           #print(alpha[i + j + m - 1])
           delta[i] <- delta[i] + eta2*W[i,j]*alpha[m + k[i] + (j - i)]
+        #  cat(sprintf("%g\t%g\t%g\n", delta[i], W[i,j], alpha[m + k[i] + (j - i)]))
         }
       }
       
       if (i != 1) {
         for (j in (1:(i-1))) {
-          #cat(sprintf('- (%d, %d)\t%d\n', i, j, m + k[j] - (j - i)))
+         # cat(sprintf('- (%d, %d)\t%d\n', i, j, m + k[j] - (j - i)))
           delta[i] <- delta[i] - eta2*W[j,i]*alpha[m + k[j] - (j - i)]
+          #cat(sprintf("%g\t%g\t%g\n", delta[i], W[i,j], alpha[m + k[i] + (j - i)]))
         }
       }
 
@@ -123,15 +148,7 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
     if (!old) { 
       x <- C*delta
     }
-    
-    if (iter < 4) { 
-      print(x)  
-    }
-    
-    if (iter == 4) { 
-      return(beta_new)  
-    }
-    
+  
     beta_new <- Cb*beta_old + Cy - x 
     
       
@@ -146,12 +163,14 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
     }
     
     k = m+1
-    cat("\n")
+    #print(beta_new)
+    #print(beta_old)
+    #cat("\n")
     for (i in 1:(m-1)) {
       for(j in (i+1):m) { 
-        cat(sprintf("k: %d\t(i,j) = (%d, %d)\n", k, i, j))
+        #cat(sprintf("k: %d\t(i,j) = (%d, %d)\n", k, i, j))
         alpha_new[k] = alpha_old1[k] + rho * eta2*W[i,j]*(beta_new[i] - beta_new[j]) ; 
-        cat(sprintf("old: %g\t new: %g\t W: %g\teta2: %g\n", alpha_old1[k], alpha_new[k], W[i,j], eta2))
+        #cat(sprintf("old: %g\t new: %g\t W: %g\teta2: %g\n", alpha_old1[k], alpha_new[k], W[i,j], eta2))
         if (alpha_new[k] > 1) { 
           alpha_new[k] = 1 ;  
         } 
@@ -186,24 +205,52 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
     iter <- iter + 1
   }
   
+  
   #print(iter)
+  beta_new = sapply(beta_new, function(x) 
+    if (abs(x) < 10^-7) {
+      return(0)
+    } else {
+      return(x)
+    })
   
   beta_new
 }
 
+b = c(10^-9, 1, 4)
+sapply(b, function(x) 
+  if (x < 10^-7) {
+    return(0)
+  } else {
+    return(x)
+    })
 
-f = function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = a, max_iter = 1000, old = FALSE)}
+f = function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = 2, max_iter = 1000, old = FALSE)}
 
 # apply the generalized LASSO 
-g = function(){out <- genlasso::genlasso(y, diag(1, m), D, minlam = 1)
+g = function(){out <- genlasso::genlasso(y, diag(1, m), create_matrix_D(W, lambda1, lambda2, rho = global_rho, remove_zero_row = TRUE)
+, minlam = 1)
 coef(out, lambda = 1)$beta}
 
-h = function(){CVN::aug_genlasso(y, W, as.integer(m), nrow(D), lambda1, lambda2, global_rho, a, global_rho, as.integer(1000), 10^-10)}
+h = function(){CVN::aug_genlasso(y, W, as.integer(m), nrow(D), lambda1, lambda2, global_rho, 2, global_rho, as.integer(1000), 10^-10)}
 
 
 
-h()
-f()
-#g()
+#h()
+bf[r, ] = f()
+bh[r, ] = h()
+bg[r, ] = g()
+}
 
-#microbenchmark(f(), g(), h())
+
+sum(abs(bf - bg))
+sum(abs(bh - bg))
+
+
+max(abs(bf - bg))
+max(abs(bh - bg))
+max(abs(bf - bg))
+#res = glmnet(diag(1, m,m), y = y, lambda = c(lambda1)) 
+#res$beta
+
+microbenchmark(f(), g(), h(), times = 4)
