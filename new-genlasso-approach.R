@@ -5,9 +5,9 @@ library(microbenchmark)
 library(glmnet)
 
 # trial for new generalized LASSO estimation
-m <- 9 # number of graphs
+m <- 4 # number of graphs
 
-repetitions = 100; 
+repetitions = 1; 
 
 bf = matrix(rep(0, repetitions*m), nrow = repetitions)
 bh = matrix(rep(0, repetitions*m), nrow = repetitions)
@@ -17,23 +17,23 @@ for (r in 1:repetitions) {
 
 
 lambda1 = .2
-lambda2 = 0
+lambda2 = .5
 global_rho = 1
 rho = 1
 eta1 = lambda1 / global_rho
 eta2 = lambda2 / global_rho
-a = 2
+a = 20
 
 W <- matrix(.2, m, m)
 e = 0
-# W <- matrix(c(0, 1, e, 1,
-#               1, 0, 1, e,
-#               e, 1, 0, 1,
-#               1, e, 1, 0), ncol = 4 )
-W <- matrix(runif(m*m), ncol = m)
-W <- W %*% t(W) 
-W <- W / max(W) 
-W <- W - diag(W)
+W <- matrix(c(0, 1, e, 1,
+              1, 0, 1, e,
+              e, 1, 0, 1,
+              1, e, 1, 0), ncol = 4 )
+# W <- matrix(runif(m*m), ncol = m)
+# W <- W %*% t(W) 
+# W <- W / max(W) 
+# W <- W - diag(W)
 #W <- matrix(rbinom(m*m, 1, .5), ncol = m) * matrix(runif(m*m), ncol = m)
 #W <- matrix(rbinom(m*m, 1, .5), ncol = m)
 #W <- W %*% t(W) 
@@ -225,14 +225,14 @@ sapply(b, function(x)
     return(x)
     })
 
-f = function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = 2, max_iter = 1000, old = FALSE)}
+f = function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = a, max_iter = 1000, old = FALSE)}
 
 # apply the generalized LASSO 
 g = function(){out <- genlasso::genlasso(y, diag(1, m), create_matrix_D(W, lambda1, lambda2, rho = global_rho, remove_zero_row = TRUE)
 , minlam = 1)
 coef(out, lambda = 1)$beta}
 
-h = function(){CVN::aug_genlasso(y, W, as.integer(m), nrow(D), lambda1, lambda2, global_rho, 2, global_rho, as.integer(1000), 10^-10)}
+h = function(){CVN::aug_genlasso(y, W, as.integer(m), nrow(D), lambda1 / global_rho, lambda2 / global_rho, a, global_rho, as.integer(1000), 10^-10)}
 
 
 
@@ -243,14 +243,21 @@ bg[r, ] = g()
 }
 
 
-sum(abs(bf - bg))
-sum(abs(bh - bg))
 
 
-max(abs(bf - bg))
-max(abs(bh - bg))
-max(abs(bf - bg))
-#res = glmnet(diag(1, m,m), y = y, lambda = c(lambda1)) 
-#res$beta
+# sum(abs(bf - bg))
+# sum(abs(bh - bg))
+# 
+# 
+# max(abs(bf - bg))
+# max(abs(bh - bg))
+# max(abs(bf - bh))
+# #res = glmnet(diag(1, m,m), y = y, lambda = c(lambda1)) 
+# #res$beta
+# 
+# microbenchmark(f(), g(), h(), times = 4)
 
-microbenchmark(f(), g(), h(), times = 4)
+
+f()
+g()
+h()

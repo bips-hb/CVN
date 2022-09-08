@@ -4,19 +4,7 @@
 \alias{aug_genlassoRcpp}
 \title{Solving Generalized LASSO with fixed \eqn{\lambda = 1}}
 \usage{
-aug_genlassoRcpp(
-  y,
-  W,
-  m,
-  c,
-  lambda1,
-  lambda2,
-  global_rho,
-  a,
-  rho,
-  max_iter,
-  eps
-)
+aug_genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps)
 }
 \arguments{
 \item{reports}{A binary matrix. Each row is a report}

@@ -24,40 +24,7 @@
 #' 26(1), 195–204. https://doi.org/10.1080/10618600.2015.1114491
 #' 
 #' @seealso \code{\link{convertRawReports2Tables}}
-aug_genlassoRcpp <- function(y, W, m, c, lambda1, lambda2, global_rho, a, rho, max_iter, eps) {
-    .Call('_CVN_aug_genlassoRcpp', PACKAGE = 'CVN', y, W, m, c, lambda1, lambda2, global_rho, a, rho, max_iter, eps)
-}
-
-fisherTestGreater <- function(a, b, c, d) {
-    .Call('_CVN_fisherTestGreater', PACKAGE = 'CVN', a, b, c, d)
-}
-
-midPFisherTestGreater <- function(a, b, c, d) {
-    .Call('_CVN_midPFisherTestGreater', PACKAGE = 'CVN', a, b, c, d)
-}
-
-#' Create 2 x 2 Tables
-#'
-#' Creates a data frame containing all 2 x 2 contingency tables
-#' given a raw spontaneous reporting (SR) data set. An SR data set
-#' is a binary matrix, where each row is a report. The first
-#' columns represent the presence or absence of a drug, the
-#' The other columns represent the presence or absence of an event.
-#' See for more information the wrapper function,
-#' \code{\link{convertRawReports2Tables}}.
-#'
-#' The code is a simplified version of the function \code{create2x2TablesRcpp}
-#' in the \code{SRSim} package.
-#'
-#' @param reports A binary matrix. Each row is a report
-#' @param n_drugs The number of drugs
-#' @param n_events The number of events
-#'
-#' @return A dataframe. A description of the columns can be found in the commentary
-#'         for the function \code{\link{convertRawReports2Tables}}
-#'
-#' @seealso \code{\link{convertRawReports2Tables}}
-convertRawReports2TablesRcpp <- function(reports, n_drugs, n_events) {
-    .Call('_CVN_convertRawReports2TablesRcpp', PACKAGE = 'CVN', reports, n_drugs, n_events)
+aug_genlassoRcpp <- function(y, W, m, c, eta1, eta2, a, rho, max_iter, eps) {
+    .Call('_CVN_aug_genlassoRcpp', PACKAGE = 'CVN', y, W, m, c, eta1, eta2, a, rho, max_iter, eps)
 }
 
