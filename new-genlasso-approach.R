@@ -5,7 +5,7 @@ library(microbenchmark)
 library(glmnet)
 
 # trial for new generalized LASSO estimation
-m <- 9 # number of graphs
+m <- 100 # number of graphs
 
 repetitions = 1; 
 
@@ -15,25 +15,25 @@ bg = matrix(rep(0, repetitions*m), nrow = repetitions)
 
 for (r in 1:repetitions) { 
 
-lambda1 = .2
-lambda2 = .5
+lambda1 = 1
+lambda2 = 1
 global_rho = 1
 rho = 1
 eta1 = lambda1 / global_rho
 eta2 = lambda2 / global_rho
-a = 2
+a = 1000
 
-W <- matrix(.1, m, m)
+#W <- matrix(1, m, m)
   # e = 0.2
   # W <- matrix(c(0, 1, e, e,
   #               1, 0, 1, e,
   #               e, 1, 0, 1,
   #               e, e, 1, 0), ncol = 4 )
-# W <- matrix(runif(m*m), ncol = m)
-# W <- W %*% t(W) 
-# W <- W / max(W) 
-# W <- W 
-# diag(W) <- 0
+W <- matrix(runif(m*m), ncol = m)
+W <- W %*% t(W) 
+W <- W / max(W) 
+W <- W 
+diag(W) <- 0
 #W <- matrix(rbinom(m*m, 1, .5), ncol = m) * matrix(runif(m*m), ncol = m)
 #W <- matrix(rbinom(m*m, 1, .5), ncol = m)
 #W <- W %*% t(W) 
@@ -215,13 +215,18 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
   beta_new
 }
 
-
 f = function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = a, max_iter = 1000, old = FALSE)}
 
 # apply the generalized LASSO 
 g = function(){out <- genlasso::genlasso(y, diag(1, m), create_matrix_D(W, lambda1, lambda2, rho = global_rho, remove_zero_row = TRUE)
 , minlam = 1)
-coef(out, lambda = 1)$beta}
+b = coef(out, lambda = 1)$beta 
+sapply(b, function(x) 
+  if (abs(x) < 10^-7) {
+    return(0)
+  } else {
+    return(x)
+  })}
 
 h = function(){CVN::aug_genlasso(y, W, as.integer(m), nrow(D), lambda1 / global_rho, lambda2 / global_rho, a, global_rho, 1000, 10^-10)}
 
@@ -247,8 +252,8 @@ max(abs(bf - bh))
 # #res$beta
 # 
 f()
-t(g())
+as.vector(g())
 h()
 
-#microbenchmark(f(), g(), h(), times = 4)
+microbenchmark(f(), g(), h(), times = 4)
 
