@@ -5,7 +5,7 @@ library(microbenchmark)
 library(glmnet)
 
 # trial for new generalized LASSO estimation
-m <- 8 # number of graphs
+m <- 4 # number of graphs
 
 global_rho <- 1
 lambda1 <- .2
@@ -16,6 +16,8 @@ n2 <- global_rho * lambda2
 W <- matrix(1, m, m)
 D <- create_matrix_D(W, lambda1, lambda2, global_rho)
 c <- nrow(D)
+
+-t(D) %*% D
 
 a = n1^2 + 3*n2^2
 
