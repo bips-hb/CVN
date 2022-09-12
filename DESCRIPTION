@@ -16,6 +16,7 @@ Depends:
 	Matrix,
 	huge, 
 	glasso,
+	CVXR,
 	crayon
 LinkingTo: Rcpp
 License: GPL-3

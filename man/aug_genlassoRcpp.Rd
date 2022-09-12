@@ -6,13 +6,6 @@
 \usage{
 aug_genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps)
 }
-\arguments{
-\item{reports}{A binary matrix. Each row is a report}
-
-\item{n_drugs}{The number of drugs}
-
-\item{n_events}{The number of events}
-}
 \value{
 The estimated vector \eqn{\hat{\beta}}
 }
