@@ -5,9 +5,9 @@ library(microbenchmark)
 library(glmnet)
 
 # trial for new generalized LASSO estimation
-m <- 100 # number of graphs
+m <- 4 # number of graphs
 
-repetitions = 1; 
+repetitions = 10; 
 
 bf = matrix(rep(0, repetitions*m), nrow = repetitions)
 bh = matrix(rep(0, repetitions*m), nrow = repetitions)
@@ -15,7 +15,7 @@ bg = matrix(rep(0, repetitions*m), nrow = repetitions)
 
 for (r in 1:repetitions) { 
 
-lambda1 = 1
+lambda1 = .2
 lambda2 = 1
 global_rho = 1
 rho = 1
@@ -23,17 +23,17 @@ eta1 = lambda1 / global_rho
 eta2 = lambda2 / global_rho
 a = 1000
 
-#W <- matrix(1, m, m)
-  # e = 0.2
-  # W <- matrix(c(0, 1, e, e,
-  #               1, 0, 1, e,
-  #               e, 1, 0, 1,
-  #               e, e, 1, 0), ncol = 4 )
-W <- matrix(runif(m*m), ncol = m)
-W <- W %*% t(W) 
-W <- W / max(W) 
-W <- W 
-diag(W) <- 0
+W <- matrix(1, m, m)
+   e = 0
+   W <- matrix(c(0, 1, e, e,
+                 1, 0, 1, e,
+                 e, 1, 0, 1,
+                 e, e, 1, 0), ncol = 4 )
+# W <- matrix(runif(m*m), ncol = m)
+# W <- W %*% t(W) 
+# W <- W / max(W) 
+# W <- W 
+# diag(W) <- 0
 #W <- matrix(rbinom(m*m, 1, .5), ncol = m) * matrix(runif(m*m), ncol = m)
 #W <- matrix(rbinom(m*m, 1, .5), ncol = m)
 #W <- W %*% t(W) 
@@ -214,6 +214,13 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
   
   beta_new
 }
+
+D
+
+a <- matrix_A_inner_ADMM(m, D) + m
+A <- diag(a, m)
+R <- t(D) %*% D
+is.positive.semi.definite(A - R)
 
 f = function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = a, max_iter = 1000, old = FALSE)}
 

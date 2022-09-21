@@ -37,7 +37,7 @@ matrix_A_inner_ADMM <- function(m, D) {
   objective <- CVXR::Minimize(abs(sum(A)) / m)
   
   # constraints:
-  R <- -t(D) %>% D
+  R <- t(D) %*% D
   
   constraint1 <- A == diag(a,m) # A must be a diagonal matrix with fixed a
   constraint2 <- A %>>% R       # A - D'D must be positive semidefinite 
