@@ -29,31 +29,19 @@
 #' @export
 matrix_A_inner_ADMM <- function(m, D) { 
   
-  # create the variables
-  A <- CVXR::Variable(m, m) 
+  # value on the diagonal
   a <- CVXR::Variable(1) 
   
   # objective function
-  objective <- CVXR::Minimize(abs(sum(A)) / m)
+  objective <- CVXR::Minimize(a)
   
-  # constraints:
-  R <- t(D) %*% D
-  
-  #Q <- diag(a,m)
-  #print(Q)
-  
-  #constraint1 <- A == Q # A must be a diagonal matrix with fixed a
-  #constraint2 <- A %>>% R       # A - D'D must be positive semidefinite 
-  
-  #constraints <- lapply(1:m, function(i) A[i,i] == a)
-  #constraints <- append(constraints, constraint2)
+  # constraint
+  R <- CVXR::diag(a, m, m) - t(D) %*% D # R = A - D'D 
+  constraint <- {R %>>% 0} # A - D'D must be positive semidefinite 
+
   
   # define the problem using CVXR:
-  
-  problem <- CVXR::Problem(objective, constraints = list(A == diag(a,m), A %>>% R))
-  #problem <- CVXR::Problem(objective, constraints = list(constraint1, constraint2))
-  #problem <- CVXR::Problem(objective, constraints = constraints)
-  
+  problem <- CVXR::Problem(objective, constraints = list(constraint))
   
   # solve
   solution <- CVXR::solve(problem, solver = "SCS")

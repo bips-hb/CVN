@@ -27,23 +27,20 @@ CVN::matrix_A_inner_ADMM(m, D)
 
 
 test <- function(m = 5, D) { 
-  # create the variables
-  A <- CVXR::Variable(m, m) 
+  # create the variable
   a <- CVXR::Variable(1) 
   
   # objective function
-  objective <- CVXR::Minimize(abs(sum(A)) / m)
+  objective <- CVXR::Minimize(a)
   
   # constraints:
-  R <- t(D) %*% D
+  R <- CVXR::diag(a, m, m) - t(D) %*% D
   
-  #constraint1 <- A == diag(a,m) # A must be a diagonal matrix with fixed a
-  #constraint2 <- A %>>% R       # A - D'D must be positive semidefinite 
+  constraint <- {R %>>% 0} # diag(a,m) %>>% R      # A - D'D must be positive semidefinite 
   
   # define the problem using CVXR:
-  problem <- CVXR::Problem(objective, constraints = list(A == diag(a,m), A %>>% R))
+  problem <- CVXR::Problem(objective, constraints = list(constraint))
   #problem <- CVXR::Problem(objective, constraints = constraints)
-  
   
   # solve
   solution <- CVXR::solve(problem, solver = "SCS")

@@ -8,15 +8,16 @@ Description: A package for inferring high-dimensional
   Gaussian graphical networks that change with 
   multiple discrete covariates
 Imports: 
+  CVXR
 Depends: 
 	R (>= 4.2.0), 
+	CVXR,
 	Rcpp, 
 	parallel,
 	genlasso,
 	Matrix,
 	huge, 
 	glasso,
-	CVXR,
 	crayon
 LinkingTo: Rcpp
 License: GPL-3
