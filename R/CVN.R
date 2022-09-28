@@ -12,7 +12,7 @@
 #' 
 #' @param data A list with matrices. The number of columns should be the 
 #'                 same for each matrix. Number of observations can differ
-#' @param W The \eqn{(m \times m)}-dimensional upper-triangular 
+#' @param W The \eqn{(m \times m)}-dimensional symmetric 
 #'          weight matrix \eqn{W}
 #' @param lambda1 The \eqn{\lambda_1} LASSO penalty term 
 #' @param lambda2 The \eqn{\lambda_2} global smoothing parameter 

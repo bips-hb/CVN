@@ -64,6 +64,10 @@ check_correctness_input <- function(raw_data, W, lambda1, lambda2, rho) {
     stop("The values in the weight matrix must lie between in the interval [0,1]") 
   }
   
+  if (!isSymmetric(W)) { 
+    stop("The weight matrix W has to be symmetric") 
+  }
+  
   if (length(lambda1) < 1) { 
     stop("lambda1 cannot be an empty vector") 
   }
