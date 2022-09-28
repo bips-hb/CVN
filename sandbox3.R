@@ -16,12 +16,12 @@ grid3 <- create_grid_of_graphs(starting_graph = starting_graph,
 
 data <- CVNSim::generate_raw_data_grid(100, grid3)
 
-lambda1 = seq(.1,3, length.out = 2)
-lambda2 = seq(.1,3, length.out = 2)
+lambda1 = seq(.1,3, length.out = 4)
+lambda2 = seq(.1,3, length.out = 4)
 
 cvn <- CVN::CVN(data = data, W, lambda1 = lambda1, lambda2 = lambda2, 
                 epsilon = 10^-2, maxiter = 1000, 
-                verbose = TRUE, warmstart = T, use_previous_version = FALSE)
+                  verbose = TRUE, warmstart = T, use_previous_estimate = TRUE)
 
 
 

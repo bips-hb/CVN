@@ -51,6 +51,8 @@ updateZ <- function(m, p, Theta, Y, D, n_cores = 1) {
     out <- genlasso::genlasso(y, diag(1, m), D, minlam = 1)
     beta <- coef(out, lambda = 1)$beta
 
+    #beta <- aug_genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps) 
+    
     #beta[abs(beta) <= 1e-10] <- 0
     # 
     #print(beta)

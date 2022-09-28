@@ -5,7 +5,6 @@
 #' The smoothing between the graphs is specified by the \eqn{(m \times m)}-dimensional
 #' weight matrix \eqn{W}. The function returns the estimated precision matrices 
 #' for each graph. 
-#' 
 #' @section Reusing Estimates: When estimating the graph for different values of 
 #' \eqn{\lambda_1} and \eqn{\lambda_2}, we use the graph estimated (if available) 
 #' for other \eqn{\lambda_1} and \eqn{\lambda_2} values closest to them. 
@@ -14,9 +13,13 @@
 #'                 same for each matrix. Number of observations can differ
 #' @param W The \eqn{(m \times m)}-dimensional symmetric 
 #'          weight matrix \eqn{W}
-#' @param lambda1 The \eqn{\lambda_1} LASSO penalty term 
-#' @param lambda2 The \eqn{\lambda_2} global smoothing parameter 
-#' @param rho The \eqn{\rho} ADMM's penalty parameter (Default: \code{1})
+#' @param lambda1 Vector with different \eqn{\lambda_1} LASSO penalty terms 
+#'                (Default: \code{1:10})
+#' @param lambda2 Vector with different \eqn{\lambda_2} global smoothing parameter values 
+#'                (Default: \code{1:10})
+#' @param global_rho The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})
+#' @param rho_genlasso The \eqn{\rho} penalty parameter for the ADMM algorithm 
+#'                used to solve the (Default: \code{1})
 #' @param epsilon If the relative difference between two update steps is 
 #'                smaller than \eqn{\epsilon}, the algorithm stops. 
 #'                See \code{\link{relative_difference_precision_matrices}}
@@ -29,6 +32,11 @@
 #'                   centered (Default: \code{FALSE})
 #' @param warmstart If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
 #'                  the individual graphs first (Default: \code{FALSE})
+#' @param use_previous_estimate If \code{TRUE}, the estimated graph found for the previous 
+#'                  values of \eqn{\lambda_1} and \eqn{\lambda_2} is used as starting point
+#'                  for the next estimate (Default: \code{TRUE})
+#' @param use_genlasso If \code{TRUE}, use the \code{genlasso} package in 
+#'                  the \eqn{Z}-update step, rather then the ADMM (Default: \code{FALSE})
 #' @param verbose Verbose (Default: \code{FALSE}) 
 #' 
 #' @return A \code{CVN} object; a list with entries
@@ -54,17 +62,18 @@
 #'   \item{\code{truncate}}{Truncation value for \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
 #'   
 #' @export
-# TODO: change lambda1 and lambda2 to a grid!
-CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1), 
-                rho = 1,
+CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10, 
+                global_rho = 1,
+                rho_genlasso = 1,
                 epsilon = 10^(-5),
                 maxiter = 100, 
                 n_cores = 1, 
                 truncate = 1e-5, 
                 normalized = FALSE, 
                 warmstart = FALSE, 
-                verbose = FALSE, 
-                use_previous_version = FALSE) { 
+                use_previous_estimate = TRUE,
+                use_genlasso = FALSE, 
+                verbose = FALSE) { 
   
   # Check correctness input -------------------------------
   CVN::check_correctness_input(data, W, lambda1, lambda2, rho)
@@ -84,16 +93,16 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
   Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
   Y <- rep(list(matrix(0, nrow = p, ncol = p)), m)
   
-  # if warmstart, the individual graphs are first estimated using # GLASSO.
+  # if warmstart, the individual graphs are first estimated using the GLASSO.
   if (warmstart) { 
     
     if (verbose) { 
       cat("Warm start...\n") 
     }
     
-    # We use the first # lambda1 value
+    # We use the first lambda1 value in the vector
     Theta <- lapply(Sigma, function(S) { 
-       est <- glasso::glasso(s = S,rho = lambda1[1])
+       est <- glasso::glasso(s = S, rho = lambda1[1])
        est$w
     })
   }  else { 
@@ -103,8 +112,8 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
   # initialize results list ------------
   
   global_res <- list(
-    Theta = list(), 
-    adj_matrices = list(),
+    Theta = list(),          
+    adj_matrices = list(),   
     Sigma    = Sigma,
     m        = m, 
     p        = p, 
@@ -134,11 +143,11 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
     
     # Initialize variables for the algorithm -----------------
     # Generate matrix D for the generalized LASSO 
-    D <- CVN::create_matrix_D(W, res$lambda1[i], res$lambda2[i], rho)
+    D <- CVN::create_matrix_D(W, res$lambda1[i], res$lambda2[i], global_rho)
     
-    # Estimate the graphs ------------------------------------
-    est <- CVN::estimate(Theta, Z, Y, D, m, p, Sigma, n_obs, rho, 
-                         epsilon, maxiter, truncate, verbose = verbose)  
+    # Estimate the graphs -------------------------------------
+    est <- CVN::estimate(Theta, Z, Y, D, m, p, Sigma, n_obs, global_rho, rho_genlasso, 
+                         epsilon, maxiter, truncate, use_genlasso, verbose = verbose)  
     
     # Process results -----------------------------------------
     global_res$Theta[[i]] <- est$Z
@@ -154,23 +163,25 @@ CVN <- function(data, W, lambda1 = c(1), lambda2 = c(1),
                            Sigma = Sigma, 
                            n_obs = n_obs) 
     
-    if (use_previous_version) { 
+    if (!use_previous_estimate) { 
       Theta <- lapply(Sigma, function(S) diag(1/diag(S)))
-      Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
-      Y <- rep(list(matrix(0, nrow = p, ncol = p)), m)
+      Z     <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
+      Y     <- rep(list(matrix(0, nrow = p, ncol = p)), m)
     } else { 
-      # TODO can be even faster by using the estimates of the graphs with the closests
-      # lambda1, lambda2 values
       Theta <- est$Theta
       Z     <- est$Z
       Y     <- est$Y
     }
   }
+  
+  if (verbose) { 
+    cat(sprintf("\n(100%%)\n")) 
+  }
      
   # Collect all the results & input ---------------------------
   global_res$results  <- res                  
   
-  class(global_res) <- "CVN"
+  #class(global_res) <- "CVN" # TODO
   
   return(global_res)
 }

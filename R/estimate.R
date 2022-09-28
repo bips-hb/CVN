@@ -1,7 +1,9 @@
 
 
 #' @export 
-estimate <- function(Theta0, Z0, Y0, D, m, p, Sigma, n_obs, rho, epsilon, maxiter, truncate, verbose = FALSE) { 
+estimate <- function(Theta0, Z0, Y0, D, m, p, Sigma, n_obs, 
+                     global_rho, rho_genlasso, epsilon, 
+                     maxiter, truncate, use_genlasso, verbose = FALSE) { 
   
   # keep track whether the algorithm finished, either by 
   # whether the stopping condition was met, or the maximum
@@ -25,7 +27,7 @@ estimate <- function(Theta0, Z0, Y0, D, m, p, Sigma, n_obs, rho, epsilon, maxite
     Y <- CVN::updateY(Theta, Z, Y) 
     
     # Update Theta ---------------------------------
-    Temp <- CVN::updateTheta(m, Z, Y, Sigma, n_obs, rho)
+    Temp <- CVN::updateTheta(m, Z, Y, Sigma, n_obs, global_rho)
     Theta_previous <- Theta 
     Theta <- Temp
     

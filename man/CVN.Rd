@@ -8,17 +8,19 @@
 CVN(
   data,
   W,
-  lambda1 = c(1),
-  lambda2 = c(1),
-  rho = 1,
+  lambda1 = 1:10,
+  lambda2 = 1:10,
+  global_rho = 1,
+  rho_genlasso = 1,
   epsilon = 10^(-5),
   maxiter = 100,
   n_cores = 1,
   truncate = 1e-05,
   normalized = FALSE,
   warmstart = FALSE,
-  verbose = FALSE,
-  use_previous_version = FALSE
+  use_previous_estimate = TRUE,
+  use_genlasso = FALSE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -28,11 +30,16 @@ same for each matrix. Number of observations can differ}
 \item{W}{The \eqn{(m \times m)}-dimensional symmetric 
 weight matrix \eqn{W}}
 
-\item{lambda1}{The \eqn{\lambda_1} LASSO penalty term}
+\item{lambda1}{Vector with different \eqn{\lambda_1} LASSO penalty terms 
+(Default: \code{1:10})}
 
-\item{lambda2}{The \eqn{\lambda_2} global smoothing parameter}
+\item{lambda2}{Vector with different \eqn{\lambda_2} global smoothing parameter values 
+(Default: \code{1:10})}
 
-\item{rho}{The \eqn{\rho} ADMM's penalty parameter (Default: \code{1})}
+\item{global_rho}{The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})}
+
+\item{rho_genlasso}{The \eqn{\rho} penalty parameter for the ADMM algorithm 
+used to solve the (Default: \code{1})}
 
 \item{epsilon}{If the relative difference between two update steps is 
 smaller than \eqn{\epsilon}, the algorithm stops. 
@@ -51,6 +58,13 @@ centered (Default: \code{FALSE})}
 
 \item{warmstart}{If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
 the individual graphs first (Default: \code{FALSE})}
+
+\item{use_previous_estimate}{If \code{TRUE}, the estimated graph found for the previous 
+values of \eqn{\lambda_1} and \eqn{\lambda_2} is used as starting point
+for the next estimate (Default: \code{TRUE})}
+
+\item{use_genlasso}{If \code{TRUE}, use the \code{genlasso} package in 
+the \eqn{Z}-update step, rather then the ADMM (Default: \code{FALSE})}
 
 \item{verbose}{Verbose (Default: \code{FALSE})}
 }
