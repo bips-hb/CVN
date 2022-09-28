@@ -9,7 +9,7 @@ Description: A package for inferring high-dimensional
   multiple discrete covariates
 Imports: 
 Depends: 
-	R (>= 3.2.3), 
+	R (>= 4.2.0), 
 	Rcpp, 
 	parallel,
 	genlasso,

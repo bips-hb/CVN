@@ -19,6 +19,8 @@ c <- nrow(D)
 
 -t(D) %*% D
 
+matrix_A_inner_ADMM(m, D)
+
 a = n1^2 + 3*n2^2
 
 y <- rnorm(m, mean = 0, sd = 1)
