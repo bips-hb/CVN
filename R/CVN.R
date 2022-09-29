@@ -150,8 +150,8 @@ CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10,
     a <- CVN::matrix_A_inner_ADMM(m, D) + 1
     
     # Estimate the graphs -------------------------------------
-    eta1 <- lambda1[i] / rho 
-    eta2 <- lambda2[i] / rho 
+    eta1 <- res$lambda1[i] / rho 
+    eta2 <- res$lambda2[i] / rho 
     est <- CVN::estimate(m, p, nrow(D), Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
                          rho, rho_genlasso, 
                          eps, eps_genlasso, 

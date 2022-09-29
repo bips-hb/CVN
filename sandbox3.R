@@ -5,7 +5,7 @@ library(profvis)
 library(CVN)
 
 p <- 10
-W = matrix(1, 9, 9)
+W = matrix(.5, 9, 9)
 
 starting_graph <- CVNSim::generate_graph(p, type = "random", probability = .5)
 grid3 <- create_grid_of_graphs(starting_graph = starting_graph, 
@@ -15,27 +15,34 @@ grid3 <- create_grid_of_graphs(starting_graph = starting_graph,
                       n_edges_removed_y = 2,
                       verbose = TRUE)
 
-data <- CVNSim::generate_raw_data_grid(1000, grid3)
+data <- CVNSim::generate_raw_data_grid(100, grid3)
 
-lambda1 = 2 #seq(.1,3, length.out = 4)
-lambda2 = .1 #seq(.1,3, length.out = 4)
+lambda1 = c(1,2) #seq(.1,20, length.out = 10)
+lambda2 = c(1,2) #seq(.1,20, length.out = 10)
 
+microbenchmark(f(), g())
+tic()
 cvn <- CVN::CVN(data = data, W, lambda1 = lambda1, lambda2 = lambda2, 
                 eps = 10^-2, maxiter = 1000, 
                   verbose = TRUE, warmstart = T, use_previous_estimate = F, 
                   use_genlasso_package = T)
+toc()
 
 genl <- cvn$adj_matrices[[1]][[9]]
 
-cvn <- CVN::CVN(data = data, W, lambda1 = lambda1[1], lambda2 = lambda2[1], 
+tic()
+cvn <- CVN::CVN(data = data, W, lambda1 = lambda1, lambda2 = lambda2, 
                 eps = 10^-2, maxiter = 1000, 
                 verbose = TRUE, warmstart = T, use_previous_estimate = F, 
                 use_genlasso_package = F)
+toc()
 
 cpp <- cvn$adj_matrices[[1]][[9]]
 
+g = grid3[[2]]$adj_matrix
+cvn$adj_matrices[[2]][[2]]
 
-g = grid3[[9]]$adj_matrix
+
 
 cvn1 <- CVN::CVN(data = data, W, lambda1 = lambda1, lambda2 = lambda2, 
                  epsilon = 10^-3, maxiter = 1000, 
