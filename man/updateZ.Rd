@@ -4,7 +4,21 @@
 \alias{updateZ}
 \title{The \eqn{Z}-update step for the ADMM}
 \usage{
-updateZ(m, p, Theta, Y, D, n_cores = 1)
+updateZ(
+  m,
+  p,
+  nrow_D,
+  Theta,
+  Y,
+  W,
+  eta1,
+  eta2,
+  a,
+  rho_genlasso,
+  maxiter_genlasso,
+  eps_genlasso,
+  use_genlasso_package
+)
 }
 \arguments{
 \item{m}{Number of graphs}

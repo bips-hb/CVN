@@ -14,7 +14,10 @@
 #'
 #' @seealso \code{\link{create_matrix_D}}        
 #' @export
-updateZ <- function(m, p, Theta, Y, D, n_cores = 1) { 
+updateZ <- function(m, p, nrow_D, 
+                    Theta, Y, W, eta1, eta2, a, 
+                    rho_genlasso, maxiter_genlasso, eps_genlasso, 
+                    use_genlasso_package) { 
   
   # Initialize the Z matrices and immediately update the diagonal 
   # entries given Theta and Y
@@ -25,7 +28,7 @@ updateZ <- function(m, p, Theta, Y, D, n_cores = 1) {
   # individual entry (s,t)  by solving a generalized LASSO problem. 
   # In addition, we use the fact that these matrices are symmetric and 
   # we, therefore, need not solve the entire matrix, but only the upper 
-  # diagonal. 
+  # diagonal
   B <- lapply(1:m, function(i) { Theta[[i]] + Y[[i]] })
   
   # go over all unique pairs 
@@ -48,29 +51,22 @@ updateZ <- function(m, p, Theta, Y, D, n_cores = 1) {
     }
     
     # apply the generalized LASSO 
-    out <- genlasso::genlasso(y, diag(1, m), D, minlam = 1)
-    beta <- coef(out, lambda = 1)$beta
-
-    #beta <- aug_genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps) 
+    if (use_genlasso_package) { 
+      D <- CVN::create_matrix_D(W, eta1, eta2) 
+      out <- genlasso::genlasso(y, diag(1, m), D, minlam = 1)
+      beta <- coef(out, lambda = 1)$beta
+    } else {
+      beta <- aug_genlassoRcpp(y, W, m, nrow_D, eta1, eta2, a,
+                               rho_genlasso, maxiter_genlasso,
+                               eps_genlasso)
+    }
     
-    #beta[abs(beta) <= 1e-10] <- 0
-    # 
-    #print(beta)
-    # 
-    # est = optim(par = rep(0,r+m), fn, method = "L-BFGS-B", lower = rep(-1,r+m), upper = rep(1,r+m), y = y, D = D)
-    # b = y - t(D) %*% est$par
-    # #
-    # b[abs(b) <= 1e-10] <- 0
-    # #print("value b")
-    # #print(b)
-    # beta <- b
-
     # update the matrix Z (use that it is symmetric)
     for (i in 1:m) { 
       Z[[i]][s, t] <- beta[i] 
       Z[[i]][t, s] <- beta[i] 
     }
-  }#)
+  }
   
   return(Z)
 }

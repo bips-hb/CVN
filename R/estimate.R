@@ -1,33 +1,35 @@
 
 
 #' @export 
-estimate <- function(Theta0, Z0, Y0, D, m, p, Sigma, n_obs, 
-                     global_rho, rho_genlasso, epsilon, 
-                     maxiter, truncate, use_genlasso, verbose = FALSE) { 
+estimate <- function(m, p, nrow_D, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs, 
+                     rho, rho_genlasso, eps, eps_genlasso,
+                     maxiter, maxiter_genlasso, truncate, 
+                     use_genlasso_package, verbose = FALSE) { 
   
   # keep track whether the algorithm finished, either by 
   # whether the stopping condition was met, or the maximum
   # number of iterations was reached
-  converged <- FALSE 
-  iter <- 1 
+  converged  <- FALSE 
+  iter       <- 1 
   difference <- 1 # stores the discrepancy 
   
   # Initialize a Temp variable for Theta
-  Temp <- Theta0
+  Temp  <- Theta0
   Theta <- Theta0
-  Z <- Z0
-  Y <- Y0
+  Z     <- Z0
+  Y     <- Y0
   
   repeat{
     
     # Update Z -------------------------------------
-    Z <- CVN::updateZ(m, p, Theta, Y, D) 
+    Z <- CVN::updateZ(m, p, nrow_D, Theta, Y, W, eta1, 
+                      eta2, a, rho_genlasso, maxiter_genlasso, eps_genlasso, use_genlasso_package) 
     
     # Update Y -------------------------------------
     Y <- CVN::updateY(Theta, Z, Y) 
     
     # Update Theta ---------------------------------
-    Temp <- CVN::updateTheta(m, Z, Y, Sigma, n_obs, global_rho)
+    Temp <- CVN::updateTheta(m, Z, Y, Sigma, n_obs, rho)
     Theta_previous <- Theta 
     Theta <- Temp
     
@@ -41,7 +43,7 @@ estimate <- function(Theta0, Z0, Y0, D, m, p, Sigma, n_obs,
       cat(sprintf("iteration %d  |  %f\n", iter, difference)) 
     }
     
-    if (difference < epsilon) { 
+    if (difference < eps) { 
       converged <- TRUE
       iter <- iter + 1
       break() 

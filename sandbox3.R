@@ -3,7 +3,7 @@ library(tictoc)
 library(microbenchmark)
 library(profvis)
 
-p <- 5
+p <- 10
 W = matrix(1, 9, 9)
 
 starting_graph <- CVNSim::generate_graph(p, type = "random", probability = .5)
@@ -20,8 +20,9 @@ lambda1 = seq(.1,3, length.out = 4)
 lambda2 = seq(.1,3, length.out = 4)
 
 cvn <- CVN::CVN(data = data, W, lambda1 = lambda1, lambda2 = lambda2, 
-                epsilon = 10^-2, maxiter = 1000, 
-                  verbose = TRUE, warmstart = T, use_previous_estimate = TRUE)
+                eps = 10^-2, maxiter = 1000, 
+                  verbose = TRUE, warmstart = T, use_previous_estimate = F, 
+                  use_genlasso_package = F)
 
 
 

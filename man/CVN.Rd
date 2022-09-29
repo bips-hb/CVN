@@ -10,16 +10,18 @@ CVN(
   W,
   lambda1 = 1:10,
   lambda2 = 1:10,
-  global_rho = 1,
+  rho = 1,
   rho_genlasso = 1,
-  epsilon = 10^(-5),
+  eps = 1e-05,
+  eps_genlasso = 1e-05,
   maxiter = 100,
+  maxiter_genlasso = 100,
   n_cores = 1,
   truncate = 1e-05,
   normalized = FALSE,
   warmstart = FALSE,
   use_previous_estimate = TRUE,
-  use_genlasso = FALSE,
+  use_genlasso_package = FALSE,
   verbose = FALSE
 )
 }
@@ -36,15 +38,10 @@ weight matrix \eqn{W}}
 \item{lambda2}{Vector with different \eqn{\lambda_2} global smoothing parameter values 
 (Default: \code{1:10})}
 
-\item{global_rho}{The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})}
+\item{rho}{The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})}
 
 \item{rho_genlasso}{The \eqn{\rho} penalty parameter for the ADMM algorithm 
 used to solve the (Default: \code{1})}
-
-\item{epsilon}{If the relative difference between two update steps is 
-smaller than \eqn{\epsilon}, the algorithm stops. 
-See \code{\link{relative_difference_precision_matrices}}
-(Default: \code{1e-5})}
 
 \item{maxiter}{Maximum number of iterations (Default: \code{100})}
 
@@ -63,10 +60,15 @@ the individual graphs first (Default: \code{FALSE})}
 values of \eqn{\lambda_1} and \eqn{\lambda_2} is used as starting point
 for the next estimate (Default: \code{TRUE})}
 
+\item{verbose}{Verbose (Default: \code{FALSE})}
+
+\item{epsilon}{If the relative difference between two update steps is 
+smaller than \eqn{\epsilon}, the algorithm stops. 
+See \code{\link{relative_difference_precision_matrices}}
+(Default: \code{1e-5})}
+
 \item{use_genlasso}{If \code{TRUE}, use the \code{genlasso} package in 
 the \eqn{Z}-update step, rather then the ADMM (Default: \code{FALSE})}
-
-\item{verbose}{Verbose (Default: \code{FALSE})}
 }
 \value{
 A \code{CVN} object; a list with entries

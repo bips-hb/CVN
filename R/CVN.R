@@ -17,7 +17,7 @@
 #'                (Default: \code{1:10})
 #' @param lambda2 Vector with different \eqn{\lambda_2} global smoothing parameter values 
 #'                (Default: \code{1:10})
-#' @param global_rho The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})
+#' @param rho The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})
 #' @param rho_genlasso The \eqn{\rho} penalty parameter for the ADMM algorithm 
 #'                used to solve the (Default: \code{1})
 #' @param epsilon If the relative difference between two update steps is 
@@ -63,16 +63,18 @@
 #'   
 #' @export
 CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10, 
-                global_rho = 1,
+                rho = 1,
                 rho_genlasso = 1,
-                epsilon = 10^(-5),
+                eps = 1e-5,
+                eps_genlasso = 1e-5, 
                 maxiter = 100, 
+                maxiter_genlasso = 100, 
                 n_cores = 1, 
                 truncate = 1e-5, 
                 normalized = FALSE, 
                 warmstart = FALSE, 
                 use_previous_estimate = TRUE,
-                use_genlasso = FALSE, 
+                use_genlasso_package = FALSE, 
                 verbose = FALSE) { 
   
   # Check correctness input -------------------------------
@@ -110,9 +112,8 @@ CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10,
   }
   
   # initialize results list ------------
-  
   global_res <- list(
-    Theta = list(),          
+    Theta    = list(),          
     adj_matrices = list(),   
     Sigma    = Sigma,
     m        = m, 
@@ -122,7 +123,7 @@ CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10,
     normalized = normalized,
     W        = W, 
     rho      = rho, 
-    epsilon  = epsilon,
+    eps      = eps,
     truncate = truncate
   )
   
@@ -143,11 +144,18 @@ CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10,
     
     # Initialize variables for the algorithm -----------------
     # Generate matrix D for the generalized LASSO 
-    D <- CVN::create_matrix_D(W, res$lambda1[i], res$lambda2[i], global_rho)
+    D <- CVN::create_matrix_D(W, res$lambda1[i], res$lambda2[i], rho)
+    
+    a <- CVN::matrix_A_inner_ADMM(m, D) + 1
     
     # Estimate the graphs -------------------------------------
-    est <- CVN::estimate(Theta, Z, Y, D, m, p, Sigma, n_obs, global_rho, rho_genlasso, 
-                         epsilon, maxiter, truncate, use_genlasso, verbose = verbose)  
+    eta1 <- lambda1[i] / rho 
+    eta2 <- lambda2[i] / rho 
+    est <- CVN::estimate(m, p, nrow(D), Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
+                         rho, rho_genlasso, 
+                         eps, eps_genlasso, 
+                         maxiter, maxiter_genlasso, truncate = truncate, 
+                         use_genlasso_package = use_genlasso_package, verbose = verbose)  
     
     # Process results -----------------------------------------
     global_res$Theta[[i]] <- est$Z
