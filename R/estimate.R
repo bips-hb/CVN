@@ -4,6 +4,7 @@
 estimate <- function(m, p, nrow_D, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs, 
                      rho, rho_genlasso, eps, eps_genlasso,
                      maxiter, maxiter_genlasso, truncate, 
+                     truncate_genlasso, 
                      use_genlasso_package, verbose = FALSE) { 
   
   # keep track whether the algorithm finished, either by 
@@ -22,8 +23,10 @@ estimate <- function(m, p, nrow_D, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs,
   repeat{
     
     # Update Z -------------------------------------
-    Z <- CVN::updateZ(m, p, nrow_D, Theta, Y, W, eta1, 
-                      eta2, a, rho_genlasso, maxiter_genlasso, eps_genlasso, use_genlasso_package) 
+    Z <- CVN::updateZ(m, p, nrow_D, Theta, Y, W, 
+                      eta1, eta2, a, 
+                      rho_genlasso, maxiter_genlasso, eps_genlasso, 
+                      truncate_genlasso, use_genlasso_package) 
     
     # Update Y -------------------------------------
     Y <- CVN::updateY(Theta, Z, Y) 

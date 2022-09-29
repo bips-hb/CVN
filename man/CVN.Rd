@@ -12,12 +12,13 @@ CVN(
   lambda2 = 1:10,
   rho = 1,
   rho_genlasso = 1,
-  eps = 1e-05,
-  eps_genlasso = 1e-05,
+  eps = 1e-07,
+  eps_genlasso = 1e-12,
   maxiter = 100,
   maxiter_genlasso = 100,
-  n_cores = 1,
   truncate = 1e-05,
+  truncate_genlasso = 1e-04,
+  n_cores = 1,
   normalized = FALSE,
   warmstart = FALSE,
   use_previous_estimate = TRUE,
@@ -45,10 +46,10 @@ used to solve the (Default: \code{1})}
 
 \item{maxiter}{Maximum number of iterations (Default: \code{100})}
 
-\item{n_cores}{Number of cores used (Default: \code{1})}
-
 \item{truncate}{All values of the final \eqn{\hat{\Theta}_i}'s below \code{truncate} will be 
 set to \code{0}. (Default: \code{1e-5})}
+
+\item{n_cores}{Number of cores used (Default: \code{1})}
 
 \item{normalized}{Data is normalized if \code{TRUE}. Otherwise the data is only
 centered (Default: \code{FALSE})}

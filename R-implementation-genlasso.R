@@ -1,4 +1,4 @@
-altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_iter = 1000, eps = 10^-10, old = TRUE) { 
+altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_iter = 1000, eps = 10^-10, old = TRUE, truncate = 10^-5) { 
   
   m <- length(y)
   mm <- nrow(D)
@@ -104,7 +104,7 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
     }
     
     beta_new <- Cb*beta_old + Cy - x 
-    
+    #beta_new <- beta_old + (y - delta) / (rho*diagA)
     #  c*(rho*a*beta_old + y - x)
     
     #alpha_new <- alpha_old1 + rho * D %*% beta_new
@@ -113,6 +113,12 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
     
     for (i in 1:m) { 
       alpha_new[i] <- alpha_old1[i] + rho * eta1 * beta_new[i]  
+      if (alpha_new[i] > 1) { 
+        alpha_new[i] = 1   
+      } 
+      if (alpha_new[i] < -1) { 
+        alpha_new[i] = -1   
+      } 
     }
     
     k = m+1
@@ -125,22 +131,22 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
         alpha_new[k] = alpha_old1[k] + rho * eta2*W[i,j]*(beta_new[i] - beta_new[j]) ; 
         #cat(sprintf("old: %g\t new: %g\t W: %g\teta2: %g\n", alpha_old1[k], alpha_new[k], W[i,j], eta2))
         if (alpha_new[k] > 1) { 
-          alpha_new[k] = 1 ;  
+          alpha_new[k] = 1   
         } 
         if (alpha_new[k] < -1) { 
-          alpha_new[k] = -1 ;  
+          alpha_new[k] = -1   
         } 
         k <- k+1  
       }
     }
     
-    alpha_new <- pmax(pmin(alpha_new, 1), -1)
+    #alpha_new <- pmax(pmin(alpha_new, 1), -1)
     
     #print(alpha_new) 
     #print(alpha_old1) 
     #print(alpha_old2) 
     
-    if (sum(abs(beta_new - beta_old)) <= 10^-10 || iter >= max_iter) { 
+    if (sum(abs(beta_new - beta_old)) <= eps || iter >= max_iter) { 
       break 
     }
     
@@ -161,7 +167,7 @@ altZ <- function(y, D, W, lambda1, lambda2, global_rho, diagA = 2, rho = 1, max_
   
   #print(iter)
   beta_new = sapply(beta_new, function(x) 
-    if (abs(x) < 10^-7) {
+    if (abs(x) < truncate) {
       return(0)
     } else {
       return(x)

@@ -17,6 +17,7 @@ updateZ(
   rho_genlasso,
   maxiter_genlasso,
   eps_genlasso,
+  truncate_genlasso,
   use_genlasso_package
 )
 }

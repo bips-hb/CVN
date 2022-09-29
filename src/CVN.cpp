@@ -21,7 +21,7 @@ using namespace Rcpp;
 //' 
 //' @seealso \code{\link{convertRawReports2Tables}}
 // [[Rcpp::export]]
-Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y, 
+Rcpp::DoubleVector aug_genlassoRcpp(Rcpp::DoubleVector y, 
                                 const Rcpp::NumericMatrix& W, 
                                 const int m, 
                                 const int c, 
@@ -30,7 +30,8 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
                                 double a, 
                                 const double rho, 
                                 const int max_iter,
-                                const double eps) { 
+                                const double eps, 
+                                const double truncate) { 
   int i,j,k ; // indices
   
   /* some frequently used constants */
@@ -40,15 +41,15 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
   //Rf_PrintValue(W) ; 
   
   /* initialize vectors for beta-update step in the ADMM */
-  Rcpp::NumericVector beta_new (m) ; // beta^(k + 1)
-  Rcpp::NumericVector beta_old (m) ; // beta^k
-  Rcpp::NumericVector delta (m) ; // aux. vector for beta-update step
+  Rcpp::DoubleVector beta_new (m) ; // beta^(k + 1)
+  Rcpp::DoubleVector beta_old (m) ; // beta^k
+  Rcpp::DoubleVector delta (m) ; // aux. vector for beta-update step
 
   /* initialize vectors for alpha-update step in the ADMM */
-  Rcpp::NumericVector alpha_new (c) ; 
-  Rcpp::NumericVector alpha_old1 (c) ;
-  Rcpp::NumericVector alpha_old2 (c) ;
-  Rcpp::NumericVector alpha (c) ; // used to store (2*alpha^k - alpha^(k-1))
+  Rcpp::DoubleVector alpha_new (c) ; 
+  Rcpp::DoubleVector alpha_old1 (c) ;
+  Rcpp::DoubleVector alpha_old2 (c) ;
+  Rcpp::DoubleVector alpha (c) ; // used to store (2*alpha^k - alpha^(k-1))
 
   /* Indices used for the alpha-update step */
   Rcpp::IntegerVector steps (m-1) ; 
@@ -97,7 +98,7 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
     if (diff < eps) { 
       /* Turn to zero when really close */
       for (i = 0; i < m; i ++) { 
-        if (abs(beta_new[i]) < 10e-7) { 
+        if (abs(beta_new[i]) < truncate) { 
           beta_new[i] = 0 ;  
         } 
       }
@@ -113,12 +114,12 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
     // go over all unique pairs (i,j)
     for (i = 0; i < m-1; i++) { 
       for (j = i+1; j < m; j++) { 
-        alpha_new[k] = alpha_old1[k] + rho * eta2*W(i,j)*(beta_new[i] - beta_new[j]) ; 
+        alpha_new[k] = alpha_old1[k] + rho * eta2 * W(i,j) * (beta_new[i] - beta_new[j]) ; 
         //Rprintf("k = %d\t(i,j) = (%d,%d)\tW[%d,%d] = %g\t%g --> %g\n", k, i, j, i+1, j+1, W[i,j], alpha_old1[k], alpha_new[k]) ; 
         k++; 
       }
     }
-    
+
     /* Threshold alpha. Must lie in [-1, 1] range */ 
     for (i = 0; i < c; i ++) { 
       if (alpha_new[i] > 1) { 
@@ -130,7 +131,7 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
     }
     
     /* update beta and alpha for the next iteration step */
-    beta_old = Rcpp::clone(beta_new) ; 
+    beta_old   = Rcpp::clone(beta_new) ; 
     alpha_old2 = Rcpp::clone(alpha_old1) ; 
     alpha_old1 = Rcpp::clone(alpha_new) ; 
     
@@ -139,10 +140,51 @@ Rcpp::NumericVector aug_genlassoRcpp(Rcpp::NumericVector y,
   
   /* Turn to zero when really close */
   for (i = 0; i < m; i ++) { 
-    if (abs(beta_new[i]) < 10e-7) { 
+    if (abs(beta_new[i]) < truncate) { 
       beta_new[i] = 0 ;  
     } 
   }
   
   return(beta_new) ;   
+}
+
+
+
+// [[Rcpp::export]]
+void determine_steps_Rccp(const int m) { 
+  
+  /* Indices used for the alpha-update step */
+  Rcpp::IntegerVector steps (m-1) ; 
+  steps[0] = 0 ; 
+  
+  for (int i = 1; i < (m-1); i ++) { 
+    steps[i] = m - i + steps[i - 1] ; 
+  }
+  Rf_PrintValue(steps);
+}
+
+// [[Rcpp::export]]
+void show_indices_Rcpp(const int m, const Rcpp::NumericMatrix& W) { 
+  int i,j; 
+  
+  /* Indices used for the alpha-update step */
+  Rcpp::IntegerVector steps (m-1) ; 
+  steps[0] = 0 ; 
+  
+  for (int i = 1; i < (m-1); i ++) { 
+    steps[i] = m - i + steps[i - 1] ; 
+  }
+  
+  for (i = 0; i < m; i++) { 
+    
+    for (j = i+1; j < m; j++) { 
+      Rprintf("g_%d\t+ (%d,%d): a_%d   %g\n", i, i, j, m + steps[i] + (j - i) - 1, W(i,j)) ; 
+     }
+    
+    for (j = 0; j < i; j++) { 
+      Rprintf("g_%d\t- (%d,%d): a_%d   %g\n", i, j, i, m + steps[j] - (j - i) - 1, W(j,i)) ; 
+    }
+  }
+  
+   
 }

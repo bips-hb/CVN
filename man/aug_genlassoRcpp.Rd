@@ -4,7 +4,7 @@
 \alias{aug_genlassoRcpp}
 \title{Solving Generalized LASSO with fixed \eqn{\lambda = 1}}
 \usage{
-aug_genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps)
+aug_genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
 \value{
 The estimated vector \eqn{\hat{\beta}}

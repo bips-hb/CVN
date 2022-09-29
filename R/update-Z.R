@@ -17,6 +17,7 @@
 updateZ <- function(m, p, nrow_D, 
                     Theta, Y, W, eta1, eta2, a, 
                     rho_genlasso, maxiter_genlasso, eps_genlasso, 
+                    truncate_genlasso, 
                     use_genlasso_package) { 
   
   # Initialize the Z matrices and immediately update the diagonal 
@@ -58,7 +59,7 @@ updateZ <- function(m, p, nrow_D,
     } else {
       beta <- aug_genlassoRcpp(y, W, m, nrow_D, eta1, eta2, a,
                                rho_genlasso, maxiter_genlasso,
-                               eps_genlasso)
+                               eps_genlasso, truncate_genlasso)
     }
     
     # update the matrix Z (use that it is symmetric)

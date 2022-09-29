@@ -3,6 +3,7 @@ library(CVN)
 library(matrixcalc)
 library(microbenchmark)
 library(glmnet)
+library(tictoc) 
 
 source("R-implementation-genlasso.R")
 
@@ -22,12 +23,19 @@ global_rho <- 1
 rho        <- 1
 eta1       <- lambda1 / global_rho
 eta2       <- lambda2 / global_rho
+truncate   <- 1e-5
+eps        <- 1e-12
 
 # Choose of W
-uniform_random <- F
+uniform_random <- T
 predefined <- F
+disconnected <- F
 
 W <- matrix(1, m, m) # standard fully-connected 
+
+if (disconnected) { 
+  W <- matrix(0, m, m)
+}
 
 if (uniform_random) { 
   W <- matrix(runif(m*m), ncol = m)
@@ -39,19 +47,19 @@ if (uniform_random) {
 
 if (predefined) { 
   e <- 0
-  W <- matrix(c(0, 1, e, e,
+  W <- matrix(c(0, 1, e, 1,
                 1, 0, 1, e,
                 e, 1, 0, 1,
-                e, e, 1, 0), ncol = 4)
+                1, e, 1, 0), ncol = 4)
 }
 
 # create D and determine a
 D <- create_matrix_D(W, lambda1, lambda2, rho = global_rho, remove_zero_row = FALSE)
-a <- CVN::matrix_A_inner_ADMM(m, D) + m
+a <- CVN::matrix_A_inner_ADMM(m, D) + 1
 
 # Approaches ---------------
 # R-implementation 
-r_implementation <- function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = a, max_iter = 1000, old = FALSE)}
+r_implementation <- function(){altZ(y, D, W, lambda1, lambda2, global_rho, diagA = a, max_iter = 1000, old = FALSE, eps = eps, truncate = truncate)}
 
 genlasso_implementation <-  function(){
   out <- genlasso::genlasso(y, diag(1, m), create_matrix_D(W, lambda1, lambda2, rho = global_rho, remove_zero_row = TRUE), minlam = 1)
@@ -65,10 +73,11 @@ genlasso_implementation <-  function(){
 
 cpp_implementation <- function() { 
   CVN::aug_genlasso(y, W, as.integer(m), nrow(D), eta1, eta2, a,
-                   1, 1000, 1e-6)
+                   1, 1000, eps, truncate)
 }
 
 # perform tests
+tic()
 for (r in 1:repetitions) { 
 
   y <- rnorm(m, mean = 0, sd = 1)
@@ -77,6 +86,7 @@ for (r in 1:repetitions) {
   est_cpp[r,]      <- cpp_implementation()
   est_genlasso[r,] <- genlasso_implementation()
 }
+toc()
 
 cat(sprintf("max. abs. difference ----------\n"))
 cat(sprintf("\tscript vs. cpp:\t\t%f\n",    max(abs(est_script - est_cpp))))
@@ -84,6 +94,8 @@ cat(sprintf("\tgenlasso vs. script:\t%f\n", max(abs(est_genlasso - est_script)))
 cat(sprintf("\tgenlasso vs. cpp:\t%f\n",    max(abs(est_genlasso - est_cpp))))
 
 hist(est_genlasso - est_script, breaks = 20)
+
+#print(summary(abs(est_genlasso - est_script)))
 
 #f()
 #as.vector(g())

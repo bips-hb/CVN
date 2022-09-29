@@ -20,7 +20,15 @@
 #' 26(1), 195–204. https://doi.org/10.1080/10618600.2015.1114491
 #' 
 #' @seealso \code{\link{convertRawReports2Tables}}
-aug_genlassoRcpp <- function(y, W, m, c, eta1, eta2, a, rho, max_iter, eps) {
-    .Call('_CVN_aug_genlassoRcpp', PACKAGE = 'CVN', y, W, m, c, eta1, eta2, a, rho, max_iter, eps)
+aug_genlassoRcpp <- function(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) {
+    .Call('_CVN_aug_genlassoRcpp', PACKAGE = 'CVN', y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate)
+}
+
+determine_steps_Rccp <- function(m) {
+    invisible(.Call('_CVN_determine_steps_Rccp', PACKAGE = 'CVN', m))
+}
+
+show_indices_Rcpp <- function(m, W) {
+    invisible(.Call('_CVN_show_indices_Rcpp', PACKAGE = 'CVN', m, W))
 }
 
