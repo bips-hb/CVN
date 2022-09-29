@@ -4,7 +4,7 @@
 \alias{create_matrix_D}
 \title{Create matrix \eqn{D} to be used for the Generalized LASSO}
 \usage{
-create_matrix_D(W, lambda1, lambda2, rho = 1)
+create_matrix_D(W, lambda1, lambda2, rho = 1, remove_zero_row = TRUE)
 }
 \arguments{
 \item{W}{The \eqn{(m \times m)}-dimensional upper-triangular 
@@ -15,6 +15,9 @@ weight matrix \eqn{W}}
 \item{lambda2}{The \eqn{\lambda_2} global smoothing parameter}
 
 \item{rho}{The \eqn{\rho} ADMM's penalty parameter (Default: \code{1})}
+
+\item{remove_zero_row}{If \code{TRUE}, rows with zeros are removed. 
+(Default: \code{TRUE})}
 }
 \value{
 A \eqn{((m \cdot (m+1)/2) \times m)}-dimensional matrix

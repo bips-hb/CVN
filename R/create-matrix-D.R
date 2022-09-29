@@ -9,6 +9,8 @@
 #' @param lambda1 The \eqn{\lambda_1} LASSO penalty term 
 #' @param lambda2 The \eqn{\lambda_2} global smoothing parameter 
 #' @param rho The \eqn{\rho} ADMM's penalty parameter (Default: \code{1})
+#' @param remove_zero_row If \code{TRUE}, rows with zeros are removed. 
+#'                        (Default: \code{TRUE})
 #' 
 #' @return A \eqn{((m \cdot (m+1)/2) \times m)}-dimensional matrix 
 #'         
@@ -38,7 +40,7 @@
 #' # [9,]  0.0  0.4  0.0 -0.4
 #' # [10,]  0.0  0.0  0.4 -0.4
 #' @export
-create_matrix_D <- function(W, lambda1, lambda2, rho = 1) { 
+create_matrix_D <- function(W, lambda1, lambda2, rho = 1, remove_zero_row = TRUE) { 
   
   eta1 <- lambda1 / rho 
   eta2 <- lambda2 / rho 
@@ -71,8 +73,10 @@ create_matrix_D <- function(W, lambda1, lambda2, rho = 1) {
   
   # remove any unnecessary rows from matrix D, i.e., 
   # rows with only zeros
-  row_with_only_zeros <- apply(D, 1, function(row) all(row == 0))
-  D <- D[!row_with_only_zeros, ]
+  if (remove_zero_row) { 
+    row_with_only_zeros <- apply(D, 1, function(row) all(row == 0))
+    D <- D[!row_with_only_zeros, ]
+  }
   
   return(D)
 }

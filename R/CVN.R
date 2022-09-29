@@ -5,14 +5,21 @@
 #' The smoothing between the graphs is specified by the \eqn{(m \times m)}-dimensional
 #' weight matrix \eqn{W}. The function returns the estimated precision matrices 
 #' for each graph. 
+#' @section Reusing Estimates: When estimating the graph for different values of 
+#' \eqn{\lambda_1} and \eqn{\lambda_2}, we use the graph estimated (if available) 
+#' for other \eqn{\lambda_1} and \eqn{\lambda_2} values closest to them. 
 #' 
 #' @param data A list with matrices. The number of columns should be the 
 #'                 same for each matrix. Number of observations can differ
-#' @param W The \eqn{(m \times m)}-dimensional upper-triangular 
+#' @param W The \eqn{(m \times m)}-dimensional symmetric 
 #'          weight matrix \eqn{W}
-#' @param lambda1 The \eqn{\lambda_1} LASSO penalty term 
-#' @param lambda2 The \eqn{\lambda_2} global smoothing parameter 
-#' @param rho The \eqn{\rho} ADMM's penalty parameter (Default: \code{1})
+#' @param lambda1 Vector with different \eqn{\lambda_1} LASSO penalty terms 
+#'                (Default: \code{1:10})
+#' @param lambda2 Vector with different \eqn{\lambda_2} global smoothing parameter values 
+#'                (Default: \code{1:10})
+#' @param global_rho The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})
+#' @param rho_genlasso The \eqn{\rho} penalty parameter for the ADMM algorithm 
+#'                used to solve the (Default: \code{1})
 #' @param epsilon If the relative difference between two update steps is 
 #'                smaller than \eqn{\epsilon}, the algorithm stops. 
 #'                See \code{\link{relative_difference_precision_matrices}}
@@ -25,6 +32,11 @@
 #'                   centered (Default: \code{FALSE})
 #' @param warmstart If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
 #'                  the individual graphs first (Default: \code{FALSE})
+#' @param use_previous_estimate If \code{TRUE}, the estimated graph found for the previous 
+#'                  values of \eqn{\lambda_1} and \eqn{\lambda_2} is used as starting point
+#'                  for the next estimate (Default: \code{TRUE})
+#' @param use_genlasso If \code{TRUE}, use the \code{genlasso} package in 
+#'                  the \eqn{Z}-update step, rather then the ADMM (Default: \code{FALSE})
 #' @param verbose Verbose (Default: \code{FALSE}) 
 #' 
 #' @return A \code{CVN} object; a list with entries
@@ -50,15 +62,17 @@
 #'   \item{\code{truncate}}{Truncation value for \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
 #'   
 #' @export
-# TODO: change lambda1 and lambda2 to a grid!
-CVN <- function(data, W, lambda1 = 1, lambda2 = 1, 
-                rho = 1,
+CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10, 
+                global_rho = 1,
+                rho_genlasso = 1,
                 epsilon = 10^(-5),
                 maxiter = 100, 
                 n_cores = 1, 
                 truncate = 1e-5, 
                 normalized = FALSE, 
                 warmstart = FALSE, 
+                use_previous_estimate = TRUE,
+                use_genlasso = FALSE, 
                 verbose = FALSE) { 
   
   # Check correctness input -------------------------------
@@ -73,113 +87,103 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
   data <- lapply(data, function(X) scale(X, scale = normalized))
   
   # Compute the empirical covariance matrices --------------
-  Sigma <- lapply(1:m, function(i) cov(data[[i]])*(n_obs[i] - 1) / n_obs[i]) 
- 
-  # Initialize variables for the algorithm -----------------
-  # Generate matrix D for the generalized LASSO 
-  D <- CVN::create_matrix_D(W, lambda1, lambda2, rho)
+  Sigma <- lapply(1:m, function(i) cov(data[[i]])*(n_obs[i] - 1) / n_obs[i])
   
-  # Generate matrices for ADMM iterations
-  Theta_old <- rep(list(diag(p)), m) # m (p x p)-dimensional identity matrices
-  Theta_new <- lapply(Sigma, function(S) diag(1/diag(S)))
+  # Create initial values for the ADMM algorithm ----------
   Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
   Y <- rep(list(matrix(0, nrow = p, ncol = p)), m)
   
-  # if warmstart, the individual graphs are estimated
-  # separately with huge
+  # if warmstart, the individual graphs are first estimated using the GLASSO.
   if (warmstart) { 
-    Theta_old <- Theta_new
-    
-    # estimate the graph with the GLASSO. The GLASSO is the only
-    # option here when we want to use huge.select for 
-    # selecting the optimal lambda value
-    Theta_new <- lapply(data, function(X) {
-        est <- huge(X, method = "glasso", verbose = FALSE)
-        huge::huge.select(est, verbose = FALSE)$opt.icov
-      })
-  } 
-  
-  # Initialize a Temp variable for Theta
-  Temp <- rep(list(matrix(0, nrow = p, ncol = p)), m)
-  
-  # keep track whether the algorithm finished, either by 
-  # whether the stopping condition was met, or the maximum
-  # number of iterations was reached
-  converged <- FALSE 
-  iter <- 1 
-  difference <- 1 # stores the discrepancy 
-  
-  repeat{
-    
-    # Update Theta ---------------------------------
-    Temp <- CVN::updateTheta(m, Z, Y, Sigma, n_obs, rho, n_cores = n_cores)
-    Theta_old <- Theta_new 
-    Theta_new <- Temp 
-    
-    # Update Z -------------------------------------
-    Z <- CVN::updateZ(m, p, Theta_new, Y, D, n_cores = n_cores) 
-    
-    # Update Y -------------------------------------
-    Y <- CVN::updateY(Theta_new, Z, Y) 
-    
-    # Check whether the algorithm is ready ----------
-    difference <- CVN::relative_difference_precision_matrices(Theta_new, Theta_old, n_cores = 1)
     
     if (verbose) { 
-      if (((iter - 1) %% 10) == 0) { 
-        cat("-------------------------\n") 
-      }
-      cat(sprintf("iteration %d  |  %f\n", iter, difference)) 
+      cat("Warm start...\n") 
     }
     
-    if (difference < epsilon) { 
-      converged <- TRUE
-      iter <- iter + 1
-      break() 
-    }
-    
-    if (iter >= maxiter) { 
-      warning("Maximum number of iterations reached. Stopping criterion not met")
-      break()
-    }
-    
-    iter <- iter + 1
+    # We use the first lambda1 value in the vector
+    Theta <- lapply(Sigma, function(S) { 
+       est <- glasso::glasso(s = S, rho = lambda1[1])
+       est$w
+    })
+  }  else { 
+    Theta <- lapply(Sigma, function(S) diag(1/diag(S)))
   }
   
-  Z <- lapply(Z, function(z) { 
-      ifelse(abs(z) <= truncate, 0, z)
-    })
+  # initialize results list ------------
   
-
-  adj_matrices <- lapply(Z, function(X) { 
-    diag(X) <- 0 
-    Matrix( as.numeric( abs(X) >= 2*.Machine$double.eps), ncol = ncol(X) , sparse = TRUE)
-  })
-                       
-  res <- list(
-    Theta = Z,
-    adj_matrices = adj_matrices, 
-    Sigma = Sigma,
-    m = m, 
-    p = p, 
-    n_obs = n_obs, 
-    data = data, 
+  global_res <- list(
+    Theta = list(),          
+    adj_matrices = list(),   
+    Sigma    = Sigma,
+    m        = m, 
+    p        = p, 
+    n_obs    = n_obs,
+    data     = data,
     normalized = normalized,
-    W = W, 
-    D = D, 
-    lambda1 = lambda1,
-    lambda2 = lambda2,
-    rho = rho, 
-    epsilon = epsilon,
-    converged = converged,
-    value = difference, 
-    n_iterations = iter, 
+    W        = W, 
+    rho      = rho, 
+    epsilon  = epsilon,
     truncate = truncate
   )
   
-  class(res) <- "CVN"
+  # data frame with the results for each unique (lambda1,lambda2) pair
+  res <- data.frame(expand.grid(lambda1 = lambda1, 
+                                lambda2 = lambda2, 
+                                converged = FALSE, 
+                                value = NA, 
+                                n_iterations = NA, 
+                                aic = NA))
+  res$id <- 1:nrow(res)
   
-  return(res)
+  for (i in 1:nrow(res)) { 
+    
+    if (verbose) { 
+      cat(sprintf("\n(%.0f%%) lambda1: %g / lambda2: %g\n", (i-1)/nrow(res)*100, res$lambda1[i], res$lambda2[i])) 
+    }
+    
+    # Initialize variables for the algorithm -----------------
+    # Generate matrix D for the generalized LASSO 
+    D <- CVN::create_matrix_D(W, res$lambda1[i], res$lambda2[i], global_rho)
+    
+    # Estimate the graphs -------------------------------------
+    est <- CVN::estimate(Theta, Z, Y, D, m, p, Sigma, n_obs, global_rho, rho_genlasso, 
+                         epsilon, maxiter, truncate, use_genlasso, verbose = verbose)  
+    
+    # Process results -----------------------------------------
+    global_res$Theta[[i]] <- est$Z
+    global_res$adj_matrices[[i]] <- est$adj_matrices 
+    
+    res$converged[i]    <- est$converged
+    res$value[i]        <- est$value
+    res$n_iterations[i] <- est$n_iterations
+    
+    # determine the AIC
+    res$aic[i] <- CVN::AIC(Theta = est$Z, 
+                           adj_matrices = est$adj_matrices, 
+                           Sigma = Sigma, 
+                           n_obs = n_obs) 
+    
+    if (!use_previous_estimate) { 
+      Theta <- lapply(Sigma, function(S) diag(1/diag(S)))
+      Z     <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
+      Y     <- rep(list(matrix(0, nrow = p, ncol = p)), m)
+    } else { 
+      Theta <- est$Theta
+      Z     <- est$Z
+      Y     <- est$Y
+    }
+  }
+  
+  if (verbose) { 
+    cat(sprintf("\n(100%%)\n")) 
+  }
+     
+  # Collect all the results & input ---------------------------
+  global_res$results  <- res                  
+  
+  #class(global_res) <- "CVN" # TODO
+  
+  return(global_res)
 }
 
 #' Print Function for the CVN Object Class
@@ -188,18 +192,15 @@ CVN <- function(data, W, lambda1 = 1, lambda2 = 1,
 print.CVN <- function(cvn, ...) { 
   cat(sprintf("Covariate-varying Network (CVN)\n\n"))
   
-  if (cvn$converged) {
+  if (all(cvn$converged)) {
     cat(green(sprintf("\u2713 CONVERGED\n\n")))
   } else { 
     cat(red(sprintf("\u2717 DID NOT CONVERGE\n\n"))) 
   }
   
-  cat(sprintf("   -- No. of iterations:    %d\n", cvn$n_iterations))
-  cat(sprintf("   -- Relative difference:  %g\n", cvn$value))
   cat(sprintf("   -- No. of graphs (m):    %d\n", cvn$m))
-  cat(sprintf("   -- No. of variables (p): %d\n", cvn$p))
-  cat(sprintf("   -- lambda1:              %g\n", cvn$lambda1))
-  cat(sprintf("   -- lambda2:              %g\n", cvn$lambda2))
+  cat(sprintf("   -- No. of variables (p): %d\n\n", cvn$p))
+  print(cvn2$results)
 }
 
 #' Plot Function for CVN Object Class
