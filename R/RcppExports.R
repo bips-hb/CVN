@@ -17,8 +17,8 @@
 #' @param m The number of graphs 
 #' @param c Number of rows of matrix \eqn{D}, which is equal to 
 #'          \eqn{c = m + (m(m-1))/2}   
-#' @param eta1 Equals \eqn{\lambda_1 / \eqn{rho}} 
-#' @param eta2 Equals \eqn{\lambda_2 / \eqn{rho}} 
+#' @param eta1 Equals \eqn{\lambda_1 / rho} 
+#' @param eta2 Equals \eqn{\lambda_2 / rho} 
 #' @param a Value added to the diagonal of \eqn{-D'D} so that
 #'          the matrix is positive definite, see 
 #'          \code{\link{matrix_A_inner_ADMM}}

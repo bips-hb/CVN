@@ -81,6 +81,10 @@ CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10,
   # Check correctness input -------------------------------
   CVN::check_correctness_input(data, W, lambda1, lambda2, rho)
   
+  if (use_previous_estimate) { 
+    warning("Using the previous estimate might not always work. We are working on a test") 
+  }
+  
   # Extract variables -------------------------------------
   m <- length(data)       # total number of graphs  
   p <- ncol(data[[1]])    # total number of variables

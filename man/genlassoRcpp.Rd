@@ -16,9 +16,9 @@ genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate)
 \item{c}{Number of rows of matrix \eqn{D}, which is equal to 
 \eqn{c = m + (m(m-1))/2}}
 
-\item{eta1}{Equals \eqn{\lambda_1 / \eqn{rho}}}
+\item{eta1}{Equals \eqn{\lambda_1 / rho}}
 
-\item{eta2}{Equals \eqn{\lambda_2 / \eqn{rho}}}
+\item{eta2}{Equals \eqn{\lambda_2 / rho}}
 
 \item{a}{Value added to the diagonal of \eqn{-D'D} so that
 the matrix is positive definite, see 
