@@ -5,7 +5,36 @@ library(profvis)
 library(CVN)
 
 p <- 10
-W = matrix(.5, 9, 9)
+m <- 9
+
+# Choose of W
+uniform_random <- T
+predefined <- F
+disconnected <- F
+
+W <- matrix(1, m, m) # standard fully-connected 
+
+if (disconnected) { 
+  W <- matrix(0, m, m)
+}
+
+if (uniform_random) { 
+  W <- matrix(runif(m*m), ncol = m)
+  W <- W %*% t(W)
+  W <- W / max(W)
+  W <- W
+  diag(W) <- 0
+}
+
+if (predefined) { 
+  e <- 0
+  W <- matrix(c(0, 1, e, 1,
+                1, 0, 1, e,
+                e, 1, 0, 1,
+                1, e, 1, 0), ncol = 4)
+}
+
+
 
 starting_graph <- CVNSim::generate_graph(p, type = "random", probability = .5)
 grid3 <- create_grid_of_graphs(starting_graph = starting_graph, 
@@ -17,8 +46,8 @@ grid3 <- create_grid_of_graphs(starting_graph = starting_graph,
 
 data <- CVNSim::generate_raw_data_grid(100, grid3)
 
-lambda1 = c(1,2) #seq(.1,20, length.out = 10)
-lambda2 = c(1,2) #seq(.1,20, length.out = 10)
+lambda1 = seq(.1,20, length.out = 5)
+lambda2 = seq(.1,20, length.out = 5)
 
 microbenchmark(f(), g())
 tic()
@@ -32,15 +61,15 @@ genl <- cvn$adj_matrices[[1]][[9]]
 
 tic()
 cvn <- CVN::CVN(data = data, W, lambda1 = lambda1, lambda2 = lambda2, 
-                eps = 10^-2, maxiter = 1000, 
-                verbose = TRUE, warmstart = T, use_previous_estimate = F, 
+                eps = 10^-3, maxiter = 1000, 
+                verbose = F, warmstart = T, use_previous_estimate = F, 
                 use_genlasso_package = F)
 toc()
 
 cpp <- cvn$adj_matrices[[1]][[9]]
 
-g = grid3[[2]]$adj_matrix
-cvn$adj_matrices[[2]][[2]]
+g = grid3[[1]]$adj_matrix
+cvn$adj_matrices[[2]][[1]]
 
 
 
