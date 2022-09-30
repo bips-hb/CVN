@@ -10,9 +10,9 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// aug_genlassoRcpp
-Rcpp::DoubleVector aug_genlassoRcpp(Rcpp::DoubleVector y, const Rcpp::NumericMatrix& W, const int m, const int c, const double eta1, const double eta2, double a, const double rho, const int max_iter, const double eps, const double truncate);
-RcppExport SEXP _CVN_aug_genlassoRcpp(SEXP ySEXP, SEXP WSEXP, SEXP mSEXP, SEXP cSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP aSEXP, SEXP rhoSEXP, SEXP max_iterSEXP, SEXP epsSEXP, SEXP truncateSEXP) {
+// genlassoRcpp
+Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y, const Rcpp::NumericMatrix& W, const int m, const int c, const double eta1, const double eta2, double a, const double rho, const int max_iter, const double eps, const double truncate);
+RcppExport SEXP _CVN_genlassoRcpp(SEXP ySEXP, SEXP WSEXP, SEXP mSEXP, SEXP cSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP aSEXP, SEXP rhoSEXP, SEXP max_iterSEXP, SEXP epsSEXP, SEXP truncateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -27,36 +27,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type max_iter(max_iterSEXP);
     Rcpp::traits::input_parameter< const double >::type eps(epsSEXP);
     Rcpp::traits::input_parameter< const double >::type truncate(truncateSEXP);
-    rcpp_result_gen = Rcpp::wrap(aug_genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate));
+    rcpp_result_gen = Rcpp::wrap(genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate));
     return rcpp_result_gen;
-END_RCPP
-}
-// determine_steps_Rccp
-void determine_steps_Rccp(const int m);
-RcppExport SEXP _CVN_determine_steps_Rccp(SEXP mSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const int >::type m(mSEXP);
-    determine_steps_Rccp(m);
-    return R_NilValue;
-END_RCPP
-}
-// show_indices_Rcpp
-void show_indices_Rcpp(const int m, const Rcpp::NumericMatrix& W);
-RcppExport SEXP _CVN_show_indices_Rcpp(SEXP mSEXP, SEXP WSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type W(WSEXP);
-    show_indices_Rcpp(m, W);
-    return R_NilValue;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_CVN_aug_genlassoRcpp", (DL_FUNC) &_CVN_aug_genlassoRcpp, 11},
-    {"_CVN_determine_steps_Rccp", (DL_FUNC) &_CVN_determine_steps_Rccp, 1},
-    {"_CVN_show_indices_Rcpp", (DL_FUNC) &_CVN_show_indices_Rcpp, 2},
+    {"_CVN_genlassoRcpp", (DL_FUNC) &_CVN_genlassoRcpp, 11},
     {NULL, NULL, 0}
 };
 

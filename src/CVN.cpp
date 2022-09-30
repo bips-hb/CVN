@@ -11,6 +11,24 @@ using namespace Rcpp;
 //' \eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c \geq m}. 
 //' We solve this optimization problem using an adaption of the ADMM
 //' algorithm presented in Zhu (2017). 
+//' 
+//' @param y The \eqn{y} vector of length \eqn{m}
+//' @param W The weight matrix \eqn{W} of dimensions \eqn{m x m}
+//' @param m The number of graphs 
+//' @param c Number of rows of matrix \eqn{D}, which is equal to 
+//'          \eqn{c = m + (m(m-1))/2}   
+//' @param eta1 Equals \eqn{\lambda_1 / rho} 
+//' @param eta2 Equals \eqn{\lambda_2 / rho} 
+//' @param a Value added to the diagonal of \eqn{-D'D} so that
+//'          the matrix is positive definite, see 
+//'          \code{\link{matrix_A_inner_ADMM}}
+//' @param rho The ADMM's parameter
+//' @param max_iter Maximum number of iterations
+//' @param eps Stopping criterion. If differences 
+//'            are smaller than \eqn{\epsilon}, algorithm
+//'            is halted
+//' @param truncate Values below \code{truncate} are 
+//'                 set to \code{0}
 //'
 //' @return The estimated vector \eqn{\hat{\beta}}
 //'
@@ -19,7 +37,7 @@ using namespace Rcpp;
 //' Generalized Lasso Problem. Journal of Computational and Graphical Statistics, 
 //' 26(1), 195–204. https://doi.org/10.1080/10618600.2015.1114491
 //' 
-//' @seealso \code{\link{convertRawReports2Tables}}
+//' @seealso \code{\link{genlasso_wrapper}}
 // [[Rcpp::export]]
 Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y, 
                                 const Rcpp::NumericMatrix& W, 

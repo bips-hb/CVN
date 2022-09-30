@@ -13,7 +13,7 @@ data(grid)
 \description{
 Data generated for 9 graphs in total, organized in a grid of 
 (3x3). See the package \code{CVNSim} for more information 
-on how the grid is constructed: https://github.com/bips-hb/CVNSim
+on how the grid is constructed: \url{https://github.com/bips-hb/CVNSim}
 }
 \references{
 \url{https://github.com/bips-hb/CVNSim}
