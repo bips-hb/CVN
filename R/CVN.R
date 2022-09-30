@@ -51,7 +51,16 @@
 #' @return A \code{CVN} object containing the estimates for all the graphs 
 #'    for each different value of \eqn{(\lambda_1, \lambda_2)}. General results for 
 #'    the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data frame
-#'    \code{res}. It consists of multiple columns, namely: 
+#'    \code{results}. It consists of multiple columns, namely: 
+#'    \item{\code{lambda1}}{\eqn{\lambda_1} value}
+#'    \item{\code{lambda2}}{\eqn{\lambda_1} value}
+#'    \item{\code{converged}}{whether algorithm converged or not}
+#'    \item{\code{value}}{value of the negative log-likelihood function}
+#'    \item{\code{n_iterations}}{number of iterations of the ADMM}
+#'    \item{\code{aic}}{Aikake information criteration}
+#'    \item{\code{id}}{The id. This corresponds to the indices of the lists}
+#'    In addition, the results of for the different values of \eqn{(\lambda_1, \lambda_2)}
+#'    can be found in the following lists: 
 #'    \item{\code{Theta}}{The estimated precision matrices \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
 #'    \item{\code{adj_matrices}}{The estimated adjacency matrices; 
 #'                         \code{1} if there is an edge, \code{0} otherwise. 
@@ -75,6 +84,7 @@
 #'   
 #' @examples 
 #' data(grid)
+#' m <- 9 # must be 9 for this example
 #' 
 #' #' Choice of the weight matrix W. 
 #' #' (uniform random) 
@@ -84,11 +94,10 @@
 #' diag(W) <- 0
 #' 
 #' # lambdas:
-#' lambda1 = 1:4
-#' lambda2 = 1:4
+#' lambda1 = 1:2
+#' lambda2 = 1:2
 #' 
-#' (cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2))
-#' # Apply the CVN
+#' (cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, eps = 1e-3, maxiter = 1000, verbose = TRUE))
 #' @export
 CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10, 
                 rho = 1,
