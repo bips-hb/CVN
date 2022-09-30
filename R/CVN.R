@@ -9,8 +9,9 @@
 #' \eqn{\lambda_1} and \eqn{\lambda_2}, we use the graph estimated (if available) 
 #' for other \eqn{\lambda_1} and \eqn{\lambda_2} values closest to them. 
 #' 
-#' @param data A list with matrices. The number of columns should be the 
-#'                 same for each matrix. Number of observations can differ
+#' @param data A list with matrices, each entry associated with a single graph. 
+#'             The number of columns should be the same for each matrix. 
+#'             Number of observations can differ
 #' @param W The \eqn{(m \times m)}-dimensional symmetric 
 #'          weight matrix \eqn{W}
 #' @param lambda1 Vector with different \eqn{\lambda_1} LASSO penalty terms 
@@ -18,16 +19,24 @@
 #' @param lambda2 Vector with different \eqn{\lambda_2} global smoothing parameter values 
 #'                (Default: \code{1:10})
 #' @param rho The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})
-#' @param rho_genlasso The \eqn{\rho} penalty parameter for the ADMM algorithm 
-#'                used to solve the (Default: \code{1})
-#' @param epsilon If the relative difference between two update steps is 
+#' @param eps If the relative difference between two update steps is 
 #'                smaller than \eqn{\epsilon}, the algorithm stops. 
 #'                See \code{\link{relative_difference_precision_matrices}}
 #'                (Default: \code{1e-5})
 #' @param maxiter Maximum number of iterations (Default: \code{100})
-#' @param n_cores Number of cores used (Default: \code{1})
 #' @param truncate All values of the final \eqn{\hat{\Theta}_i}'s below \code{truncate} will be 
 #'                 set to \code{0}. (Default: \code{1e-5})
+#' @param rho_genlasso The \eqn{\rho} penalty parameter for the ADMM algorithm 
+#'                used to solve the generalized LASSO (Default: \code{1})
+#' @param eps_genlasso If the relative difference between two update steps is 
+#'                smaller than \eqn{\epsilon}, the algorithm stops. 
+#'                (Default: \code{1e-10})
+#' @param maxiter_genlasso Maximum number of iterations for solving 
+#'                the generalized LASSO problem (Default: \code{100})
+#' @param truncate_genlasso All values of the final \eqn{\hat{\beta}} below 
+#'                 \code{truncate_genlasso} will be set to \code{0}. 
+#'                 (Default: \code{1e-4})
+#' @param n_cores Number of cores used (Default: \code{1})
 #' @param normalized Data is normalized if \code{TRUE}. Otherwise the data is only
 #'                   centered (Default: \code{FALSE})
 #' @param warmstart If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
@@ -39,7 +48,10 @@
 #'                  the \eqn{Z}-update step, rather then the ADMM (Default: \code{FALSE})
 #' @param verbose Verbose (Default: \code{FALSE}) 
 #' 
-#' @return A \code{CVN} object; a list with entries
+#' @return A \code{CVN} object containing the estimates for all the graphs 
+#'    for each different value of \eqn{(\lambda_1, \lambda_2)}. General results for 
+#'    the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data frame
+#'    \code{res}. It consists of multiple columns, namely: 
 #'    \item{\code{Theta}}{The estimated precision matrices \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
 #'    \item{\code{adj_matrices}}{The estimated adjacency matrices; 
 #'                         \code{1} if there is an edge, \code{0} otherwise. 
@@ -61,20 +73,36 @@
 #'   \item{\code{n_iterations}}{Number of iterations}
 #'   \item{\code{truncate}}{Truncation value for \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
 #'   
+#' @examples 
+#' data(grid)
+#' 
+#' #' Choice of the weight matrix W. 
+#' #' (uniform random) 
+#' W <- matrix(runif(m*m), ncol = m)
+#' W <- W %*% t(W)
+#' W <- W / max(W)
+#' diag(W) <- 0
+#' 
+#' # lambdas:
+#' lambda1 = 1:4
+#' lambda2 = 1:4
+#' 
+#' (cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2))
+#' # Apply the CVN
 #' @export
 CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10, 
                 rho = 1,
                 rho_genlasso = 1,
-                eps = 1e-7,
-                eps_genlasso = 1e-12, 
+                eps = 1e-5,
                 maxiter = 100, 
-                maxiter_genlasso = 100, 
                 truncate = 1e-5, 
+                eps_genlasso = 1e-10, 
+                maxiter_genlasso = 100, 
                 truncate_genlasso = 1e-4, 
                 n_cores = 1, 
                 normalized = FALSE, 
                 warmstart = FALSE, 
-                use_previous_estimate = TRUE,
+                use_previous_estimate = FALSE,
                 use_genlasso_package = FALSE, 
                 verbose = FALSE) { 
   
