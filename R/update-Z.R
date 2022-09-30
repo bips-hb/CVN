@@ -57,9 +57,9 @@ updateZ <- function(m, p, nrow_D,
       out <- genlasso::genlasso(y, diag(1, m), D, minlam = 1)
       beta <- coef(out, lambda = 1)$beta
     } else {
-      beta <- aug_genlassoRcpp(y, W, m, nrow_D, eta1, eta2, a,
-                               rho_genlasso, maxiter_genlasso,
-                               eps_genlasso, truncate_genlasso)
+      beta <- genlassoRcpp(y, W, m, nrow_D, eta1, eta2, a,
+                           rho_genlasso, maxiter_genlasso,
+                           eps_genlasso, truncate_genlasso)
     }
     
     # update the matrix Z (use that it is symmetric)

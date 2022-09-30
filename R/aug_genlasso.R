@@ -1,6 +1,6 @@
 #' @export
-aug_genlasso <- function(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) { 
-  aug_genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) 
+genlasso_wrapper <- function(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) { 
+  genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) 
 }
 
 #' @export

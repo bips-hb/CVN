@@ -21,7 +21,7 @@ using namespace Rcpp;
 //' 
 //' @seealso \code{\link{convertRawReports2Tables}}
 // [[Rcpp::export]]
-Rcpp::DoubleVector aug_genlassoRcpp(Rcpp::DoubleVector y, 
+Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y, 
                                 const Rcpp::NumericMatrix& W, 
                                 const int m, 
                                 const int c, 
@@ -146,45 +146,4 @@ Rcpp::DoubleVector aug_genlassoRcpp(Rcpp::DoubleVector y,
   }
   
   return(beta_new) ;   
-}
-
-
-
-// [[Rcpp::export]]
-void determine_steps_Rccp(const int m) { 
-  
-  /* Indices used for the alpha-update step */
-  Rcpp::IntegerVector steps (m-1) ; 
-  steps[0] = 0 ; 
-  
-  for (int i = 1; i < (m-1); i ++) { 
-    steps[i] = m - i + steps[i - 1] ; 
-  }
-  Rf_PrintValue(steps);
-}
-
-// [[Rcpp::export]]
-void show_indices_Rcpp(const int m, const Rcpp::NumericMatrix& W) { 
-  int i,j; 
-  
-  /* Indices used for the alpha-update step */
-  Rcpp::IntegerVector steps (m-1) ; 
-  steps[0] = 0 ; 
-  
-  for (int i = 1; i < (m-1); i ++) { 
-    steps[i] = m - i + steps[i - 1] ; 
-  }
-  
-  for (i = 0; i < m; i++) { 
-    
-    for (j = i+1; j < m; j++) { 
-      Rprintf("g_%d\t+ (%d,%d): a_%d   %g\n", i, i, j, m + steps[i] + (j - i) - 1, W(i,j)) ; 
-     }
-    
-    for (j = 0; j < i; j++) { 
-      Rprintf("g_%d\t- (%d,%d): a_%d   %g\n", i, j, i, m + steps[j] - (j - i) - 1, W(j,i)) ; 
-    }
-  }
-  
-   
 }
