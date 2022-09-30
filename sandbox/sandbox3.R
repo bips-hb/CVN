@@ -62,7 +62,7 @@ genl <- cvn$adj_matrices[[1]][[9]]
 tic()
 cvn <- CVN::CVN(data = data, W, lambda1 = lambda1, lambda2 = lambda2, 
                 eps = 10^-3, maxiter = 1000, 
-                verbose = F, warmstart = T, use_previous_estimate = F, 
+                verbose = T, warmstart = T, use_previous_estimate = F, 
                 use_genlasso_package = F)
 toc()
 
