@@ -46,7 +46,7 @@
 #'                  for the next estimate (Default: \code{TRUE})
 #' @param use_genlasso If \code{TRUE}, use the \code{genlasso} package in 
 #'                  the \eqn{Z}-update step, rather then the ADMM (Default: \code{FALSE})
-#' @param verbose Verbose (Default: \code{FALSE}) 
+#' @param verbose Verbose (Default: \code{TRUE}) 
 #' 
 #' @return A \code{CVN} object containing the estimates for all the graphs 
 #'    for each different value of \eqn{(\lambda_1, \lambda_2)}. General results for 
@@ -118,7 +118,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 warmstart = TRUE, 
                 use_previous_estimate = FALSE,
                 use_genlasso_package = FALSE, 
-                verbose = FALSE) { 
+                verbose = TRUE) { 
   
   # Check correctness input -------------------------------
   CVN::check_correctness_input(data, W, lambda1, lambda2, rho)

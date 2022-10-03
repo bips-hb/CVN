@@ -23,7 +23,7 @@ CVN(
   warmstart = TRUE,
   use_previous_estimate = FALSE,
   use_genlasso_package = FALSE,
-  verbose = FALSE
+  verbose = TRUE
 )
 }
 \arguments{
@@ -78,7 +78,7 @@ the individual graphs first (Default: \code{TRUE})}
 values of \eqn{\lambda_1} and \eqn{\lambda_2} is used as starting point
 for the next estimate (Default: \code{TRUE})}
 
-\item{verbose}{Verbose (Default: \code{FALSE})}
+\item{verbose}{Verbose (Default: \code{TRUE})}
 
 \item{use_genlasso}{If \code{TRUE}, use the \code{genlasso} package in 
 the \eqn{Z}-update step, rather then the ADMM (Default: \code{FALSE})}
