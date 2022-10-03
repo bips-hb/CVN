@@ -8,10 +8,10 @@
 CVN(
   data,
   W,
-  lambda1 = 1:10,
-  lambda2 = 1:10,
+  lambda1 = 1:2,
+  lambda2 = 1:2,
   rho = 1,
-  eps = 1e-05,
+  eps = 1e-04,
   maxiter = 100,
   truncate = 1e-05,
   rho_genlasso = 1,
@@ -20,7 +20,7 @@ CVN(
   truncate_genlasso = 1e-04,
   n_cores = 1,
   normalized = FALSE,
-  warmstart = FALSE,
+  warmstart = TRUE,
   use_previous_estimate = FALSE,
   use_genlasso_package = FALSE,
   verbose = FALSE
@@ -35,17 +35,17 @@ Number of observations can differ}
 weight matrix \eqn{W}}
 
 \item{lambda1}{Vector with different \eqn{\lambda_1} LASSO penalty terms 
-(Default: \code{1:10})}
+(Default: \code{1:2})}
 
 \item{lambda2}{Vector with different \eqn{\lambda_2} global smoothing parameter values 
-(Default: \code{1:10})}
+(Default: \code{1:2})}
 
 \item{rho}{The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})}
 
 \item{eps}{If the relative difference between two update steps is 
 smaller than \eqn{\epsilon}, the algorithm stops. 
 See \code{\link{relative_difference_precision_matrices}}
-(Default: \code{1e-5})}
+(Default: \code{1e-4})}
 
 \item{maxiter}{Maximum number of iterations (Default: \code{100})}
 
@@ -72,7 +72,7 @@ the generalized LASSO problem (Default: \code{100})}
 centered (Default: \code{FALSE})}
 
 \item{warmstart}{If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
-the individual graphs first (Default: \code{FALSE})}
+the individual graphs first (Default: \code{TRUE})}
 
 \item{use_previous_estimate}{If \code{TRUE}, the estimated graph found for the previous 
 values of \eqn{\lambda_1} and \eqn{\lambda_2} is used as starting point

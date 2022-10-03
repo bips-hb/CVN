@@ -15,14 +15,14 @@
 #' @param W The \eqn{(m \times m)}-dimensional symmetric 
 #'          weight matrix \eqn{W}
 #' @param lambda1 Vector with different \eqn{\lambda_1} LASSO penalty terms 
-#'                (Default: \code{1:10})
+#'                (Default: \code{1:2})
 #' @param lambda2 Vector with different \eqn{\lambda_2} global smoothing parameter values 
-#'                (Default: \code{1:10})
+#'                (Default: \code{1:2})
 #' @param rho The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})
 #' @param eps If the relative difference between two update steps is 
 #'                smaller than \eqn{\epsilon}, the algorithm stops. 
 #'                See \code{\link{relative_difference_precision_matrices}}
-#'                (Default: \code{1e-5})
+#'                (Default: \code{1e-4})
 #' @param maxiter Maximum number of iterations (Default: \code{100})
 #' @param truncate All values of the final \eqn{\hat{\Theta}_i}'s below \code{truncate} will be 
 #'                 set to \code{0}. (Default: \code{1e-5})
@@ -104,9 +104,9 @@
 #' 
 #' (cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, eps = 1e-3, maxiter = 1000, verbose = TRUE))
 #' @export
-CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10, 
+CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2, 
                 rho = 1,
-                eps = 1e-5,
+                eps = 1e-4,
                 maxiter = 100, 
                 truncate = 1e-5, 
                 rho_genlasso = 1,
