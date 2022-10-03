@@ -40,7 +40,7 @@
 #' @param normalized Data is normalized if \code{TRUE}. Otherwise the data is only
 #'                   centered (Default: \code{FALSE})
 #' @param warmstart If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
-#'                  the individual graphs first (Default: \code{FALSE})
+#'                  the individual graphs first (Default: \code{TRUE})
 #' @param use_previous_estimate If \code{TRUE}, the estimated graph found for the previous 
 #'                  values of \eqn{\lambda_1} and \eqn{\lambda_2} is used as starting point
 #'                  for the next estimate (Default: \code{TRUE})
@@ -115,7 +115,7 @@ CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10,
                 truncate_genlasso = 1e-4, 
                 n_cores = 1, 
                 normalized = FALSE, 
-                warmstart = FALSE, 
+                warmstart = TRUE, 
                 use_previous_estimate = FALSE,
                 use_genlasso_package = FALSE, 
                 verbose = FALSE) { 
@@ -206,7 +206,7 @@ CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10,
     # Estimate the graphs -------------------------------------
     eta1 <- res$lambda1[i] / rho 
     eta2 <- res$lambda2[i] / rho 
-    est <- CVN::estimate(m, p, nrow(D), Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
+    est <- CVN::estimate(m, p, nrow(D), W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
                          rho, rho_genlasso, 
                          eps, eps_genlasso, 
                          maxiter, maxiter_genlasso, truncate = truncate, 
