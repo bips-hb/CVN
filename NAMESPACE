@@ -2,10 +2,10 @@
 
 S3method(plot,CVN)
 S3method(print,CVN)
-export(AIC)
 export(CVN)
 export(check_correctness_input)
 export(create_matrix_D)
+export(determine_information_criterion)
 export(estimate)
 export(genlasso_wrapper)
 export(matrix_A_inner_ADMM)

@@ -59,29 +59,34 @@
 #'    \item{\code{n_iterations}}{number of iterations of the ADMM}
 #'    \item{\code{aic}}{Aikake information criteration}
 #'    \item{\code{id}}{The id. This corresponds to the indices of the lists}
-#'    In addition, the results of for the different values of \eqn{(\lambda_1, \lambda_2)}
-#'    can be found in the following lists: 
-#'    \item{\code{Theta}}{The estimated precision matrices \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
-#'    \item{\code{adj_matrices}}{The estimated adjacency matrices; 
-#'                         \code{1} if there is an edge, \code{0} otherwise. 
-#'                         Matrices are sparse using package \code{\link[Matrix]{Matrix}}}
+#'    The estimates of the precision matrices and the corresponding adjacency matrices
+#'    for the different values of \eqn{(\lambda_1, \lambda_2)} can be found 
+#'    \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m}}
+#'    \item{\code{adj_matrices}}{A list with the estimated adjacency matrices corresponding to the 
+#'                               estimated precision matrices in \code{Theta}. The entries 
+#'                               are \code{1} if there is an edge, \code{0} otherwise. 
+#'                               The matrices are sparse using package \code{\link[Matrix]{Matrix}}}
+#'    In addition, the input given to the CVN function is stored in the object as well:
 #'    \item{\code{Sigma}}{Empirical covariance matrices \eqn{\{\hat{\Sigma}_i\}_{i = 1}^m}}
 #'    \item{\code{m}}{Number of graphs}
 #'    \item{\code{p}}{Number of variables}
 #'    \item{\code{n_obs}}{Vector of length \eqn{m} with number of observations for each graph}
 #'   \item{\code{data}}{The \code{data}, but then normalized or centered}
-#'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
 #'   \item{\code{W}}{The \eqn{(m \times m)}-dimensional weight matrix \eqn{W}}
-#'   \item{\code{D}}{Matrix \eqn{D} used for the Generalized LASSO}
-#'   \item{\code{lambda1}}{The \eqn{\lambda_1} LASSO penalty term}
-#'   \item{\code{lambda2}}{The \eqn{\lambda_2} global smoothing parameter} 
+#'   \item{\code{maxiter}}{Maximum number of iterations for the ADMM}
 #'   \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter} 
-#'   \item{\code{epsilon}}{The stopping criterion \eqn{\epsilon}} 
-#'   \item{\code{converged}}{If \code{TRUE}, stopping condition has been met; \code{FALSE} otherwise}
-#'   \item{\code{value}}{The final relative difference}
-#'   \item{\code{n_iterations}}{Number of iterations}
+#'   \item{\code{eps}}{The stopping criterion \eqn{\epsilon}} 
 #'   \item{\code{truncate}}{Truncation value for \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
-#'   
+#'   \item{\code{maxiter_genlasso}}{Maximum number of iterations for the generarlzed LASSO}
+#'   \item{\code{rho_genlasso}}{The \eqn{\rho} generalized LASSO penalty parameter} 
+#'   \item{\code{eps_genlasso}}{The stopping criterion \eqn{\epsilon} for the generalized LASSO} 
+#'   \item{\code{truncate_genlasso}}{Truncation value for \eqn{\beta} of the generalized LASSO}
+#'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
+#'   \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
+#'   \item{\code{use_previous_estimate}}{If \code{TRUE}, the estimate from the previous \eqn{\lambda_1} and 
+#'                      \eqn{\lambda_2} value is used}
+#'   \item{\code{use_genlasso_package}}{If \code{TRUE}, the \code{\link[genlasso]{genlasso}}
+#'             package is used instead of the ADMM algorithm}
 #' @examples 
 #' data(grid)
 #' m <- 9 # must be 9 for this example
@@ -101,10 +106,10 @@
 #' @export
 CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10, 
                 rho = 1,
-                rho_genlasso = 1,
                 eps = 1e-5,
                 maxiter = 100, 
                 truncate = 1e-5, 
+                rho_genlasso = 1,
                 eps_genlasso = 1e-10, 
                 maxiter_genlasso = 100, 
                 truncate_genlasso = 1e-4, 
@@ -162,11 +167,19 @@ CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10,
     p        = p, 
     n_obs    = n_obs,
     data     = data,
-    normalized = normalized,
     W        = W, 
+    maxiter  = maxiter, 
     rho      = rho, 
     eps      = eps,
-    truncate = truncate
+    truncate = truncate, 
+    rho_genlasso      = rho_genlasso, 
+    eps_genlasso      = eps_genlasso, 
+    maxiter_genlasso  = maxiter_genlasso, 
+    truncate_genlasso = truncate_genlasso, 
+    normalized = normalized,
+    warmstart  = warmstart, 
+    use_previous_estimate = use_previous_estimate, 
+    use_genlasso_package  = use_genlasso_package
   )
   
   # data frame with the results for each unique (lambda1,lambda2) pair
@@ -209,10 +222,11 @@ CVN <- function(data, W, lambda1 = 1:10, lambda2 = 1:10,
     res$n_iterations[i] <- est$n_iterations
     
     # determine the AIC
-    res$aic[i] <- CVN::AIC(Theta = est$Z, 
+    res$aic[i] <- CVN::determine_information_criterion(Theta = est$Z, 
                            adj_matrices = est$adj_matrices, 
                            Sigma = Sigma, 
-                           n_obs = n_obs) 
+                           n_obs = n_obs,
+                           type = "AIC") 
     
     if (!use_previous_estimate) { 
       Theta <- lapply(Sigma, function(S) diag(1/diag(S)))
