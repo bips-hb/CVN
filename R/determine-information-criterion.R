@@ -7,12 +7,9 @@
 determine_information_criterion <- function(Theta, adj_matrices, Sigma, n_obs,
                                             type = c("AIC", "BIC")) { 
   
-  # number of graphs
-  m <- length(Theta)
-  
-  # number of non-zero edges
-  E <- mapply(sum, adj_matrices) 
-  
+  m <- length(Theta)             # number of graphs
+  E <- mapply(sum, adj_matrices) # number of non-zero edges
+
   if (type[1] == "AIC" || type[1] == "aic") {
     return(sum(
       sapply(1:m, function(i) { 
@@ -29,4 +26,26 @@ determine_information_criterion <- function(Theta, adj_matrices, Sigma, n_obs,
   } else { 
     stop("type should be 'AIC' or 'BIC'") 
   }
+}
+
+#' Information Criteria for a \code{cvn} object
+#' 
+#' Determines a given information criteria for a \code{cvn} object, 
+#' see \code{\link{CVN}}. 
+#' 
+#' @export
+determine_information_criterion_cvn <- function(cvn, type = c("AIC", "BIC")) { 
+  if (class(cvn) != 'cvn') { 
+    stop("cvn parameter must be of type 'cvn'") 
+  }
+  
+  # compute for each different lambda1 and lambda2 pair
+  # the information criterion 
+  sapply(1:cvn$n_lambda_values, function(i) { 
+       CVN::determine_information_criterion(cvn$Theta[[i]], 
+                                            cvn$adj_matrices[[i]], 
+                                            cvn$Sigma, 
+                                            cvn$n_obs,
+                                            type = type)
+    })
 }
