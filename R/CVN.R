@@ -81,6 +81,7 @@
 #'   \item{\code{rho_genlasso}}{The \eqn{\rho} generalized LASSO penalty parameter} 
 #'   \item{\code{eps_genlasso}}{The stopping criterion \eqn{\epsilon} for the generalized LASSO} 
 #'   \item{\code{truncate_genlasso}}{Truncation value for \eqn{\beta} of the generalized LASSO}
+#'   \item{\code{n_lambda_values}}{Total number of \eqn{(\lambda_1, \lambda_2)} value combinations}
 #'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
 #'   \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
 #'   \item{\code{use_previous_estimate}}{If \code{TRUE}, the estimate from the previous \eqn{\lambda_1} and 
@@ -176,6 +177,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     eps_genlasso      = eps_genlasso, 
     maxiter_genlasso  = maxiter_genlasso, 
     truncate_genlasso = truncate_genlasso, 
+    n_lambda_values   = length(lambda1) * length(lambda2), 
     normalized = normalized,
     warmstart  = warmstart, 
     use_previous_estimate = use_previous_estimate, 
@@ -246,7 +248,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   # Collect all the results & input ---------------------------
   global_res$results  <- res                  
   
-  #class(global_res) <- "CVN" # TODO
+  class(global_res) <- "cvn" 
   
   return(global_res)
 }
@@ -254,7 +256,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
 #' Print Function for the CVN Object Class
 #'
 #' @export
-print.CVN <- function(cvn, ...) { 
+print.CVN <- function(cvn, ...) {  # TODO
   cat(sprintf("Covariate-varying Network (CVN)\n\n"))
   
   if (all(cvn$converged)) {

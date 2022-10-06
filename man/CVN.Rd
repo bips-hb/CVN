@@ -117,6 +117,7 @@ A \code{CVN} object containing the estimates for all the graphs
   \item{\code{rho_genlasso}}{The \eqn{\rho} generalized LASSO penalty parameter} 
   \item{\code{eps_genlasso}}{The stopping criterion \eqn{\epsilon} for the generalized LASSO} 
   \item{\code{truncate_genlasso}}{Truncation value for \eqn{\beta} of the generalized LASSO}
+  \item{\code{n_lambda_values}}{Total number of \eqn{(\lambda_1, \lambda_2)} value combinations}
   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
   \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
   \item{\code{use_previous_estimate}}{If \code{TRUE}, the estimate from the previous \eqn{\lambda_1} and 
