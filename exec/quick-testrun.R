@@ -13,4 +13,4 @@ diag(W) <- 0
 lambda1 = 1:2
 lambda2 = 1:2
 
-(cvn <- CVN::CVN(grid, W, warmstart = TRUE, lambda1 = lambda1, lambda2 = lambda2, eps = 1e-3, maxiter = 1000, verbose = TRUE))
+(cvn <- CVN::CVN(grid, W, warmstart = TRUE, lambda1 = lambda1, lambda2 = lambda2, verbose = TRUE))

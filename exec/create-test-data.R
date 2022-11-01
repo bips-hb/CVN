@@ -6,7 +6,8 @@ p <- 10  # number of variables
 m <- 9   # number of graphs. !!! must be 9 !!!
 
 # Choice of the weight matrix W
-uniform_random <- T   
+uniform_random <- F   
+grid_weight <- T
 predefined <- F 
 disconnected <- F
 
@@ -22,6 +23,10 @@ if (uniform_random) {
   W <- W / max(W)
   W <- W
   diag(W) <- 0
+}
+
+if (grid_weight) { 
+  W <- CVNSim::create_weight_matrix(type = "grid") 
 }
 
 if (predefined) { 
