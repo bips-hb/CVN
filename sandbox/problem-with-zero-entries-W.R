@@ -12,7 +12,7 @@ rho <- 1
 eta1 <- lambda1 / rho
 eta2 <- lambda2 / rho
 
-W <- CVNSim::create_weight_matrix("full")
+W <- CVNSim::create_weight_matrix("grid")
 
 D <- CVN::create_matrix_D(W, lambda1, lambda2)
 
@@ -23,3 +23,4 @@ eps_genlasso <- 10^-10
 truncate_genlasso <- 10^-5
 
 CVN::genlasso_wrapper(y, W, m, nrow(D), eta1, eta2, a, rho = 1, max_iter = 1000, eps = 10^-10, truncate = 10^-5)
+

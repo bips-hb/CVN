@@ -9,6 +9,8 @@ W <- W %*% t(W)
 W <- W / max(W)
 diag(W) <- 0
 
+W <- CVNSim::create_weight_matrix("grid")
+
 # lambdas:
 lambda1 = 1:2
 lambda2 = 1:2

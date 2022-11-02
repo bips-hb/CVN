@@ -62,13 +62,13 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
   Rcpp::DoubleVector beta_new (m) ; // beta^(k + 1)
   Rcpp::DoubleVector beta_old (m) ; // beta^k
   Rcpp::DoubleVector delta (m) ; // aux. vector for beta-update step
-
+  
   /* initialize vectors for alpha-update step in the ADMM */
   Rcpp::DoubleVector alpha_new (c) ; 
   Rcpp::DoubleVector alpha_old1 (c) ;
   Rcpp::DoubleVector alpha_old2 (c) ;
   Rcpp::DoubleVector alpha (c) ; // used to store (2*alpha^k - alpha^(k-1))
-
+  
   /* Indices used for the alpha-update step */
   Rcpp::IntegerVector steps (m-1) ; 
   steps[0] = 0 ; 
@@ -95,7 +95,7 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
       delta[i] = eta1 * alpha[i] ;  
       
       for (j = i+1; j < m; j++) { 
-         delta[i] = delta[i] + eta2*W(i,j)*alpha[m + steps[i] + (j - i) - 1] ; 
+        delta[i] = delta[i] + eta2*W(i,j)*alpha[m + steps[i] + (j - i) - 1] ; 
       }
       
       for (j = 0; j < i; j++) { 
@@ -103,7 +103,7 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
       }
     }
     
-    //Rf_PrintValue(delta);
+    Rf_PrintValue(delta);
     
     // update beta with the computed delta and determine difference
     diff = 0 ;
@@ -125,7 +125,7 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
     
     /* --------- alpha update step ----------- */
     for (i = 0; i < m; i++) { 
-       alpha_new[i] = alpha_old1[i] + rho * eta1 * beta_new[i] ; 
+      alpha_new[i] = alpha_old1[i] + rho * eta1 * beta_new[i] ; 
     }
     
     k = m; 
@@ -137,7 +137,7 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
         k++; 
       }
     }
-
+    
     /* Threshold alpha. Must lie in [-1, 1] range */ 
     for (i = 0; i < c; i ++) { 
       if (alpha_new[i] > 1) { 
