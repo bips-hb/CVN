@@ -103,7 +103,7 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
       }
     }
     
-    Rf_PrintValue(delta);
+    //Rf_PrintValue(delta);
     
     // update beta with the computed delta and determine difference
     diff = 0 ;

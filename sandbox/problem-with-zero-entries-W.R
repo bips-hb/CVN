@@ -12,9 +12,9 @@ rho <- 1
 eta1 <- lambda1 / rho
 eta2 <- lambda2 / rho
 
-W <- CVNSim::create_weight_matrix("grid")
+W <- CVNSim::create_weight_matrix("glasso")
 
-D <- CVN::create_matrix_D(W, lambda1, lambda2)
+D <- CVN::create_matrix_D(W, lambda1, lambda2,remove_zero_row = FALSE)
 
 a <- CVN::matrix_A_inner_ADMM(m, D) + 1
 rho_genlasso <- 1
