@@ -139,26 +139,6 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   # Compute the empirical covariance matrices --------------
   Sigma <- lapply(1:m, function(i) cov(data[[i]])*(n_obs[i] - 1) / n_obs[i])
   
-  # Create initial values for the ADMM algorithm ----------
-  Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
-  Y <- rep(list(matrix(0, nrow = p, ncol = p)), m)
-  
-  # if warmstart, the individual graphs are first estimated using the GLASSO.
-  if (warmstart) { 
-    
-    if (verbose) { 
-      cat("Warm start...\n") 
-    }
-    
-    # We use the first lambda1 value in the vector
-    Theta <- lapply(Sigma, function(S) { 
-       est <- glasso::glasso(s = S, rho = lambda1[1])
-       est$w
-    })
-  }  else { 
-    Theta <- lapply(Sigma, function(S) diag(1/diag(S)))
-  }
-  
   # initialize results list ------------
   global_res <- list(
     Theta    = list(),          
@@ -193,8 +173,34 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                                 aic = NA))
   res$id <- 1:nrow(res)
   
-  for (i in 1:nrow(res)) { 
+  # estimate the graphs for the different values of (lambda1, lambda2) --------
+  
+  # set-up cluster and perform each estimate separately
+  registerDoParallel(n_cores)
+  
+  # go over each pair of penalty terms
+  est <- foreach(i = 1:(length(lambda1)*length(lambda2))) %dopar% {
     
+    # Create initial values for the ADMM algorithm ----------
+    Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
+    Y <- rep(list(matrix(0, nrow = p, ncol = p)), m)
+    
+    # if warmstart, the individual graphs are first estimated using the GLASSO.
+    if (warmstart) { 
+      
+      if (verbose) { 
+        cat("Warm start...\n") 
+      }
+      
+      # We use the lambda1 value 
+      Theta <- lapply(Sigma, function(S) { 
+        est <- glasso::glasso(s = S, rho = res$lambda1[i])
+        est$w
+      })
+    }  else { 
+      Theta <- lapply(Sigma, function(S) diag(1/diag(S)))
+    }
+  
     if (verbose) { 
       cat(sprintf("\n(%.0f%%) lambda1: %g / lambda2: %g\n", (i-1)/nrow(res)*100, res$lambda1[i], res$lambda2[i])) 
     }
@@ -208,42 +214,37 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     # Estimate the graphs -------------------------------------
     eta1 <- res$lambda1[i] / rho 
     eta2 <- res$lambda2[i] / rho 
-    est <- CVN::estimate(m, p, nrow(D), W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
+    CVN::estimate(m, p, nrow(D), W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
                          rho, rho_genlasso, 
                          eps, eps_genlasso, 
                          maxiter, maxiter_genlasso, truncate = truncate, 
                          truncate_genlasso = truncate_genlasso, 
                          use_genlasso_package = use_genlasso_package, verbose = verbose)  
-    
-    # Process results -----------------------------------------
-    global_res$Theta[[i]] <- est$Z
-    global_res$adj_matrices[[i]] <- est$adj_matrices 
-    
-    res$converged[i]    <- est$converged
-    res$value[i]        <- est$value
-    res$n_iterations[i] <- est$n_iterations
-    
+  }
+  
+  # Process results -----------------------------------------
+  for (i in 1:(length(lambda1)*length(lambda2))) { 
+    global_res$Theta[[i]] <- est[[i]]$Z
+    global_res$adj_matrices[[i]] <- est[[i]]$adj_matrices 
+  
+    res$converged[i]    <- est[[i]]$converged
+    res$value[i]        <- est[[i]]$value
+    res$n_iterations[i] <- est[[i]]$n_iterations
+  
     # determine the AIC
-    res$aic[i] <- CVN::determine_information_criterion(Theta = est$Z, 
-                           adj_matrices = est$adj_matrices, 
-                           Sigma = Sigma, 
-                           n_obs = n_obs,
-                           type = "AIC") 
-    
-    if (!use_previous_estimate) { 
-      Theta <- lapply(Sigma, function(S) diag(1/diag(S)))
-      Z     <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
-      Y     <- rep(list(matrix(0, nrow = p, ncol = p)), m)
-    } else { 
-      Theta <- est$Theta
-      Z     <- est$Z
-      Y     <- est$Y
-    }
+    res$aic[i] <- CVN::determine_information_criterion(Theta = est[[i]]$Z, 
+                                                     adj_matrices = est[[i]]$adj_matrices, 
+                                                     Sigma = Sigma, 
+                                                     n_obs = n_obs,
+                                                     type = "AIC") 
   }
   
   if (verbose) { 
     cat(sprintf("\n(100%%)\n")) 
   }
+  
+  # stop the cluster created in the beginning
+  stopImplicitCluster()
      
   # Collect all the results & input ---------------------------
   global_res$results  <- res                  
