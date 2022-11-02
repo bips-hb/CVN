@@ -36,14 +36,12 @@
 #' @param truncate_genlasso All values of the final \eqn{\hat{\beta}} below 
 #'                 \code{truncate_genlasso} will be set to \code{0}. 
 #'                 (Default: \code{1e-4})
-#' @param n_cores Number of cores used (Default: \code{1})
+#' @param n_cores Number of cores used (Default: max. number of cores - 1, or 
+#'                the total number penalty term pairs if that is less)
 #' @param normalized Data is normalized if \code{TRUE}. Otherwise the data is only
 #'                   centered (Default: \code{FALSE})
 #' @param warmstart If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
 #'                  the individual graphs first (Default: \code{TRUE})
-#' @param use_previous_estimate If \code{TRUE}, the estimated graph found for the previous 
-#'                  values of \eqn{\lambda_1} and \eqn{\lambda_2} is used as starting point
-#'                  for the next estimate (Default: \code{TRUE})
 #' @param use_genlasso If \code{TRUE}, use the \code{genlasso} package in 
 #'                  the \eqn{Z}-update step, rather then the ADMM (Default: \code{FALSE})
 #' @param verbose Verbose (Default: \code{TRUE}) 
@@ -84,8 +82,6 @@
 #'   \item{\code{n_lambda_values}}{Total number of \eqn{(\lambda_1, \lambda_2)} value combinations}
 #'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
 #'   \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
-#'   \item{\code{use_previous_estimate}}{If \code{TRUE}, the estimate from the previous \eqn{\lambda_1} and 
-#'                      \eqn{\lambda_2} value is used}
 #'   \item{\code{use_genlasso_package}}{If \code{TRUE}, the \code{\link[genlasso]{genlasso}}
 #'             package is used instead of the ADMM algorithm}
 #' @examples 
@@ -114,18 +110,38 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 eps_genlasso = 1e-10, 
                 maxiter_genlasso = 100, 
                 truncate_genlasso = 1e-4, 
-                n_cores = 1, 
+                n_cores = min(length(lambda1)*length(lambda2), parallel::detectCores() - 1), 
                 normalized = FALSE, 
                 warmstart = TRUE, 
-                use_previous_estimate = FALSE,
                 use_genlasso_package = FALSE, 
                 verbose = TRUE) { 
   
   # Check correctness input -------------------------------
   CVN::check_correctness_input(data, W, lambda1, lambda2, rho)
   
-  if (use_previous_estimate) { 
-    warning("Using the previous estimate might not always work. We are working on a test") 
+  # Set-up cluster ---------------------------
+  cl <- makeCluster(n_cores)
+  registerDoSNOW(cl)
+  opts <- list(progress = function(i) {i}) # empty place holder for foreach
+    
+  if (verbose) { 
+    cat(sprintf("Estimating a CVN with %d graphs...\n\n", m))
+    cat(sprintf("Number of cores: %d\n", n_cores))
+    if (warmstart) { 
+      cat("Uses a warmstart...\n\n") 
+    } else { 
+      cat("No warmstart...\n\n") 
+    }
+      
+    # Set-up a progress bar ---------------------------------
+    pb <- progress::progress_bar$new(
+      format = "estimating CVN [:bar] :percent eta: :eta",
+      total = length(lambda1)*length(lambda2) + 1, clear = FALSE, width= 80, show_after = 0)
+    pb$tick()
+    
+    #pb       <- txtProgressBar(max = length(lambda1)*length(lambda2), style = 3)
+    progress <- function(i) pb$tick()
+    opts     <- list(progress = progress) # used by doSNOW
   }
   
   # Extract variables -------------------------------------
@@ -160,7 +176,6 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     n_lambda_values   = length(lambda1) * length(lambda2), 
     normalized = normalized,
     warmstart  = warmstart, 
-    use_previous_estimate = use_previous_estimate, 
     use_genlasso_package  = use_genlasso_package
   )
   
@@ -174,12 +189,9 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   res$id <- 1:nrow(res)
   
   # estimate the graphs for the different values of (lambda1, lambda2) --------
-  
-  # set-up cluster and perform each estimate separately
-  registerDoParallel(n_cores)
-  
   # go over each pair of penalty terms
-  est <- foreach(i = 1:(length(lambda1)*length(lambda2))) %dopar% {
+  est <- foreach(i = 1:(length(lambda1)*length(lambda2)), 
+                 .options.snow = opts) %dopar% {
     
     # Create initial values for the ADMM algorithm ----------
     Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
@@ -187,11 +199,6 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     
     # if warmstart, the individual graphs are first estimated using the GLASSO.
     if (warmstart) { 
-      
-      if (verbose) { 
-        cat("Warm start...\n") 
-      }
-      
       # We use the lambda1 value 
       Theta <- lapply(Sigma, function(S) { 
         est <- glasso::glasso(s = S, rho = res$lambda1[i])
@@ -200,11 +207,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     }  else { 
       Theta <- lapply(Sigma, function(S) diag(1/diag(S)))
     }
-  
-    if (verbose) { 
-      cat(sprintf("\n(%.0f%%) lambda1: %g / lambda2: %g\n", (i-1)/nrow(res)*100, res$lambda1[i], res$lambda2[i])) 
-    }
-    
+
     # Initialize variables for the algorithm -----------------
     # Generate matrix D for the generalized LASSO 
     D <- CVN::create_matrix_D(W, res$lambda1[i], res$lambda2[i], rho, remove_zero_row = FALSE)
@@ -239,12 +242,13 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                                                      type = "AIC") 
   }
   
+  # stop the progress bar 
   if (verbose) { 
-    cat(sprintf("\n(100%%)\n")) 
+    pb$terminate()
   }
   
-  # stop the cluster created in the beginning
-  stopImplicitCluster()
+  # stop the cluster
+  stopCluster(cl) 
      
   # Collect all the results & input ---------------------------
   global_res$results  <- res                  

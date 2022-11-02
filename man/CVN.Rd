@@ -18,10 +18,9 @@ CVN(
   eps_genlasso = 1e-10,
   maxiter_genlasso = 100,
   truncate_genlasso = 1e-04,
-  n_cores = 1,
+  n_cores = min(length(lambda1) * length(lambda2), parallel::detectCores() - 1),
   normalized = FALSE,
   warmstart = TRUE,
-  use_previous_estimate = FALSE,
   use_genlasso_package = FALSE,
   verbose = TRUE
 )
@@ -66,17 +65,14 @@ the generalized LASSO problem (Default: \code{100})}
 \code{truncate_genlasso} will be set to \code{0}. 
 (Default: \code{1e-4})}
 
-\item{n_cores}{Number of cores used (Default: \code{1})}
+\item{n_cores}{Number of cores used (Default: max. number of cores - 1, or 
+the total number penalty term pairs if that is less)}
 
 \item{normalized}{Data is normalized if \code{TRUE}. Otherwise the data is only
 centered (Default: \code{FALSE})}
 
 \item{warmstart}{If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
 the individual graphs first (Default: \code{TRUE})}
-
-\item{use_previous_estimate}{If \code{TRUE}, the estimated graph found for the previous 
-values of \eqn{\lambda_1} and \eqn{\lambda_2} is used as starting point
-for the next estimate (Default: \code{TRUE})}
 
 \item{verbose}{Verbose (Default: \code{TRUE})}
 
@@ -120,8 +116,6 @@ A \code{CVN} object containing the estimates for all the graphs
   \item{\code{n_lambda_values}}{Total number of \eqn{(\lambda_1, \lambda_2)} value combinations}
   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
   \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
-  \item{\code{use_previous_estimate}}{If \code{TRUE}, the estimate from the previous \eqn{\lambda_1} and 
-                     \eqn{\lambda_2} value is used}
   \item{\code{use_genlasso_package}}{If \code{TRUE}, the \code{\link[genlasso]{genlasso}}
             package is used instead of the ADMM algorithm}
 }
