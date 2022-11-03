@@ -119,6 +119,11 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   # Check correctness input -------------------------------
   CVN::check_correctness_input(data, W, lambda1, lambda2, rho)
   
+  # Extract variables -------------------------------------
+  m <- length(data)       # total number of graphs  
+  p <- ncol(data[[1]])    # total number of variables
+  n_obs <- sapply(data, function(X) nrow(X))    # no. of observations per graph 
+  
   # Set-up cluster ---------------------------
   cl <- makeCluster(n_cores)
   registerDoSNOW(cl)
@@ -143,11 +148,6 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     progress <- function(i) pb$tick()
     opts     <- list(progress = progress) # used by doSNOW
   }
-  
-  # Extract variables -------------------------------------
-  m <- length(data)       # total number of graphs  
-  p <- ncol(data[[1]])    # total number of variables
-  n_obs <- sapply(data, function(X) nrow(X))    # no. of observations per graph 
   
   # Center or normalize data -------------------------------
   data <- lapply(data, function(X) scale(X, scale = normalized))

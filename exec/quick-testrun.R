@@ -9,20 +9,9 @@ W <- W %*% t(W)
 W <- W / max(W)
 diag(W) <- 0
 
-W <- CVNSim::create_weight_matrix("glasso")
-
 # lambdas:
 lambda1 = c(1, 2)
 lambda2 = c(1, 2)
 
-gl <- CVN::glasso(grid, lambda1 = .1, verbose = TRUE, eps = 10^-6)
-
-cvn <- CVN::CVN(grid, W, warmstart = TRUE, eps = 1e-6, maxiter = 1000,
-                 lambda1 = lambda1, lambda2 = lambda2, verbose = TRUE)
-
-cvn$adj_matrices[[1]][[1]]
-gl$adj_matrices[[1]][[1]]
-
-
-sum(abs(cvn$adj_matrices[[1]][[1]] - gl$adj_matrices[[1]][[1]]))
-
+(cvn <- CVN::CVN(grid, W, warmstart = TRUE, eps = 1e-4, maxiter = 1000,
+                 lambda1 = lambda1, lambda2 = lambda2, verbose = TRUE))
