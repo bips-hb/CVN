@@ -10,7 +10,7 @@ Description: A package for inferring high-dimensional
 Imports: 
   CVXR
 Depends: 
-	R (>= 4.2.0), 
+	R (>= 4.0.2), 
 	CVXR,
 	Rcpp,
 	doSNOW, 
