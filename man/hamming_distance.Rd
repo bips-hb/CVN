@@ -12,8 +12,9 @@ created by either the \code{\link{CVN::CVN}} or the
 \code{\link{CVN::glasso}} function}
 }
 \value{
-A symmetric matrix with the structural Hamming distances between 
-        the different graphs
+A list of symmetric matrices. Each matrix contains the structural 
+        Hamming distances between the different graphs. Each item in the 
+        list corresponds to one \eqn{(\lambda_1, \lambda_2)} pair
 }
 \description{
 Returns the structural Hamming distances

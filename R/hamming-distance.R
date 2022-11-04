@@ -20,8 +20,9 @@ hamming_distance_adj_matrices <- function(adj_matrix1, adj_matrix2) {
 #'            created by either the \code{\link{CVN::CVN}} or the 
 #'            \code{\link{CVN::glasso}} function
 #' 
-#' @return A symmetric matrix with the structural Hamming distances between 
-#'         the different graphs 
+#' @return A list of symmetric matrices. Each matrix contains the structural 
+#'         Hamming distances between the different graphs. Each item in the 
+#'         list corresponds to one \eqn{(\lambda_1, \lambda_2)} pair
 #' @export
 hamming_distance <- function(cvn) { 
   
