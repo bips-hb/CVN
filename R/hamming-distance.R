@@ -1,15 +1,32 @@
 #' Structural Hamming Distance 
 #' 
-#' Returns the structural Hamming distance between two
+#' Returns the structural Hamming distance between multiple
 #' graphs
 #' 
-#' @param adj_matrix1,adj_matrix2 Two adjacency matrices
+#' @param adj_matrices A list of adjacency matrices
 #' 
-#' @return Hamming distance
+#' @return Matrix of Hamming distances
 #' @export
-hamming_distance_adj_matrices <- function(adj_matrix1, adj_matrix2) { 
-  diff <- as.matrix(adj_matrix1 != adj_matrix2)
-  return( sum( diff | t(diff) ) / 2 )
+hamming_distance_adj_matrices <- function(adj_matrices) { 
+  
+  # number of graphs
+  m <- length(adj_matrices)
+  
+  # initial distance matrices 
+  distance_matrix <- matrix(rep(0, m^2), ncol = m) 
+  
+  # go over all pair of graphs 
+  for (i in 1:(m-1)) { 
+    for (j in (i+1):m) { 
+      dist <- as.matrix(adj_matrices[[i]] != adj_matrices[[j]])
+      dist <- sum( dist | t(dist) ) / 2
+        
+      distance_matrix[i,j] <- dist
+      distance_matrix[j,i] <- dist
+    }
+  }
+  
+  return(distance_matrix)
 }
 
 #' Structural Hamming Distance for a \code{cvn} Object
@@ -35,17 +52,8 @@ hamming_distance <- function(cvn) {
                       function(i) {empty_matrix})
   
   # go over all lambda value combinations
-  for (k in 1:cvn$n_lambda_values) {  
-    # go over all pair of graphs 
-    for (i in 1:(cvn$m-1)) { 
-      for (j in (i+1):cvn$m) { 
-        dist <- hamming_distance_adj_matrices(cvn$adj_matrices[[k]][[i]], 
-                                              cvn$adj_matrices[[k]][[j]])
-        
-        distances[[k]][i,j] <- dist
-        distances[[k]][j,i] <- dist
-      }
-    }
+  for (k in 1:cvn$n_lambda_values) {
+    distances[[k]] <- hamming_distance_adj_matrices(cvn$adj_matrices[[k]])
   }
   
   return(distances)

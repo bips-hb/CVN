@@ -4,15 +4,15 @@
 \alias{hamming_distance_adj_matrices}
 \title{Structural Hamming Distance}
 \usage{
-hamming_distance_adj_matrices(adj_matrix1, adj_matrix2)
+hamming_distance_adj_matrices(adj_matrices)
 }
 \arguments{
-\item{adj_matrix1, adj_matrix2}{Two adjacency matrices}
+\item{adj_matrices}{A list of adjacency matrices}
 }
 \value{
-Hamming distance
+Matrix of Hamming distances
 }
 \description{
-Returns the structural Hamming distance between two
+Returns the structural Hamming distance between multiple
 graphs
 }
