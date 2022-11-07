@@ -119,6 +119,14 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   # Check correctness input -------------------------------
   CVN::check_correctness_input(data, W, lambda1, lambda2, rho)
   
+  #' When the weight matrix is completely zero, there is no smoothing
+  #' between graphs. Therefore, the value of lambda2 is irrelevant. 
+  #' In this case, we fix lambda2 to 1 and inform the user of this fact
+  if (sum(W) == 0) { 
+    warning("Since weight matrix W is zero, there is no smoothing. lambda2 is fixed to 1")
+    lambda2 <- 1
+  }
+  
   # Extract variables -------------------------------------
   m <- length(data)       # total number of graphs  
   p <- ncol(data[[1]])    # total number of variables
