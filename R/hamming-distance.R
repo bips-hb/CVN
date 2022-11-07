@@ -37,8 +37,8 @@ hamming_distance <- function(cvn) {
   # go over all lambda value combinations
   for (k in 1:cvn$n_lambda_values) {  
     # go over all pair of graphs 
-    for (i in 1:(m-1)) { 
-      for (j in (i+1):m) { 
+    for (i in 1:(cvn$m-1)) { 
+      for (j in (i+1):cvn$m) { 
         dist <- hamming_distance_adj_matrices(cvn$adj_matrices[[k]][[i]], 
                                               cvn$adj_matrices[[k]][[j]])
         
