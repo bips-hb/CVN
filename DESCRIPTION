@@ -20,7 +20,9 @@ Depends:
 	Matrix,
 	huge, 
 	glasso,
-	crayon
+	crayon, 
+	ggplot2, 
+	reshape2
 LinkingTo: Rcpp
 License: GPL-3
 Encoding: UTF-8

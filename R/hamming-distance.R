@@ -26,6 +26,7 @@ hamming_distance_adj_matrices <- function(adj_matrices) {
     }
   }
   
+  class(distance_matrix) <- "cvn:distancematrix"
   return(distance_matrix)
 }
 
@@ -56,5 +57,6 @@ hamming_distance <- function(cvn) {
     distances[[k]] <- hamming_distance_adj_matrices(cvn$adj_matrices[[k]])
   }
   
+  class(distances) <- "cvn:distances"
   return(distances)
 }
