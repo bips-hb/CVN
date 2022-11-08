@@ -20,8 +20,6 @@ create_network_object <- function(adj_matrix) {
                        matrix.type = "adjacency") # the type of input
 }
 
-
-
 M = as.matrix(cvn$adj_matrices[[2]][[1]])
 
 net = create_network_object(cvn$adj_matrices[[2]][[1]])
