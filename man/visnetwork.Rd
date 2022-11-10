@@ -7,7 +7,7 @@
 visnetwork(
   nodes,
   edges,
-  node_titles = 1:nrow(adj_matrix),
+  node_titles = nodes$id,
   title = "",
   igraph_layout = "layout_in_circle"
 )

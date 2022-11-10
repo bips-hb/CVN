@@ -27,6 +27,10 @@ create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
 #' @return Data frame that be used as input for \code{visNetwork} 
 #' @export
 create_edges_visnetwork <- function(adj_matrix) { 
+  
+  # needs to be of the type 'matrix' when using the function which
+  adj_matrix <- as.matrix(adj_matrix)
+  
   # set the lower diagonal to zero so that we do not count the same edge twice
   adj_matrix[lower.tri(adj_matrix)] <- 0
   
@@ -133,10 +137,54 @@ set_attributes_to_edges_visnetwork <- function(edges,
 #' @export
 visnetwork <- function(nodes, 
                        edges, 
-                       node_titles = 1:nrow(adj_matrix), 
+                       node_titles = nodes$id, 
                        title = "", 
                        igraph_layout = "layout_in_circle") { 
   visNetwork(nodes, edges, width = "100%", main = list(text = title)) %>% 
     visIgraphLayout(layout = igraph_layout) %>%
     visOptions(highlightNearest = list(enabled = T, hover = T))
+}
+
+
+#' All \code{visNetwork} plots for a CVN object
+#' 
+#' Creates all \code{visNetwork} plots, see \code{\link{CVN::visnetwork}}, 
+#' for all graphs in a \code{cvn} object
+#' @export
+visnetwork_cvn <- function(cvn, 
+                           node_titles = 1:cvn$p, 
+                           titles = lapply(1:cvn$n_lambda_values, function(i) sapply(1:cvn$m, function(j) "")), 
+                           show_core_graph = TRUE, 
+                           width = c(3,1), 
+                           color = c("red", "blue"), 
+                           igraph_layout = "layout_in_circle") {
+
+  if (!(length(node_titles) == cvn$p)) { 
+    stop("number of node labels does not correspond to the number of nodes") 
+  }
+   
+  nodes <- CVN::create_nodes_visnetwork(n_nodes = cvn$p, labels = node_titles) 
+  
+  # get the core graphs for the different values of (lambda1, lamdba2)
+  core_graphs <- CVN::find_core_graph(cvn)
+  
+  subset_edges <- lapply(core_graphs, function(adj_matrix) { 
+      as.list(create_edges_visnetwork(adj_matrix))
+    })
+  
+  # create the edge dataframes for all the graphs
+  all_edges <- lapply(1:cvn$n_lambda_values, function(i) {
+     lapply(1:cvn$m, function(k) { 
+       edges <- CVN::create_edges_visnetwork(cvn$adj_matrices[[i]][[k]])
+       set_attributes_to_edges_visnetwork(edges, subset_edges = subset_edges[[i]],
+                                          width = width, color = color)
+                                          
+     })
+  })
+  
+  lapply(1:cvn$n_lambda_values, function(i) {
+    lapply(1:cvn$m, function(k) { 
+      CVN::visnetwork(nodes, all_edges[[i]][[k]], title = titles[[i]][[k]], igraph_layout = igraph_layout)
+    })
+  })
 }
