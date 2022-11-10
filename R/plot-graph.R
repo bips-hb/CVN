@@ -1,9 +1,16 @@
-
-
-
+#' Nodes for the \code{visNetwork} package
+#' 
+#' Creates a data frame that can be used for the 
+#' \code{visNetwork} package. 
+#' 
+#' @param n_nodes Number of nodes in the graph
+#' @param labels The labels for the individual nodes 
+#'             (Default: \code{1:n_nodes})
+#'
+#' @return Data frame with two columns: \code{id} and \code{title}  
 #' @export 
 create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
-  nodes <- data.frame(id = 1:data$p)
+  nodes <- data.frame(id = 1:n_nodes)
   nodes$title <- labels
   return(nodes)
 }
@@ -106,6 +113,23 @@ set_attributes_to_edges_visnetwork <- function(edges,
 #' \code{\link{set_attributes_to_edges_visnetwork}}. 
 #' 
 #' @return A \code{visNetwork} plot
+#' @examples 
+#' nodes <- CVN::create_nodes_visnetwork(n_nodes = 5, labels = LETTERS[1:5])
+#'
+#' adj_matrix <- matrix(c(0, 1, 0, 1, 0, 
+#'                        1, 0, 1, 0, 0, 
+#'                        0, 1, 0, 0, 0, 
+#'                        1, 0, 0, 0, 1,
+#'                        0, 0, 0, 1, 0), ncol = 5)
+#' 
+#' edges <- CVN::create_edges_visnetwork(adj_matrix)
+#' 
+#' edges <- set_attributes_to_edges_visnetwork(edges, 
+#'                                             subset_edges = list(from = c(1, 2), to = c(4, 3)),
+#'                                             width = c(3, .5), 
+#'                                             color = c("red", "blue"))
+#' 
+#' CVN::visnetwork(nodes, edges)
 #' @export
 visnetwork <- function(nodes, 
                        edges, 
@@ -116,12 +140,3 @@ visnetwork <- function(nodes,
     visIgraphLayout(layout = igraph_layout) %>%
     visOptions(highlightNearest = list(enabled = T, hover = T))
 }
-
-
-nodes <- create_nodes_visnetwork(nrow(A), labels = raw_input$gene_labels)
-edges <- create_edges_visnetwork(A)
-
-subset_edges <- list(from = c(1, 114), to = c(42, 128))
-edges <- set_attributes_to_edges_visnetwork(edges, subset_edges, width = c(8, 2), color = c("red", "blue"))
-
-visnetwork(nodes, edges)

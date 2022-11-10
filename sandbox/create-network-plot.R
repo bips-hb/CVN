@@ -3,7 +3,7 @@
 library(visNetwork)
 library(dplyr)
 
-load_kikme <- FALSE
+load_kikme <- T
 
 if (load_kikme) { 
   raw_input <- readRDS("../KiKme-analysis/data/KiKme-dataset.rds")
@@ -11,6 +11,15 @@ if (load_kikme) {
 }
 
 A <- as.matrix(data$adj_matrices[[6]][[1]])
+
+
+nodes <- create_nodes_visnetwork(nrow(A), labels = raw_input$gene_labels)
+edges <- create_edges_visnetwork(A)
+
+subset_edges <- list(from = c(1, 114), to = c(42, 128))
+edges <- set_attributes_to_edges_visnetwork(edges, subset_edges, width = c(8, 2), color = c("red", "blue"))
+
+visnetwork(nodes, edges)
 
 #nodes <- data.frame(id = 1:data$p)
 #nodes$title <- raw_input$gene_labels # Text on click
@@ -212,3 +221,21 @@ visnetwork(nodes, edges)
 # # ggraph(net) +
 # #   geom_edge_link() +   # add edges to the plot
 # #   geom_node_point()    # add nodes to the plot
+
+
+nodes <- CVN::create_nodes_visnetwork(n_nodes = 5, labels = LETTERS[1:5])
+
+adj_matrix <- matrix(c(0, 1, 0, 1, 0, 
+                       1, 0, 1, 0, 0, 
+                       0, 1, 0, 0, 0, 
+                       1, 0, 0, 0, 1,
+                       0, 0, 0, 1, 0), ncol = 5)
+
+edges <- CVN::create_edges_visnetwork(adj_matrix)
+
+edges <- set_attributes_to_edges_visnetwork(edges, 
+                                   subset_edges = list(from = c(1, 2), to = c(4, 3)),
+                                   width = c(3, .5), 
+                                   color = c("red", "blue"))
+
+CVN::visnetwork(nodes, edges)
