@@ -284,6 +284,22 @@ print.CVN <- function(cvn, ...) {  # TODO
   print(cvn2$results)
 }
 
+#' Strip CVN
+#' 
+#' Function that removes most of the items to make the CVN object 
+#' more memory sufficient. This is especially important when the 
+#' graphs are rather larger
+#' 
+#' @param cvn \code{cvn} object
+#'
+#' @return Reduced cvn where \code{Theta}, \code{data} and \code{Sigma}
+#'         are removed
+#' @export
+strip_cvn <- function(cvn) { 
+   class(cvn) <- c(class(cvn), "list")
+   within(cvn, rm(Theta, data, Sigma))
+}
+
 #' Plot Function for CVN Object Class
 #' 
 #' @export

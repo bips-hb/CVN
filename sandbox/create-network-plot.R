@@ -239,3 +239,7 @@ edges <- set_attributes_to_edges_visnetwork(edges,
                                    color = c("red", "blue"))
 
 CVN::visnetwork(nodes, edges)
+
+cvn <- readRDS("../KiKme-analysis/results/KiKme-grid.rds")
+
+p <- CVN::visnetwork_cvn(cvn)

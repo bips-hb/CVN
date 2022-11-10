@@ -40,11 +40,11 @@ create_edges_visnetwork <- function(adj_matrix) {
   # rename the columns of the data.frame to 'from' and 'to' which 
   # is required for visNetwork
   edges %>% 
-    rename(
+    dplyr::rename(
       from = row,
       to = col
     ) %>% 
-    arrange(from)
+    dplyr::arrange(from)
 }
 
 #' Add Attributes to Subset of Edges for \code{visNetwork}
@@ -71,6 +71,18 @@ set_attributes_to_edges_visnetwork <- function(edges,
                                                subset_edges, 
                                                width = c(NA, NA), 
                                                color = c(NULL, NULL)) { 
+  
+  # check whether the subset list is not empty
+  if (length(subset_edges$from) == 0) { 
+    if (!is.na(width[1])) { 
+      edges$width <- width[2]
+    }
+  
+    if (!is.null(color[1])) { 
+      edges$color <- color[2]
+    }
+    return(edges)
+  }
   
   # add IDs to the edges data.frame in order to keep track of the 
   # edges. The 'id' column is removed later on
