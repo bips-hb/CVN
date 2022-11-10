@@ -89,7 +89,7 @@ set_attributes_to_edges_visnetwork <- function(edges,
   edges$id <- 1:nrow(edges)
   
   # filter out the edges that are in the subset_edges list
-  ids <- edges %>% filter(
+  ids <- edges %>% dplyr::filter(
     from %in% subset_edges$from, 
     to %in% subset_edges$to
   )
@@ -187,8 +187,9 @@ visnetwork_cvn <- function(cvn,
   # create the edge dataframes for all the graphs
   all_edges <- lapply(1:cvn$n_lambda_values, function(i) {
      lapply(1:cvn$m, function(k) { 
+       cat(sprintf("%d\t%d\n", i,k))
        edges <- CVN::create_edges_visnetwork(cvn$adj_matrices[[i]][[k]])
-       set_attributes_to_edges_visnetwork(edges, subset_edges = subset_edges[[i]],
+       CVN::set_attributes_to_edges_visnetwork(edges, subset_edges = subset_edges[[i]],
                                           width = width, color = color)
                                           
      })

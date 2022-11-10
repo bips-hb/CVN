@@ -241,5 +241,6 @@ edges <- set_attributes_to_edges_visnetwork(edges,
 CVN::visnetwork(nodes, edges)
 
 cvn <- readRDS("../KiKme-analysis/results/KiKme-grid.rds")
+cvn <- CVN::strip_cvn(cvn)
 
 p <- CVN::visnetwork_cvn(cvn)
