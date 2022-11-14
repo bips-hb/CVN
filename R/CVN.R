@@ -42,6 +42,9 @@
 #'                   centered (Default: \code{FALSE})
 #' @param warmstart If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
 #'                  the individual graphs first (Default: \code{TRUE})
+#' @param minimal If \code{TRUE}, the returned \code{cvn} is minimal in terms of 
+#'                  memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not 
+#'                  returned (Default: \code{FALSE})
 #' @param use_genlasso If \code{TRUE}, use the \code{genlasso} package in 
 #'                  the \eqn{Z}-update step, rather then the ADMM (Default: \code{FALSE})
 #' @param verbose Verbose (Default: \code{TRUE}) 
@@ -59,17 +62,19 @@
 #'    \item{\code{id}}{The id. This corresponds to the indices of the lists}
 #'    The estimates of the precision matrices and the corresponding adjacency matrices
 #'    for the different values of \eqn{(\lambda_1, \lambda_2)} can be found 
-#'    \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m}}
+#'    \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m}, 
+#'                        (only if \code{minimal = FALSE})}
 #'    \item{\code{adj_matrices}}{A list with the estimated adjacency matrices corresponding to the 
 #'                               estimated precision matrices in \code{Theta}. The entries 
 #'                               are \code{1} if there is an edge, \code{0} otherwise. 
 #'                               The matrices are sparse using package \code{\link[Matrix]{Matrix}}}
 #'    In addition, the input given to the CVN function is stored in the object as well:
-#'    \item{\code{Sigma}}{Empirical covariance matrices \eqn{\{\hat{\Sigma}_i\}_{i = 1}^m}}
+#'    \item{\code{Sigma}}{Empirical covariance matrices \eqn{\{\hat{\Sigma}_i\}_{i = 1}^m}, 
+#'                              (only if \code{minimal = FALSE})}
 #'    \item{\code{m}}{Number of graphs}
 #'    \item{\code{p}}{Number of variables}
 #'    \item{\code{n_obs}}{Vector of length \eqn{m} with number of observations for each graph}
-#'   \item{\code{data}}{The \code{data}, but then normalized or centered}
+#'   \item{\code{data}}{The \code{data}, but then normalized or centered (only if \code{minimal = FALSE})}
 #'   \item{\code{W}}{The \eqn{(m \times m)}-dimensional weight matrix \eqn{W}}
 #'   \item{\code{maxiter}}{Maximum number of iterations for the ADMM}
 #'   \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter} 
@@ -82,9 +87,9 @@
 #'   \item{\code{n_lambda_values}}{Total number of \eqn{(\lambda_1, \lambda_2)} value combinations}
 #'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
 #'   \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
-#'   \item{\code{minimal}}{If \code{TRUE}, the \code{data}, \code{Theta} }
 #'   \item{\code{use_genlasso_package}}{If \code{TRUE}, the \code{\link[genlasso]{genlasso}}
 #'             package is used instead of the ADMM algorithm}
+#'   \item{\code{minimal}}{If \code{TRUE}, \code{data}, \code{Theta} and \code{Sigma} are not added}
 #' @examples 
 #' data(grid)
 #' m <- 9 # must be 9 for this example
@@ -186,6 +191,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     n_lambda_values   = length(lambda1) * length(lambda2), 
     normalized = normalized,
     warmstart  = warmstart, 
+    minimal = minimal, 
     use_genlasso_package  = use_genlasso_package
   )
   
@@ -266,6 +272,10 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   
   class(global_res) <- "cvn" 
   
+  if (minimal) { 
+    global_res <- strip_cvn(global_res) 
+  }
+  
   return(global_res)
 }
 
@@ -311,6 +321,10 @@ strip_cvn <- function(cvn) {
   if ('Sigma' %in% names(cvn)) { 
     cvn <- within(cvn, rm(Sigma))
   }
+  
+  # set the variable keeping track of whether the cvn is 
+  # striped to TRUE
+  cvn$minimal <- TRUE
   
   class(cvn) <- head(class(cvn), -1)
   return(cvn)
