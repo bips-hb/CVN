@@ -298,10 +298,22 @@ print.CVN <- function(cvn, ...) {  # TODO
 #'         are removed
 #' @export
 strip_cvn <- function(cvn) { 
-   class(cvn) <- c(class(cvn), "list")
-   cvn <- within(cvn, rm(Theta, data, Sigma))
-   class(cvn) <- head(class(cvn), -1)
-   return(cvn)
+  class(cvn) <- c(class(cvn), "list")
+  
+  if ('Theta' %in% names(cvn)) { 
+    cvn <- within(cvn, rm(Theta))
+  }
+  
+  if ('data' %in% names(cvn)) { 
+    cvn <- within(cvn, rm(data))
+  }
+  
+  if ('Sigma' %in% names(cvn)) { 
+    cvn <- within(cvn, rm(Sigma))
+  }
+  
+  class(cvn) <- head(class(cvn), -1)
+  return(cvn)
 }
 
 #' Plot Function for CVN Object Class
