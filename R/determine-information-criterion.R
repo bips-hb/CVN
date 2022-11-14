@@ -35,7 +35,7 @@ determine_information_criterion <- function(Theta, adj_matrices, Sigma, n_obs,
 #' 
 #' @export
 determine_information_criterion_cvn <- function(cvn, type = c("AIC", "BIC")) { 
-  if (class(cvn) != 'cvn') { 
+  if (!("cvn" %in% class(cvn))) { 
     stop("cvn parameter must be of type 'cvn'") 
   }
   

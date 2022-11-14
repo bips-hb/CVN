@@ -158,7 +158,7 @@ glasso <- function(data, lambda1 = 1:2,
   # Collect all the results & input ---------------------------
   global_res$results  <- res                  
   
-  class(global_res) <- "cvn:glasso" 
+  class(global_res) <- c("cvn", "cvn:glasso", "list")
   
   return(global_res)
 }

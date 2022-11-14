@@ -44,8 +44,8 @@ hamming_distance_adj_matrices <- function(adj_matrices) {
 #' @export
 hamming_distance <- function(cvn) { 
   
-  if (!(class(cvn) %in% c("cvn", "cvn:glasso"))) { 
-    stop("input must be a 'cvn' or 'cvn:glasso' object") 
+  if (!("cvn" %in% class(cvn))) { 
+    stop("input must be a 'cvn' object") 
   }
   
   empty_matrix <- matrix(rep(0, cvn$m^2), ncol = cvn$m) 

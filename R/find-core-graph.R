@@ -9,7 +9,7 @@
 #'         value of (lambda1, lambda2)
 #' @export
 find_core_graph <- function(cvn) { 
-  if (!(class(cvn) %in% c("cvn", "cvn:glasso"))) { 
+  if (!("cvn" %in% class(cvn))) { 
     stop("cvn argument should be of the type cvn or cvn:glasso")  
   }
   

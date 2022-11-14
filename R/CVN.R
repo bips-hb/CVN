@@ -270,7 +270,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   # Collect all the results & input ---------------------------
   global_res$results  <- res                  
   
-  class(global_res) <- "cvn" 
+  class(global_res) <- c("cvn", "list") 
   
   if (minimal) { 
     global_res <- strip_cvn(global_res) 
@@ -308,7 +308,6 @@ print.CVN <- function(cvn, ...) {  # TODO
 #'         are removed
 #' @export
 strip_cvn <- function(cvn) { 
-  class(cvn) <- c(class(cvn), "list")
   
   if ('Theta' %in% names(cvn)) { 
     cvn <- within(cvn, rm(Theta))
@@ -326,7 +325,6 @@ strip_cvn <- function(cvn) {
   # striped to TRUE
   cvn$minimal <- TRUE
   
-  class(cvn) <- head(class(cvn), -1)
   return(cvn)
 }
 
