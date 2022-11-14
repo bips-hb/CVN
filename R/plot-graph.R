@@ -162,6 +162,15 @@ visnetwork <- function(nodes,
 #' 
 #' Creates all \code{visNetwork} plots, see \code{\link{CVN::visnetwork}}, 
 #' for all graphs in a \code{cvn} object
+#' 
+#' @param cvn A \code{cvn} object, see \code{\link{CVN::CVN}} 
+#'        or \code{\link{CVN::glasso}}
+#' @param node_titles Vector with title of the nodes (Default: \code{1:p})
+#' @param titles A list with \code{n_lambda_values} vectors. Each vector is of the 
+#'         lenght \code{m}. Regulates the titles of the graphs (Default: no title)
+#' @param show_core_graph,width,color Show the core graph using the width and colors
+#' 
+#' @return List 
 #' @export
 visnetwork_cvn <- function(cvn, 
                            node_titles = 1:cvn$p, 
@@ -182,6 +191,13 @@ visnetwork_cvn <- function(cvn,
     cat(sprintf("Number of different lambda values: %d\n", cvn$n_lambda_values))
     cat(sprintf("Creating nodes...\n"))
   }
+  
+  res <- list(
+    m = cvn$m, 
+    p = cvn$p, 
+    W = cvn$W, 
+    results = cvn$results
+  )
   
   nodes <- CVN::create_nodes_visnetwork(n_nodes = cvn$p, labels = node_titles) 
   
@@ -246,7 +262,7 @@ visnetwork_cvn <- function(cvn,
   
   #return(all_edges)
   
-  res <- lapply(1:cvn$n_lambda_values, function(i) {
+  res$plots <- lapply(1:cvn$n_lambda_values, function(i) {
     lapply(1:cvn$m, function(k) { 
       if (verbose) { 
         pb_plots$tick()
