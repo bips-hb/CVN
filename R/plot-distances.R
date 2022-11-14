@@ -67,3 +67,59 @@ plot_hamming_distances <- function(distance_matrix, absolute = TRUE,
 
   return(p)
 }
+
+#' Heatmaps for a CVN
+#' 
+#' Creates all the heatmaps for a CVN, a heatmap for each 
+#' pair of \eqn{(\lambda_1, \lambda_2)}
+#' 
+#' @param cvn A \code{cvn} object
+#' @param absolute If \code{FALSE}, rescaled to [0,1]
+#' @param titles Title of the plots (Default is none)
+#' @param legend_label Title of the legend (Default: "Hamming Distance")
+#' @param add_counts_to_cells If \code{TRUE}, counts from the matrix are 
+#'                  added to the plot (Default: \code{TRUE})
+#' @param add_ticks_labels If \code{TRUE}, the number corresponding to the graph
+#'                   is add to the plot (Default: \code{TRUE})
+#' @param t Distance between tick labels and x-axis (Default: -6)
+#' @param r Distance between tick labels and y-axis (Default: -8)
+#' 
+#' @return List of plots 
+#' @export
+plot_hamming_distances_cvn <- function(cvn,
+                                       absolute = TRUE,
+                                       titles = rep("", cvn$n_lambda_values),
+                                       legend_label = "Hamming Distance",
+                                       add_counts_to_cells = TRUE,
+                                       add_ticks_labels = TRUE,
+                                       t = -6,
+                                       r = -8) {
+  
+  if (!("cvn" %in% class(cvn))) { 
+    stop("input must be a 'cvn' object") 
+  }  
+  
+  hamming <- CVN::hamming_distance(cvn)
+  
+  plots <- lapply(1:cvn$n_lambda_values, function(i) { 
+    CVN::plot_hamming_distances(hamming$distances[[i]], 
+                                absolute = absolute, 
+                                title = titles[i],
+                                legend_label = legend_label,
+                                add_counts_to_cells = add_counts_to_cells,
+                                add_ticks_labels = add_ticks_labels,
+                                t = t,
+                                r = r)
+  })
+  
+  return(
+    list(
+      m = hamming$m, 
+      p = hamming$p, 
+      W = hamming$W, 
+      distances = hamming$distances,
+      results = hamming$results,
+      plots = plots 
+    )
+  )
+}

@@ -57,6 +57,14 @@ hamming_distance <- function(cvn) {
     distances[[k]] <- hamming_distance_adj_matrices(cvn$adj_matrices[[k]])
   }
   
-  class(distances) <- "cvn:distances"
-  return(distances)
+  results <- list(
+    m = cvn$m, 
+    p = cvn$p, 
+    W = cvn$W,
+    distances = distances,
+    results = cvn$results
+  )
+  
+  class(results) <- c("cvn:distances", "list")
+  return(results)
 }
