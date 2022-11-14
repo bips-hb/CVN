@@ -4,12 +4,14 @@
 \alias{hamming_distance}
 \title{Structural Hamming Distance for a \code{cvn} Object}
 \usage{
-hamming_distance(cvn)
+hamming_distance(cvn, verbose = TRUE)
 }
 \arguments{
 \item{cvn}{A \code{cvn} or \code{cvn:glasso} object 
 created by either the \code{\link{CVN::CVN}} or the 
 \code{\link{CVN::glasso}} function}
+
+\item{verbose}{If \code{TRUE}, shows a progress bar}
 }
 \value{
 A list of symmetric matrices. Each matrix contains the structural 

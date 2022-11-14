@@ -37,15 +37,25 @@ hamming_distance_adj_matrices <- function(adj_matrices) {
 #' @param cvn A \code{cvn} or \code{cvn:glasso} object 
 #'            created by either the \code{\link{CVN::CVN}} or the 
 #'            \code{\link{CVN::glasso}} function
+#' @param verbose If \code{TRUE}, shows a progress bar
 #' 
 #' @return A list of symmetric matrices. Each matrix contains the structural 
 #'         Hamming distances between the different graphs. Each item in the 
 #'         list corresponds to one \eqn{(\lambda_1, \lambda_2)} pair
 #' @export
-hamming_distance <- function(cvn) { 
+hamming_distance <- function(cvn, verbose = TRUE) { 
   
   if (!("cvn" %in% class(cvn))) { 
     stop("input must be a 'cvn' object") 
+  }
+  
+  if (verbose) { 
+    cat(sprintf("Determining Hamming distances between the graphs...\n\n")) 
+    # progress bar for setting up the edges for the individual graphs
+    pb <- progress::progress_bar$new(
+      format = "Computing Hamming distance [:bar] :percent eta: :eta",
+      total = cvn$n_lambda_values + 1, clear = FALSE, width= 80, show_after = 0)
+    pb$tick()
   }
   
   empty_matrix <- matrix(rep(0, cvn$m^2), ncol = cvn$m) 
@@ -55,6 +65,10 @@ hamming_distance <- function(cvn) {
   # go over all lambda value combinations
   for (k in 1:cvn$n_lambda_values) {
     distances[[k]] <- hamming_distance_adj_matrices(cvn$adj_matrices[[k]])
+    
+    if (verbose) { 
+      pb$tick() 
+    }
   }
   
   results <- list(
@@ -64,6 +78,11 @@ hamming_distance <- function(cvn) {
     distances = distances,
     results = cvn$results
   )
+  
+  # stop the progress bar
+  if (verbose) { 
+    pb$terminate() 
+  }
   
   class(results) <- c("cvn:distances", "list")
   return(results)

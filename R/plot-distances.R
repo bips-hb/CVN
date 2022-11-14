@@ -101,7 +101,7 @@ plot_hamming_distances_cvn <- function(cvn,
     stop("input must be a 'cvn' object") 
   }  
   
-  hamming <- CVN::hamming_distance(cvn)
+  hamming <- CVN::hamming_distance(cvn, verbose = verbose)
   
   if (verbose) { 
     # progress bar for setting up the edges for the individual graphs
