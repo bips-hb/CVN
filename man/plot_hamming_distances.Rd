@@ -7,6 +7,7 @@
 plot_hamming_distances(
   distance_matrix,
   absolute = TRUE,
+  limits = c(NA, NA),
   title = "",
   legend_label = "Hamming Distance",
   add_counts_to_cells = TRUE,
@@ -19,6 +20,8 @@ plot_hamming_distances(
 \item{distance_matrix}{Symmetric matrix with distances}
 
 \item{absolute}{If \code{FALSE}, rescaled to [0,1]}
+
+\item{limits}{The limits for the values of the Hamming distance}
 
 \item{title}{Title plot (Default is none)}
 

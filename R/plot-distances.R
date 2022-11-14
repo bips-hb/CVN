@@ -5,6 +5,7 @@
 #'
 #' @param distance_matrix Symmetric matrix with distances 
 #' @param absolute If \code{FALSE}, rescaled to [0,1]
+#' @param limits The limits for the values of the Hamming distance 
 #' @param title Title plot (Default is none)
 #' @param legend_label Title of the legend (Default: "Hamming Distance")
 #' @param add_counts_to_cells If \code{TRUE}, counts from the matrix are 
@@ -16,7 +17,9 @@
 #' 
 #' @return A heatmap plot                   
 #' @export 
-plot_hamming_distances <- function(distance_matrix, absolute = TRUE,
+plot_hamming_distances <- function(distance_matrix, 
+                                   absolute = TRUE,
+                                   limits = c(NA, NA),  
                                    title = "", 
                                    legend_label = "Hamming Distance", 
                                    add_counts_to_cells = TRUE, 
@@ -46,9 +49,14 @@ plot_hamming_distances <- function(distance_matrix, absolute = TRUE,
     xlab("") + 
     ylab("") + 
     theme(axis.ticks.x = element_blank(),
-          axis.ticks.y = element_blank()) + 
-    scale_fill_continuous(name = legend_label)  
+          axis.ticks.y = element_blank()) 
     
+  if (is.na(limits[1])) { 
+    p <- p + scale_fill_continuous(name = legend_label)  
+  } else { 
+    p <- p + scale_fill_continuous(name = legend_label, limits = limits)   
+  }
+  
   if (add_ticks_labels) { 
     p <- p + 
       scale_x_continuous(breaks = 1:m) + 
@@ -75,6 +83,8 @@ plot_hamming_distances <- function(distance_matrix, absolute = TRUE,
 #' 
 #' @param cvn A \code{cvn} object
 #' @param absolute If \code{FALSE}, rescaled to [0,1]
+#' @param same_range If \code{TRUE}, all heatmaps have the same range of values 
+#'                   of the Hamming distance shown (Default: TRUE)
 #' @param titles Title of the plots (Default is none)
 #' @param legend_label Title of the legend (Default: "Hamming Distance")
 #' @param add_counts_to_cells If \code{TRUE}, counts from the matrix are 
@@ -89,6 +99,7 @@ plot_hamming_distances <- function(distance_matrix, absolute = TRUE,
 #' @export
 plot_hamming_distances_cvn <- function(cvn,
                                        absolute = TRUE,
+                                       same_range = TRUE,
                                        titles = rep("", cvn$n_lambda_values),
                                        legend_label = "Hamming Distance",
                                        add_counts_to_cells = TRUE,
@@ -111,9 +122,18 @@ plot_hamming_distances_cvn <- function(cvn,
     pb$tick()
   }
   
+  if (same_range) { 
+    # determine the highest value of Hamming distance observed
+    limits <- c(0, max(sapply(hamming$distances, function(M) max(M))))
+  } else { 
+    limits <- c(NA,NA) 
+  }
+  
+  
   plots <- lapply(1:cvn$n_lambda_values, function(i) { 
     p <- CVN::plot_hamming_distances(hamming$distances[[i]], 
                                 absolute = absolute, 
+                                limits = limits,
                                 title = titles[i],
                                 legend_label = legend_label,
                                 add_counts_to_cells = add_counts_to_cells,

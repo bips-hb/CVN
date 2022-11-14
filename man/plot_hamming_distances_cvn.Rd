@@ -7,6 +7,7 @@
 plot_hamming_distances_cvn(
   cvn,
   absolute = TRUE,
+  same_range = TRUE,
   titles = rep("", cvn$n_lambda_values),
   legend_label = "Hamming Distance",
   add_counts_to_cells = TRUE,
@@ -20,6 +21,9 @@ plot_hamming_distances_cvn(
 \item{cvn}{A \code{cvn} object}
 
 \item{absolute}{If \code{FALSE}, rescaled to [0,1]}
+
+\item{same_range}{If \code{TRUE}, all heatmaps have the same range of values 
+of the Hamming distance shown (Default: TRUE)}
 
 \item{titles}{Title of the plots (Default is none)}
 
