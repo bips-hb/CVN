@@ -21,8 +21,7 @@ plot_weight_matrix <- function(W,
                                add_ticks_labels = TRUE,
                                t = -6,
                                r = -8) {
-  
-  
+
   m <- nrow(W)
   W <- t(apply(W, 2, rev)) # rotate matrix
   
