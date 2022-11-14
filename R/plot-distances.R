@@ -83,6 +83,7 @@ plot_hamming_distances <- function(distance_matrix, absolute = TRUE,
 #'                   is add to the plot (Default: \code{TRUE})
 #' @param t Distance between tick labels and x-axis (Default: -6)
 #' @param r Distance between tick labels and y-axis (Default: -8)
+#' @param verbose If \code{TRUE}, shows progress bar (Default: \code{TRUE})
 #' 
 #' @return List of plots 
 #' @export
@@ -93,7 +94,8 @@ plot_hamming_distances_cvn <- function(cvn,
                                        add_counts_to_cells = TRUE,
                                        add_ticks_labels = TRUE,
                                        t = -6,
-                                       r = -8) {
+                                       r = -8, 
+                                       verbose = TRUE) {
   
   if (!("cvn" %in% class(cvn))) { 
     stop("input must be a 'cvn' object") 
@@ -101,8 +103,16 @@ plot_hamming_distances_cvn <- function(cvn,
   
   hamming <- CVN::hamming_distance(cvn)
   
+  if (verbose) { 
+    # progress bar for setting up the edges for the individual graphs
+    pb <- progress::progress_bar$new(
+      format = "Creating heatmaps [:bar] :percent eta: :eta",
+      total = cvn$n_lambda_values + 1, clear = FALSE, width= 80, show_after = 0)
+    pb$tick()
+  }
+  
   plots <- lapply(1:cvn$n_lambda_values, function(i) { 
-    CVN::plot_hamming_distances(hamming$distances[[i]], 
+    p <- CVN::plot_hamming_distances(hamming$distances[[i]], 
                                 absolute = absolute, 
                                 title = titles[i],
                                 legend_label = legend_label,
@@ -110,7 +120,18 @@ plot_hamming_distances_cvn <- function(cvn,
                                 add_ticks_labels = add_ticks_labels,
                                 t = t,
                                 r = r)
+    # update progress bar
+    if (verbose) { 
+      pb$tick()
+    }
+    
+    return(p)
   })
+  
+  # close progress bar
+  if (verbose) { 
+    pb$terminate()
+  }
   
   return(
     list(

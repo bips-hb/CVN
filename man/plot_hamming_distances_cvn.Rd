@@ -12,7 +12,8 @@ plot_hamming_distances_cvn(
   add_counts_to_cells = TRUE,
   add_ticks_labels = TRUE,
   t = -6,
-  r = -8
+  r = -8,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ is add to the plot (Default: \code{TRUE})}
 \item{t}{Distance between tick labels and x-axis (Default: -6)}
 
 \item{r}{Distance between tick labels and y-axis (Default: -8)}
+
+\item{verbose}{If \code{TRUE}, shows progress bar (Default: \code{TRUE})}
 }
 \value{
 List of plots
