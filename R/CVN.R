@@ -82,6 +82,7 @@
 #'   \item{\code{n_lambda_values}}{Total number of \eqn{(\lambda_1, \lambda_2)} value combinations}
 #'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
 #'   \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
+#'   \item{\code{minimal}}{If \code{TRUE}, the \code{data}, \code{Theta} }
 #'   \item{\code{use_genlasso_package}}{If \code{TRUE}, the \code{\link[genlasso]{genlasso}}
 #'             package is used instead of the ADMM algorithm}
 #' @examples 
@@ -114,6 +115,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 normalized = FALSE, 
                 warmstart = TRUE, 
                 use_genlasso_package = FALSE, 
+                minimal = FALSE, 
                 verbose = TRUE) { 
   
   # Check correctness input -------------------------------

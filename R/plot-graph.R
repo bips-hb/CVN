@@ -116,7 +116,7 @@ set_attributes_to_edges_visnetwork <- function(edges,
   }
   
   # remove the initially added 'id' column
-  edges %>% select(-id)
+  edges %>% dplyr::select(-id)
 }
 
 #' A \code{visNetwork} plot
