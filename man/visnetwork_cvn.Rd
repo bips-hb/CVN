@@ -11,7 +11,8 @@ visnetwork_cvn(
   show_core_graph = TRUE,
   width = c(3, 1),
   color = c("red", "blue"),
-  igraph_layout = "layout_in_circle"
+  igraph_layout = "layout_in_circle",
+  verbose = TRUE
 )
 }
 \description{

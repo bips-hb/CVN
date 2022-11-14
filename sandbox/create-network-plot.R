@@ -2,6 +2,7 @@
 
 library(visNetwork)
 library(dplyr)
+library(CVN)
 
 load_kikme <- T
 
@@ -11,7 +12,6 @@ if (load_kikme) {
 }
 
 A <- as.matrix(data$adj_matrices[[6]][[1]])
-
 
 nodes <- create_nodes_visnetwork(nrow(A), labels = raw_input$gene_labels)
 edges <- create_edges_visnetwork(A)

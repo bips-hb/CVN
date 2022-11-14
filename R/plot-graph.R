@@ -169,35 +169,96 @@ visnetwork_cvn <- function(cvn,
                            show_core_graph = TRUE, 
                            width = c(3,1), 
                            color = c("red", "blue"), 
-                           igraph_layout = "layout_in_circle") {
+                           igraph_layout = "layout_in_circle", 
+                           verbose = TRUE) {
 
   if (!(length(node_titles) == cvn$p)) { 
     stop("number of node labels does not correspond to the number of nodes") 
   }
    
+  if (verbose) { 
+    cat(sprintf("Creating visNetwork plots for the CVN...\n\n"))
+    cat(sprintf("Number of graphs:                  %d\n", cvn$m))
+    cat(sprintf("Number of different lambda values: %d\n", cvn$n_lambda_values))
+    cat(sprintf("Creating nodes...\n"))
+  }
+  
   nodes <- CVN::create_nodes_visnetwork(n_nodes = cvn$p, labels = node_titles) 
   
-  # get the core graphs for the different values of (lambda1, lamdba2)
-  core_graphs <- CVN::find_core_graph(cvn)
+  # the edges that are constant in the different graphs are 
+  # displayed differently 
+  if (show_core_graph) { 
   
-  subset_edges <- lapply(core_graphs, function(adj_matrix) { 
-      as.list(create_edges_visnetwork(adj_matrix))
-    })
+    # get the core graphs for the different values of (lambda1, lamdba2)
+    if (verbose) { 
+      cat(sprintf("Determining the 'core graphs'...\n"))
+    }
+  
+    core_graphs <- CVN::find_core_graph(cvn)
+  
+    if (verbose) { 
+      cat(sprintf("Create the subset of edges in the core graphs...\n\n"))
+    }
+    
+    subset_edges <- lapply(core_graphs, function(adj_matrix) { 
+        as.list(create_edges_visnetwork(adj_matrix))
+      })
+  }
+  
+  # Set-up a progress bars ---------------------------------
+  if (verbose) { 
+    # progress bar for setting up the edges for the individual graphs
+    pb_edges <- progress::progress_bar$new(
+      format = "Creating edge lists [:bar] :percent eta: :eta",
+      total = cvn$m * cvn$n_lambda_values + 1, clear = FALSE, width= 80, show_after = 0)
+    pb_edges$tick()
+    
+    pb_plots <- progress::progress_bar$new(
+      format = "Creating plots [:bar] :percent eta: :eta",
+      total = cvn$m * cvn$n_lambda_values + 1, clear = FALSE, width= 80, show_after = 0)
+    pb_plots$tick()
+  }
   
   # create the edge dataframes for all the graphs
   all_edges <- lapply(1:cvn$n_lambda_values, function(i) {
      lapply(1:cvn$m, function(k) { 
-       cat(sprintf("%d\t%d\n", i,k))
+       # cat(sprintf("%d\t%d\n", i,k))
        edges <- CVN::create_edges_visnetwork(cvn$adj_matrices[[i]][[k]])
-       CVN::set_attributes_to_edges_visnetwork(edges, subset_edges = subset_edges[[i]],
-                                          width = width, color = color)
-                                          
+       # check whether there are core edges, since sometimes graphs are 
+       # completely empty
+       if (show_core_graph && length(subset_edges[[i]]$from) != 0) { 
+         edges <- CVN::set_attributes_to_edges_visnetwork(edges, subset_edges = subset_edges[[i]],
+                                                 width = width, color = color)
+       }
+       
+       if (verbose) { 
+        pb_edges$tick()
+       }
+       
+       return(edges)
      })
   })
   
-  lapply(1:cvn$n_lambda_values, function(i) {
+  if (verbose) { 
+    pb_edges$terminate()
+    cat(sprintf("\nCreate plots given the determined edges...\n\n")) 
+  }
+  
+  #return(all_edges)
+  
+  res <- lapply(1:cvn$n_lambda_values, function(i) {
     lapply(1:cvn$m, function(k) { 
-      CVN::visnetwork(nodes, all_edges[[i]][[k]], title = titles[[i]][[k]], igraph_layout = igraph_layout)
+      if (verbose) { 
+        pb_plots$tick()
+      }
+      return(CVN::visnetwork(nodes, all_edges[[i]][[k]], title = titles[[i]][[k]], igraph_layout = igraph_layout))
     })
   })
+  
+  # stop the progress bar 
+  if (verbose) { 
+    pb_plots$terminate()
+  }
+  
+  return(res)
 }
