@@ -165,3 +165,148 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
   
   return(beta_new) ;   
 }
+
+
+
+
+// function(m, p, nrow_D, 
+//          Theta, Y, W, eta1, eta2, a, 
+//          rho_genlasso, maxiter_genlasso, eps_genlasso, 
+//          truncate_genlasso, 
+//          use_genlasso_package)
+//' Solving Generalized LASSO with fixed \eqn{\lambda = 1}
+//' 
+//' Solves efficiently the generalized LASSO problem of the form 
+//' \deqn{
+//'   \hat{\beta} = \text{argmin } \frac{1}{2} || y - \beta ||_2^2 + ||D\beta||_1 
+//' }
+//' where \eqn{\beta} and \eqn{y} are \eqn{m}-dimensional vectors and 
+//' \eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c \geq m}. 
+//' We solve this optimization problem using an adaption of the ADMM
+//' algorithm presented in Zhu (2017). 
+//' 
+//' @param y The \eqn{y} vector of length \eqn{m}
+//' @param W The weight matrix \eqn{W} of dimensions \eqn{m x m}
+//' @param m The number of graphs 
+//' @param c Number of rows of matrix \eqn{D}, which is equal to 
+//'          \eqn{c = m + (m(m-1))/2}   
+//' @param eta1 Equals \eqn{\lambda_1 / rho} 
+//' @param eta2 Equals \eqn{\lambda_2 / rho} 
+//' @param a Value added to the diagonal of \eqn{-D'D} so that
+//'          the matrix is positive definite, see 
+//'          \code{\link{matrix_A_inner_ADMM}}
+//' @param rho The ADMM's parameter
+//' @param max_iter Maximum number of iterations
+//' @param eps Stopping criterion. If differences 
+//'            are smaller than \eqn{\epsilon}, algorithm
+//'            is halted
+//' @param truncate Values below \code{truncate} are 
+//'                 set to \code{0}
+//'
+//' @return The estimated vector \eqn{\hat{\beta}}
+//' 
+//' @seealso \code{\link{updateZ_wrapper}}
+// [[Rcpp::export]]
+Rcpp::NumericMatrix updateZRcpp(const int m, 
+                       const int p, 
+                       const int c, 
+                       Rcpp::ListMatrix Theta, 
+                       Rcpp::ListMatrix Y,
+                       const Rcpp::NumericMatrix& W,  
+                       const double eta1, 
+                       const double eta2, 
+                       double a, 
+                       const double rho, 
+                       const int max_iter,
+                       const double eps, 
+                       const double truncate) { 
+  
+  int i,j,k,l ; 
+  
+  int n_edges = (p*(p - 1))/2 ; 
+  Rcpp::NumericMatrix y (n_edges, m) ; 
+  Rcpp::NumericMatrix beta (n_edges, m) ; 
+  
+  Rcpp::ListMatrix Z = Y; // Final results will be stored here
+  
+  l = 0 ; 
+  for (i = 0; i < p; i ++) { 
+     for (j = i+1; j < p; j ++) { 
+       for (k = 0; k < m; k ++) { 
+         Rcpp::NumericMatrix A = Theta(k,0) ; 
+         Rcpp::NumericMatrix B = Y(k,0) ; 
+         y(l,k) = A(i,j) + B(i,j) ; 
+       }
+       Rcpp::NumericVector b = genlassoRcpp(y(k, _), W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) ; 
+  
+       for (k = 0; k < m; k ++) { 
+          beta(l, k) = b[k] ;  
+       }
+       l ++; 
+     }
+  }
+  
+  
+  
+  
+  return(beta) ; 
+  
+  /* Initialize variables */
+  //Rcpp::ListMatrix Z = Y; // Final results will be stored here
+  
+  // y vector for the generalized LASSO
+  //Rcpp::NumericVector y(m) ; 
+  
+  // aux. matrices
+  //Rcpp::NumericMatrix A = Z(k,0) ; 
+  //Rcpp::NumericMatrix B = Z(k,0) ; 
+  
+  // // Retrieve element
+  // Rcpp::NumericMatrix a = x(i, j);
+  // // Modify element uniquely by row and column position
+  // Rcpp::NumericMatrix b = Rcpp::clone(a) + i + j;
+  // // Store element back into position
+  // x(i, j) = b; 
+  
+  // for (k = 0; k < m; k ++) { 
+  //   //Z(k,0) = Rcpp::clone(Theta(k,0) + Y(k,0)) ; 
+  //   // get both the matrix in Theta and Y 
+  //    Rcpp::NumericMatrix A = Theta(k,0) ;
+  //    Rcpp::NumericMatrix B = Y(k,0) ;
+  //    for (i = 0; i < p; i ++) { 
+  //      for (j = 0; j < p; j ++) { 
+  //        A(i,j) = A(i,j) + B(i,j) ; 
+  //        //A(j,i) = A(j,i) + B(j,i) ; 
+  //      }   
+  //    }
+  //    Z(k,0) = clone(A) ;
+  //   
+  //   //Rf_PrintValue(Z(k,0)) ;
+  //   // Rcpp::NumericMatrix A = Z(k,0) ;
+  //   // Rcpp::NumericMatrix B = Theta(k,0) ;
+  //   // Rprintf("hello %g\n", A(0,0)) ; 
+  //   // Rprintf("REALLY %g\n", Z(k,0,0,0)) ; 
+  //   // // Rf_PrintValue(A(0,0)) ; 
+  //   // 
+  //   // for (i = 0; i < p; i ++) { 
+  //   //   A(i,i) = A(i,i) + B(i,i) ;  
+  //   // }
+  //   // Z(k, 0) = clone(A); 
+  // }
+  // 
+  // //NumericMatrix m1( 2 );
+  // 
+  // // for (k = 0; k < m; k++) { 
+  // //   for (i = 0; i < p; i )
+  // //    
+  // // }
+  // 
+  // //Z <- mapply(function(theta, y) { diag( diag(theta) + diag(y) ) }, 
+  // //            Theta, Y, SIMPLIFY = FALSE)
+  // 
+  // //Rf_PrintValue(Z) ; 
+  // //Rf_PrintValue(W) ; 
+  // //Rf_PrintValue(Theta) ; 
+  
+  //return(Z) ; 
+}

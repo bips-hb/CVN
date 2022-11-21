@@ -31,9 +31,33 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// updateZRcpp
+Rcpp::NumericMatrix updateZRcpp(const int m, const int p, const int c, Rcpp::ListMatrix Theta, Rcpp::ListMatrix Y, const Rcpp::NumericMatrix& W, const double eta1, const double eta2, double a, const double rho, const int max_iter, const double eps, const double truncate);
+RcppExport SEXP _CVN_updateZRcpp(SEXP mSEXP, SEXP pSEXP, SEXP cSEXP, SEXP ThetaSEXP, SEXP YSEXP, SEXP WSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP aSEXP, SEXP rhoSEXP, SEXP max_iterSEXP, SEXP epsSEXP, SEXP truncateSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< const int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const int >::type c(cSEXP);
+    Rcpp::traits::input_parameter< Rcpp::ListMatrix >::type Theta(ThetaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::ListMatrix >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type W(WSEXP);
+    Rcpp::traits::input_parameter< const double >::type eta1(eta1SEXP);
+    Rcpp::traits::input_parameter< const double >::type eta2(eta2SEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const double >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< const int >::type max_iter(max_iterSEXP);
+    Rcpp::traits::input_parameter< const double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< const double >::type truncate(truncateSEXP);
+    rcpp_result_gen = Rcpp::wrap(updateZRcpp(m, p, c, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_CVN_genlassoRcpp", (DL_FUNC) &_CVN_genlassoRcpp, 11},
+    {"_CVN_updateZRcpp", (DL_FUNC) &_CVN_updateZRcpp, 13},
     {NULL, NULL, 0}
 };
 
