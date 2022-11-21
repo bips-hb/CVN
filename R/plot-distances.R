@@ -60,7 +60,7 @@ plot_hamming_distances <- function(distance_matrix,
   if (add_ticks_labels) { 
     p <- p + 
       scale_x_continuous(breaks = 1:m) + 
-      scale_y_continuous(breaks = 1:m) + 
+      scale_y_continuous(breaks = m:1) + 
       theme(axis.text.x = element_text(margin = margin(t = t)), 
             axis.text.y = element_text(margin = margin(r = r)))
       
