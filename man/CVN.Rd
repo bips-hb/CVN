@@ -23,7 +23,8 @@ CVN(
   warmstart = TRUE,
   use_genlasso_package = FALSE,
   minimal = FALSE,
-  verbose = TRUE
+  verbose = TRUE,
+  use_new_updateZ = TRUE
 )
 }
 \arguments{

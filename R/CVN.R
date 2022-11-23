@@ -121,7 +121,8 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 warmstart = TRUE, 
                 use_genlasso_package = FALSE, 
                 minimal = FALSE, 
-                verbose = TRUE) { 
+                verbose = TRUE, 
+                use_new_updateZ = TRUE) { 
   
   # Check correctness input -------------------------------
   CVN::check_correctness_input(data, W, lambda1, lambda2, rho)
@@ -140,10 +141,12 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   n_obs <- sapply(data, function(X) nrow(X))    # no. of observations per graph 
   
   # Set-up cluster ---------------------------
-  cl <- makeCluster(n_cores)
-  registerDoSNOW(cl)
-  opts <- list(progress = function(i) {i}) # empty place holder for foreach
-    
+  if (n_cores > 1) { 
+    cl <- makeCluster(n_cores)
+    registerDoSNOW(cl)
+    opts <- list(progress = function(i) {i}) # empty place holder for foreach
+  }
+  
   if (verbose) { 
     cat(sprintf("Estimating a CVN with %d graphs...\n\n", m))
     cat(sprintf("Number of cores: %d\n", n_cores))
@@ -154,14 +157,15 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     }
       
     # Set-up a progress bar ---------------------------------
-    pb <- progress::progress_bar$new(
-      format = "estimating CVN [:bar] :percent eta: :eta",
-      total = length(lambda1)*length(lambda2) + 1, clear = FALSE, width= 80, show_after = 0)
-    pb$tick()
+    if (n_cores > 1) { 
+      pb <- progress::progress_bar$new(
+        format = "estimating CVN [:bar] :percent eta: :eta",
+        total = length(lambda1)*length(lambda2) + 1, clear = FALSE, width= 80, show_after = 0)
+      pb$tick()
     
-    #pb       <- txtProgressBar(max = length(lambda1)*length(lambda2), style = 3)
-    progress <- function(i) pb$tick()
-    opts     <- list(progress = progress) # used by doSNOW
+      progress <- function(i) pb$tick()
+      opts     <- list(progress = progress) # used by doSNOW
+    }
   }
   
   # Center or normalize data -------------------------------
@@ -205,10 +209,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   res$id <- 1:nrow(res)
   
   # estimate the graphs for the different values of (lambda1, lambda2) --------
-  # go over each pair of penalty terms
-  est <- foreach(i = 1:(length(lambda1)*length(lambda2)), 
-                 .options.snow = opts) %dopar% {
-    
+  estimate_lambda_values <- function(i) { 
     # Create initial values for the ADMM algorithm ----------
     Z <- rep(list(matrix(0, nrow = p, ncol = p)), m) # m (p x p)-dimensional zero matrices
     Y <- rep(list(matrix(0, nrow = p, ncol = p)), m)
@@ -223,7 +224,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     }  else { 
       Theta <- lapply(Sigma, function(S) diag(1/diag(S)))
     }
-
+    
     # Initialize variables for the algorithm -----------------
     # Generate matrix D for the generalized LASSO 
     D <- CVN::create_matrix_D(W, res$lambda1[i], res$lambda2[i], rho, 
@@ -234,12 +235,26 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     # Estimate the graphs -------------------------------------
     eta1 <- res$lambda1[i] / rho 
     eta2 <- res$lambda2[i] / rho 
-    CVN::estimate(m, p, nrow(D), W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
-                         rho, rho_genlasso, 
-                         eps, eps_genlasso, 
-                         maxiter, maxiter_genlasso, truncate = truncate, 
-                         truncate_genlasso = truncate_genlasso, 
-                         use_genlasso_package = use_genlasso_package, verbose = verbose)  
+    CVN::estimate(m, p, m*(m-1)/2 + m, W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
+                  rho, rho_genlasso, 
+                  eps, eps_genlasso, 
+                  maxiter, maxiter_genlasso, truncate = truncate, 
+                  truncate_genlasso = truncate_genlasso, 
+                  use_genlasso_package = use_genlasso_package, 
+                  verbose = verbose,
+                  use_new_updateZ = use_new_updateZ) # TODO remove 
+  }
+  
+  # go over each pair of penalty terms
+  if (n_cores > 1) {
+    est <- foreach(i = 1:(length(lambda1) * length(lambda2)),
+                   .options.snow = opts) %dopar% {
+                     estimate_lambda_values(i)
+                   }
+  } else { 
+    est <- lapply(1:(length(lambda1) * length(lambda2)), function(i) { 
+      estimate_lambda_values(i)
+    })
   }
   
   # Process results -----------------------------------------
@@ -260,12 +275,14 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   }
   
   # stop the progress bar 
-  if (verbose) { 
+  if (n_cores > 1 && verbose) { 
     pb$terminate()
   }
   
   # stop the cluster
-  stopCluster(cl) 
+  if (n_cores > 1) { 
+    stopCluster(cl) 
+  }
      
   # Collect all the results & input ---------------------------
   global_res$results  <- res                  

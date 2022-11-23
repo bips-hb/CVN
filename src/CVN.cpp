@@ -207,7 +207,7 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
 //' 
 //' @seealso \code{\link{updateZ_wrapper}}
 // [[Rcpp::export]]
-Rcpp::NumericMatrix updateZRcpp(const int m, 
+Rcpp::ListMatrix updateZRcpp(const int m, 
                        const int p, 
                        const int c, 
                        Rcpp::ListMatrix Theta, 
@@ -215,7 +215,7 @@ Rcpp::NumericMatrix updateZRcpp(const int m,
                        const Rcpp::NumericMatrix& W,  
                        const double eta1, 
                        const double eta2, 
-                       double a, 
+                       const double a, 
                        const double rho, 
                        const int max_iter,
                        const double eps, 
@@ -223,33 +223,129 @@ Rcpp::NumericMatrix updateZRcpp(const int m,
   
   int i,j,k,l ; 
   
-  int n_edges = (p*(p - 1))/2 ; 
-  Rcpp::NumericMatrix y (n_edges, m) ; 
-  Rcpp::NumericMatrix beta (n_edges, m) ; 
+  /* Initialize variables ----------- */
   
-  Rcpp::ListMatrix Z = Y; // Final results will be stored here
+  /* The y-vector and the resulting beta values are 
+     stored in a vector and a matrix. The rows of beta 
+     represent the edges. */
+  Rcpp::NumericVector y (m) ; 
+  Rcpp::NumericMatrix beta (p*(p-1)/2, m) ; 
   
-  l = 0 ; 
-  for (i = 0; i < p; i ++) { 
-     for (j = i+1; j < p; j ++) { 
-       for (k = 0; k < m; k ++) { 
-         Rcpp::NumericMatrix A = Theta(k,0) ; 
-         Rcpp::NumericMatrix B = Y(k,0) ; 
-         y(l,k) = A(i,j) + B(i,j) ; 
-       }
-       Rcpp::NumericVector b = genlassoRcpp(y(k, _), W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) ; 
+  // Final results will be stored here 
+  Rcpp::ListMatrix Z (m); 
   
-       for (k = 0; k < m; k ++) { 
-          beta(l, k) = b[k] ;  
-       }
-       l ++; 
-     }
+  // set the diagonal of Z
+  for (k = 0; k < m; k ++) { 
+    Rcpp::NumericMatrix A = Theta(k,0) ; 
+    Rcpp::NumericMatrix B = Y(k,0) ; 
+    Rcpp::NumericMatrix C (p,p) ; 
+    
+    for (i = 0; i < p; i ++) { 
+      for (j = 0; j < p; j ++) { 
+        C(i,j) = 0; 
+      }  
+    }
+    
+    for (i = 0; i < p; i ++) { 
+      C(i,i) = A(i,i) + B(i,i) ;
+    }
+
+    Z(k,0) = clone(C) ; 
+  }
+  
+  /* Compute betas -------------- */
+  l = 0 ; // the index for the edge
+  
+  // go over all edges 
+  for (i = 0; i < (p-1); i ++) { 
+    for (j = i+1; j < p; j ++) {
+      
+      // go over the different graphs
+      for (k = 0; k < m; k ++) { 
+        // get the matrix Theta and Y and store them in A and B
+        Rcpp::NumericMatrix A = Theta(k,0) ; 
+        Rcpp::NumericMatrix B = Y(k,0) ; 
+        y[k] = A(i,j) + B(i,j) ; 
+      }
+      
+      //Rf_PrintValue(y) ; 
+      // determine the beta-vector
+      //Rf_PrintValue(genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate)) ; 
+      Rcpp::DoubleVector b = genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) ; 
+      //Rf_PrintValue(b) ; 
+      // store the results in the beta matrix
+      for (k = 0; k < m; k ++) { 
+        beta(l, k) = b[k] ;  
+      }
+    
+      l ++; // update the edge index
+      //Rprintf("l = %d\n",l) ;
+    }
   }
   
   
+  //Rf_PrintValue(beta) ; 
+  //Rf_PrintValue(Z[0,0]) ; 
   
   
-  return(beta) ; 
+  // set the entries of Z
+  for (k = 0; k < m; k ++) { 
+    Rcpp::NumericMatrix A = Z(k,0) ;  
+    
+    l = 0; 
+    for (i = 0; i < (p-1); i ++) { 
+      for (j = i+1; j < p; j ++) { 
+        A(i,j) = beta(l, k) ; 
+        A(j,i) = beta(l, k) ; 
+        
+        l ++; 
+      }
+    }
+    
+    Z(k,0) = clone(A) ; 
+  }
+  
+  //Rf_PrintValue(Z[0,0]) ; 
+  
+  return(Z) ; 
+  //for (i = 0; i < p; i ++) { 
+      
+  //}
+  
+  // 
+  // // go over all different edges (i,j) and 
+  // // determine the y-vectors
+  // 
+  // 
+  // 
+  // // go over the different graphs
+  // for (k = 0; k < m; k ++) { 
+  //   // get the matrix Theta and Y and store them in A and B
+  //   Rcpp::NumericMatrix A = Theta(k,0) ; 
+  //   Rcpp::NumericMatrix B = Y(k,0) ; 
+  //   
+  //   l = 0 ; // the index for the edge
+  //   
+  //   // go over all different edges (i,j) and 
+  //   // determine the y-vectors
+  //   for (i = 0; i < (p-1); i ++) { 
+  //     for (j = i+1; j < p; j ++) {
+  //       y(l,k) = A(i,j) + B(i,j) ; 
+  //     }
+  //     
+  //     // determine the beta-vector
+  //     Rcpp::NumericVector b = genlassoRcpp(y(k, _), W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) ; 
+  //     
+  //     // store the results in the beta matrix
+  //     for (k = 0; k < m; k ++) { 
+  //       beta(l, k) = b[k] ;  
+  //     }
+  //     
+  //     l ++; // update the edge index
+  //   }
+  // }
+  // 
+  //return(beta) ; 
   
   /* Initialize variables */
   //Rcpp::ListMatrix Z = Y; // Final results will be stored here
