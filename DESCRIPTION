@@ -17,7 +17,6 @@ Depends:
 	visNetwork,
 	parallel,
 	progress,
-	genlasso,
 	Matrix,
 	huge, 
 	glasso,

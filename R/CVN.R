@@ -45,8 +45,6 @@
 #' @param minimal If \code{TRUE}, the returned \code{cvn} is minimal in terms of 
 #'                  memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not 
 #'                  returned (Default: \code{FALSE})
-#' @param use_genlasso If \code{TRUE}, use the \code{genlasso} package in 
-#'                  the \eqn{Z}-update step, rather then the ADMM (Default: \code{FALSE})
 #' @param verbose Verbose (Default: \code{TRUE}) 
 #' 
 #' @return A \code{CVN} object containing the estimates for all the graphs 
@@ -87,8 +85,6 @@
 #'   \item{\code{n_lambda_values}}{Total number of \eqn{(\lambda_1, \lambda_2)} value combinations}
 #'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
 #'   \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
-#'   \item{\code{use_genlasso_package}}{If \code{TRUE}, the \code{\link[genlasso]{genlasso}}
-#'             package is used instead of the ADMM algorithm}
 #'   \item{\code{minimal}}{If \code{TRUE}, \code{data}, \code{Theta} and \code{Sigma} are not added}
 #' @examples 
 #' data(grid)
@@ -119,7 +115,6 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 n_cores = min(length(lambda1)*length(lambda2), parallel::detectCores() - 1), 
                 normalized = FALSE, 
                 warmstart = TRUE, 
-                use_genlasso_package = FALSE, 
                 minimal = FALSE, 
                 verbose = TRUE) { 
   
@@ -194,8 +189,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     n_lambda_values   = length(lambda1) * length(lambda2), 
     normalized = normalized,
     warmstart  = warmstart, 
-    minimal = minimal, 
-    use_genlasso_package  = use_genlasso_package
+    minimal = minimal
   )
   
   # data frame with the results for each unique (lambda1,lambda2) pair
@@ -227,7 +221,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     # Initialize variables for the algorithm -----------------
     # Generate matrix D for the generalized LASSO 
     D <- CVN::create_matrix_D(W, res$lambda1[i], res$lambda2[i], rho, 
-                              remove_zero_row = use_genlasso_package)
+                              remove_zero_row = FALSE)
     
     a <- CVN::matrix_A_inner_ADMM(m, D) + 1
     
@@ -239,7 +233,6 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                   eps, eps_genlasso, 
                   maxiter, maxiter_genlasso, truncate = truncate, 
                   truncate_genlasso = truncate_genlasso, 
-                  use_genlasso_package = use_genlasso_package, 
                   verbose = verbose) 
   }
   

@@ -4,8 +4,7 @@
 estimate <- function(m, p, nrow_D, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs, 
                      rho, rho_genlasso, eps, eps_genlasso,
                      maxiter, maxiter_genlasso, truncate, 
-                     truncate_genlasso, 
-                     use_genlasso_package, 
+                     truncate_genlasso,
                      verbose = FALSE) {
   
   # keep track whether the algorithm finished, either by 

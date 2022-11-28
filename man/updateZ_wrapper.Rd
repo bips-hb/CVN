@@ -2,7 +2,7 @@
 % Please edit documentation in R/update-Z-wrapper.R
 \name{updateZ_wrapper}
 \alias{updateZ_wrapper}
-\title{Wrapper for update-Z}
+\title{Wrapper for the \eqn{Z}-update Step for the ADMM}
 \usage{
 updateZ_wrapper(
   m,
@@ -20,8 +20,27 @@ updateZ_wrapper(
   truncate_genlasso
 )
 }
+\arguments{
+\item{m}{Number of graphs}
+
+\item{p}{Number of variables}
+
+\item{nrow_D}{Number of rows of the \eqn{D}-matrix}
+
+\item{Theta}{A list with matrices with the current values of \eqn{\Theta}}
+
+\item{Y}{A list with matrices with the current values of \eqn{Y}}
+
+\item{D}{A matrix used for solving the Generalized LASSO}
+}
+\value{
+A list with matrices with the new values of \eqn{Z}
+}
 \description{
-Wrapper for the updateZRcpp function
-See \code{\link{updateZ}} for more 
-information
+A wrapper for the \code{C} function that returns the 
+updated value of \eqn{Z} for the ADMM given the previously 
+updated values of \eqn{\Theta} and \eqn{Y}
+}
+\seealso{
+\code{\link{create_matrix_D}}
 }

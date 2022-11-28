@@ -21,7 +21,6 @@ CVN(
   n_cores = min(length(lambda1) * length(lambda2), parallel::detectCores() - 1),
   normalized = FALSE,
   warmstart = TRUE,
-  use_genlasso_package = FALSE,
   minimal = FALSE,
   verbose = TRUE
 )
@@ -80,9 +79,6 @@ memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not
 returned (Default: \code{FALSE})}
 
 \item{verbose}{Verbose (Default: \code{TRUE})}
-
-\item{use_genlasso}{If \code{TRUE}, use the \code{genlasso} package in 
-the \eqn{Z}-update step, rather then the ADMM (Default: \code{FALSE})}
 }
 \value{
 A \code{CVN} object containing the estimates for all the graphs 
@@ -123,8 +119,6 @@ A \code{CVN} object containing the estimates for all the graphs
   \item{\code{n_lambda_values}}{Total number of \eqn{(\lambda_1, \lambda_2)} value combinations}
   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
   \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
-  \item{\code{use_genlasso_package}}{If \code{TRUE}, the \code{\link[genlasso]{genlasso}}
-            package is used instead of the ADMM algorithm}
   \item{\code{minimal}}{If \code{TRUE}, \code{data}, \code{Theta} and \code{Sigma} are not added}
 }
 \description{
