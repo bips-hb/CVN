@@ -4,7 +4,7 @@
 \alias{updateTheta}
 \title{The \eqn{\Theta}-update step for the ADMM}
 \usage{
-updateTheta(m, Z, Y, Sigma, n_obs, rho = 1, n_cores = 1)
+updateTheta(m, Z, Y, Sigma, n_obs, rho = 1)
 }
 \arguments{
 \item{m}{Number of graphs}
@@ -18,8 +18,6 @@ updateTheta(m, Z, Y, Sigma, n_obs, rho = 1, n_cores = 1)
 \item{n_obs}{A \eqn{m}-dimensional vector with the number of observations per graph}
 
 \item{rho}{The \eqn{\rho} ADMM's penalty parameter (Default: 1)}
-
-\item{n_cores}{Number of cores used (Default: 1)}
 }
 \value{
 A list with matrices with the new values of \eqn{\Theta}

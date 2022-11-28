@@ -45,7 +45,7 @@ W <- CVNSim::create_weight_matrix("full", m = m)
 library(tictoc)
 tic()
 
-cvn_new <- CVN(data, W, n_cores = 4, maxiter = 1000, lambda1 = lambda1, lambda2 = lambda2, verbose = F)
+cvn_new <- CVN(data, W, n_cores = 1, maxiter = 1000, lambda1 = lambda1, lambda2 = lambda2, verbose = F)
 toc()
 
  
