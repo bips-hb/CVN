@@ -31,7 +31,20 @@ updateZ_wrapper(
 
 \item{Y}{A list with matrices with the current values of \eqn{Y}}
 
-\item{D}{A matrix used for solving the Generalized LASSO}
+\item{W}{Weight matrix}
+
+\item{eta1}{}
+
+\item{rho_genlasso}{The \eqn{\rho} penalty parameter for the ADMM algorithm}
+
+\item{maxiter_genlasso}{Maximum number of iterations for solving 
+the generalized LASSO problem}
+
+\item{eps_genlasso}{If the relative difference between two update steps is 
+smaller than \eqn{\epsilon}, the algorithm stops}
+
+\item{truncate_genlasso}{All values of the final \eqn{\hat{\beta}} below 
+\code{truncate_genlasso} will be set to \code{0}.}
 }
 \value{
 A list with matrices with the new values of \eqn{Z}

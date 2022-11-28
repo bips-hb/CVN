@@ -4,14 +4,12 @@
 \alias{relative_difference_precision_matrices}
 \title{The Relative Difference between two Precision Matrices}
 \usage{
-relative_difference_precision_matrices(Theta_new, Theta_old, n_cores = 1)
+relative_difference_precision_matrices(Theta_new, Theta_old)
 }
 \arguments{
 \item{Theta_new}{A list with matrices with the updated values of \eqn{\Theta}}
 
 \item{Theta_old}{A list with matrices with the old values of \eqn{\Theta}}
-
-\item{n_cores}{Number of cores used (Default: 1)}
 }
 \value{
 The relative difference between \eqn{\Theta(k+1)} and \eqn{\Theta(k)}
