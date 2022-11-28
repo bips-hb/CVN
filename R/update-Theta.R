@@ -18,19 +18,34 @@ updateTheta <- function(m, Z, Y, Sigma, n_obs, rho = 1, n_cores = 1) {
   
   # we use the fact that we can separate the optimization problem for each 
   # individual graph i = 1, 2,..., m 
-  mclapply(1:m, function(i) {
-    
+  lapply(1:m, function(i) { 
     # perform an eigendecomposition 
     eigen_decomposition <- eigen(Sigma[[i]] - rho * Z[[i]]/ n_obs[i] + rho * Y[[i]] / n_obs[i])
     
     # obtain matrices Q and Lambda (Lambda is a diagonal matrix, so first only the diagonal is stored)
     Q <- eigen_decomposition$vectors 
     Lambda <- eigen_decomposition$values
-  
+    
     # Lambda is updated 
     Lambda <- n_obs[i]/(2 * rho) * (-Lambda + sqrt(Lambda^2 + 4*rho/n_obs[i]))
     
     # The new Theta matrix
-    Q %*% diag(Lambda) %*% t(Q)}, mc.cores = n_cores # number of cores used
-  )
+    Q %*% diag(Lambda) %*% t(Q)
+  })
+  
+  # mclapply(1:m, function(i) {
+  #   
+  #   # perform an eigendecomposition 
+  #   eigen_decomposition <- eigen(Sigma[[i]] - rho * Z[[i]]/ n_obs[i] + rho * Y[[i]] / n_obs[i])
+  #   
+  #   # obtain matrices Q and Lambda (Lambda is a diagonal matrix, so first only the diagonal is stored)
+  #   Q <- eigen_decomposition$vectors 
+  #   Lambda <- eigen_decomposition$values
+  # 
+  #   # Lambda is updated 
+  #   Lambda <- n_obs[i]/(2 * rho) * (-Lambda + sqrt(Lambda^2 + 4*rho/n_obs[i]))
+  #   
+  #   # The new Theta matrix
+  #   Q %*% diag(Lambda) %*% t(Q)}, mc.cores = n_cores # number of cores used
+  # )
 }

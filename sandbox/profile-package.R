@@ -3,9 +3,9 @@ library(CVNSim)
 library(profvis)
 
 
-p <-  100
+p <-  10
 m <- 9
-lambda1 <- 1:1
+lambda1 <- 1
 lambda2 <- 1
 rho <- 1
 n = 100
@@ -40,13 +40,17 @@ W <- CVNSim::create_weight_matrix("full", m = m)
 
 #library(microbenchmark)
 #microbenchmark({CVN(data, W, use_new_updateZ = F)}, {CVN(data, W, use_new_updateZ = T)}, times = 1)
+
+
 library(tictoc)
 tic()
-cvn_new <- CVN(data, W, use_new_updateZ = T, n_cores = 1, lambda1 = lambda1, lambda2 = lambda2, verbose = F)
+
+cvn_new <- CVN(data, W, n_cores = 4, maxiter = 1000, lambda1 = lambda1, lambda2 = lambda2, verbose = F)
 toc()
 
+ 
 tic()
-cvn <- CVN(data, W, use_new_updateZ = F, n_cores = 1, lambda1 = lambda1, lambda2 = lambda2, verbose = F)
+cvn <- CVN(data, W, use_new_updateZ = F, n_cores = 2, lambda1 = lambda1, lambda2 = lambda2, verbose = T)
 toc()
 
 #as.list(Z[,1])

@@ -5,7 +5,8 @@ estimate <- function(m, p, nrow_D, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_ob
                      rho, rho_genlasso, eps, eps_genlasso,
                      maxiter, maxiter_genlasso, truncate, 
                      truncate_genlasso, 
-                     use_genlasso_package, verbose = FALSE, use_new_updateZ) { # TODO: remove
+                     use_genlasso_package, 
+                     verbose = FALSE) {
   
   # keep track whether the algorithm finished, either by 
   # whether the stopping condition was met, or the maximum
@@ -23,18 +24,11 @@ estimate <- function(m, p, nrow_D, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_ob
   repeat{
     
     # Update Z -------------------------------------
-    if (use_new_updateZ) { 
-      Z <- updateZRcpp(m, p, nrow_D, 
-                       as.matrix(Theta), as.matrix(Y), W, eta1, eta2, a, 
-                       rho_genlasso, maxiter_genlasso, eps_genlasso, 
-                       truncate_genlasso)  
-      Z <- as.list(Z[,1])
-    } else { 
-      Z <- CVN::updateZ(m, p, nrow_D, Theta, Y, W, 
-                      eta1, eta2, a, 
-                      rho_genlasso, maxiter_genlasso, eps_genlasso, 
-                      truncate_genlasso, use_genlasso_package) 
-    }
+    Z <- updateZRcpp(m, p, nrow_D, 
+                     as.matrix(Theta), as.matrix(Y), W, eta1, eta2, a, 
+                     rho_genlasso, maxiter_genlasso, eps_genlasso, 
+                     truncate_genlasso)  
+    Z <- as.list(Z[,1])
     
     # Update Y -------------------------------------
     Y <- CVN::updateY(Theta, Z, Y) 

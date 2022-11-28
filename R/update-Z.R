@@ -8,7 +8,6 @@
 #' @param Theta A list with matrices with the current values of \eqn{\Theta}
 #' @param Y A list with matrices with the current values of \eqn{Y} 
 #' @param D A matrix used for solving the Generalized LASSO 
-#' @param n_cores Number of cores used (Default: 1)
 #' 
 #' @return A list with matrices with the new values of \eqn{Z}
 #'

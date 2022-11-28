@@ -2,17 +2,21 @@
 % Please edit documentation in R/RcppExports.R
 \name{updateZRcpp}
 \alias{updateZRcpp}
-\title{Solving Generalized LASSO with fixed \eqn{\lambda = 1}}
+\title{The \eqn{Z}-update Step}
 \usage{
 updateZRcpp(m, p, c, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
 \arguments{
 \item{m}{The number of graphs}
 
+\item{p}{The number of variables}
+
 \item{c}{Number of rows of matrix \eqn{D}, which is equal to 
 \eqn{c = m + (m(m-1))/2}}
 
-\item{W}{The weight matrix \eqn{W} of dimensions \eqn{m x m}}
+\item{Theta}{A list of matrices with the \eqn{\Theta}-matrices}
+
+\item{Y}{A list of matrices with the \eqn{Y}-matrices}
 
 \item{eta1}{Equals \eqn{\lambda_1 / rho}}
 
@@ -32,21 +36,14 @@ is halted}
 
 \item{truncate}{Values below \code{truncate} are 
 set to \code{0}}
-
-\item{y}{The \eqn{y} vector of length \eqn{m}}
 }
 \value{
 The estimated vector \eqn{\hat{\beta}}
 }
 \description{
-Solves efficiently the generalized LASSO problem of the form 
-\deqn{
-  \hat{\beta} = \text{argmin } \frac{1}{2} || y - \beta ||_2^2 + ||D\beta||_1 
-}
-where \eqn{\beta} and \eqn{y} are \eqn{m}-dimensional vectors and 
-\eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c \geq m}. 
-We solve this optimization problem using an adaption of the ADMM
-algorithm presented in Zhu (2017).
+A \code{C} implementation of the \eqn{Z}-update step. We 
+solve a generalized LASSO problem repeatedly for each of the 
+individual edges
 }
 \seealso{
 \code{\link{updateZ_wrapper}}

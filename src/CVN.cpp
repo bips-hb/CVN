@@ -102,9 +102,7 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
         delta[i] = delta[i] - eta2*W(j,i)*alpha[m + steps[j] - (j - i) - 1] ; 
       }
     }
-    
-    //Rf_PrintValue(delta);
-    
+
     // update beta with the computed delta and determine difference
     diff = 0 ;
     for (i = 0; i < m; i ++) { 
@@ -166,30 +164,18 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
   return(beta_new) ;   
 }
 
-
-
-
-// function(m, p, nrow_D, 
-//          Theta, Y, W, eta1, eta2, a, 
-//          rho_genlasso, maxiter_genlasso, eps_genlasso, 
-//          truncate_genlasso, 
-//          use_genlasso_package)
-//' Solving Generalized LASSO with fixed \eqn{\lambda = 1}
+//' The \eqn{Z}-update Step
 //' 
-//' Solves efficiently the generalized LASSO problem of the form 
-//' \deqn{
-//'   \hat{\beta} = \text{argmin } \frac{1}{2} || y - \beta ||_2^2 + ||D\beta||_1 
-//' }
-//' where \eqn{\beta} and \eqn{y} are \eqn{m}-dimensional vectors and 
-//' \eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c \geq m}. 
-//' We solve this optimization problem using an adaption of the ADMM
-//' algorithm presented in Zhu (2017). 
+//' A \code{C} implementation of the \eqn{Z}-update step. We 
+//' solve a generalized LASSO problem repeatedly for each of the 
+//' individual edges 
 //' 
-//' @param y The \eqn{y} vector of length \eqn{m}
-//' @param W The weight matrix \eqn{W} of dimensions \eqn{m x m}
 //' @param m The number of graphs 
+//' @param p The number of variables
 //' @param c Number of rows of matrix \eqn{D}, which is equal to 
 //'          \eqn{c = m + (m(m-1))/2}   
+//' @param Theta A list of matrices with the \eqn{\Theta}-matrices
+//' @param Y A list of matrices with the \eqn{Y}-matrices
 //' @param eta1 Equals \eqn{\lambda_1 / rho} 
 //' @param eta2 Equals \eqn{\lambda_2 / rho} 
 //' @param a Value added to the diagonal of \eqn{-D'D} so that
@@ -221,6 +207,7 @@ Rcpp::ListMatrix updateZRcpp(const int m,
                        const double eps, 
                        const double truncate) { 
   
+  // indices
   int i,j,k,l ; 
   
   /* Initialize variables ----------- */
@@ -268,25 +255,17 @@ Rcpp::ListMatrix updateZRcpp(const int m,
         y[k] = A(i,j) + B(i,j) ; 
       }
       
-      //Rf_PrintValue(y) ; 
       // determine the beta-vector
-      //Rf_PrintValue(genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate)) ; 
       Rcpp::DoubleVector b = genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) ; 
-      //Rf_PrintValue(b) ; 
+      
       // store the results in the beta matrix
       for (k = 0; k < m; k ++) { 
         beta(l, k) = b[k] ;  
       }
     
       l ++; // update the edge index
-      //Rprintf("l = %d\n",l) ;
     }
   }
-  
-  
-  //Rf_PrintValue(beta) ; 
-  //Rf_PrintValue(Z[0,0]) ; 
-  
   
   // set the entries of Z
   for (k = 0; k < m; k ++) { 
@@ -305,104 +284,5 @@ Rcpp::ListMatrix updateZRcpp(const int m,
     Z(k,0) = clone(A) ; 
   }
   
-  //Rf_PrintValue(Z[0,0]) ; 
-  
   return(Z) ; 
-  //for (i = 0; i < p; i ++) { 
-      
-  //}
-  
-  // 
-  // // go over all different edges (i,j) and 
-  // // determine the y-vectors
-  // 
-  // 
-  // 
-  // // go over the different graphs
-  // for (k = 0; k < m; k ++) { 
-  //   // get the matrix Theta and Y and store them in A and B
-  //   Rcpp::NumericMatrix A = Theta(k,0) ; 
-  //   Rcpp::NumericMatrix B = Y(k,0) ; 
-  //   
-  //   l = 0 ; // the index for the edge
-  //   
-  //   // go over all different edges (i,j) and 
-  //   // determine the y-vectors
-  //   for (i = 0; i < (p-1); i ++) { 
-  //     for (j = i+1; j < p; j ++) {
-  //       y(l,k) = A(i,j) + B(i,j) ; 
-  //     }
-  //     
-  //     // determine the beta-vector
-  //     Rcpp::NumericVector b = genlassoRcpp(y(k, _), W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) ; 
-  //     
-  //     // store the results in the beta matrix
-  //     for (k = 0; k < m; k ++) { 
-  //       beta(l, k) = b[k] ;  
-  //     }
-  //     
-  //     l ++; // update the edge index
-  //   }
-  // }
-  // 
-  //return(beta) ; 
-  
-  /* Initialize variables */
-  //Rcpp::ListMatrix Z = Y; // Final results will be stored here
-  
-  // y vector for the generalized LASSO
-  //Rcpp::NumericVector y(m) ; 
-  
-  // aux. matrices
-  //Rcpp::NumericMatrix A = Z(k,0) ; 
-  //Rcpp::NumericMatrix B = Z(k,0) ; 
-  
-  // // Retrieve element
-  // Rcpp::NumericMatrix a = x(i, j);
-  // // Modify element uniquely by row and column position
-  // Rcpp::NumericMatrix b = Rcpp::clone(a) + i + j;
-  // // Store element back into position
-  // x(i, j) = b; 
-  
-  // for (k = 0; k < m; k ++) { 
-  //   //Z(k,0) = Rcpp::clone(Theta(k,0) + Y(k,0)) ; 
-  //   // get both the matrix in Theta and Y 
-  //    Rcpp::NumericMatrix A = Theta(k,0) ;
-  //    Rcpp::NumericMatrix B = Y(k,0) ;
-  //    for (i = 0; i < p; i ++) { 
-  //      for (j = 0; j < p; j ++) { 
-  //        A(i,j) = A(i,j) + B(i,j) ; 
-  //        //A(j,i) = A(j,i) + B(j,i) ; 
-  //      }   
-  //    }
-  //    Z(k,0) = clone(A) ;
-  //   
-  //   //Rf_PrintValue(Z(k,0)) ;
-  //   // Rcpp::NumericMatrix A = Z(k,0) ;
-  //   // Rcpp::NumericMatrix B = Theta(k,0) ;
-  //   // Rprintf("hello %g\n", A(0,0)) ; 
-  //   // Rprintf("REALLY %g\n", Z(k,0,0,0)) ; 
-  //   // // Rf_PrintValue(A(0,0)) ; 
-  //   // 
-  //   // for (i = 0; i < p; i ++) { 
-  //   //   A(i,i) = A(i,i) + B(i,i) ;  
-  //   // }
-  //   // Z(k, 0) = clone(A); 
-  // }
-  // 
-  // //NumericMatrix m1( 2 );
-  // 
-  // // for (k = 0; k < m; k++) { 
-  // //   for (i = 0; i < p; i )
-  // //    
-  // // }
-  // 
-  // //Z <- mapply(function(theta, y) { diag( diag(theta) + diag(y) ) }, 
-  // //            Theta, Y, SIMPLIFY = FALSE)
-  // 
-  // //Rf_PrintValue(Z) ; 
-  // //Rf_PrintValue(W) ; 
-  // //Rf_PrintValue(Theta) ; 
-  
-  //return(Z) ; 
 }

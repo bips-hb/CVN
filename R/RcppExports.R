@@ -42,22 +42,18 @@ genlassoRcpp <- function(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate
     .Call('_CVN_genlassoRcpp', PACKAGE = 'CVN', y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
 
-#' Solving Generalized LASSO with fixed \eqn{\lambda = 1}
+#' The \eqn{Z}-update Step
 #' 
-#' Solves efficiently the generalized LASSO problem of the form 
-#' \deqn{
-#'   \hat{\beta} = \text{argmin } \frac{1}{2} || y - \beta ||_2^2 + ||D\beta||_1 
-#' }
-#' where \eqn{\beta} and \eqn{y} are \eqn{m}-dimensional vectors and 
-#' \eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c \geq m}. 
-#' We solve this optimization problem using an adaption of the ADMM
-#' algorithm presented in Zhu (2017). 
+#' A \code{C} implementation of the \eqn{Z}-update step. We 
+#' solve a generalized LASSO problem repeatedly for each of the 
+#' individual edges 
 #' 
-#' @param y The \eqn{y} vector of length \eqn{m}
-#' @param W The weight matrix \eqn{W} of dimensions \eqn{m x m}
 #' @param m The number of graphs 
+#' @param p The number of variables
 #' @param c Number of rows of matrix \eqn{D}, which is equal to 
 #'          \eqn{c = m + (m(m-1))/2}   
+#' @param Theta A list of matrices with the \eqn{\Theta}-matrices
+#' @param Y A list of matrices with the \eqn{Y}-matrices
 #' @param eta1 Equals \eqn{\lambda_1 / rho} 
 #' @param eta2 Equals \eqn{\lambda_2 / rho} 
 #' @param a Value added to the diagonal of \eqn{-D'D} so that

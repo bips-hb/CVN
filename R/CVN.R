@@ -121,8 +121,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 warmstart = TRUE, 
                 use_genlasso_package = FALSE, 
                 minimal = FALSE, 
-                verbose = TRUE, 
-                use_new_updateZ = TRUE) { 
+                verbose = TRUE) { 
   
   # Check correctness input -------------------------------
   CVN::check_correctness_input(data, W, lambda1, lambda2, rho)
@@ -241,17 +240,16 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                   maxiter, maxiter_genlasso, truncate = truncate, 
                   truncate_genlasso = truncate_genlasso, 
                   use_genlasso_package = use_genlasso_package, 
-                  verbose = verbose,
-                  use_new_updateZ = use_new_updateZ) # TODO remove 
+                  verbose = verbose) 
   }
   
   # go over each pair of penalty terms
-  if (n_cores > 1) {
+  if (n_cores > 1) { # parallel
     est <- foreach(i = 1:(length(lambda1) * length(lambda2)),
                    .options.snow = opts) %dopar% {
                      estimate_lambda_values(i)
                    }
-  } else { 
+  } else { # sequential 
     est <- lapply(1:(length(lambda1) * length(lambda2)), function(i) { 
       estimate_lambda_values(i)
     })
@@ -299,18 +297,25 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
 #' Print Function for the CVN Object Class
 #'
 #' @export
-print.CVN <- function(cvn, ...) {  # TODO
+print.cvn <- function(cvn, ...) {  # TODO
   cat(sprintf("Covariate-varying Network (CVN)\n\n"))
   
-  if (all(cvn$converged)) {
-    cat(green(sprintf("\u2713 CONVERGED\n\n")))
-  } else { 
-    cat(red(sprintf("\u2717 DID NOT CONVERGE\n\n"))) 
+  if (all(cvn$results$converged)) { 
+    cat(green(sprintf("\u2713 all converged\n\n")))
+  } else {
+    cat(red(sprintf("\u2717 did not converge (maxiter of %d not sufficient)\n\n", cvn$maxiter)))
   }
   
-  cat(sprintf("   -- No. of graphs (m):    %d\n", cvn$m))
-  cat(sprintf("   -- No. of variables (p): %d\n\n", cvn$p))
-  print(cvn2$results)
+  # print following variables
+  cat(sprintf("Number of graphs (m)    : %d\n", cvn$m))
+  cat(sprintf("Number of variables (p) : %d\n", cvn$p))
+  cat(sprintf("Number of lambda pairs  : %d\n\n", cvn$n_lambda_values))
+  
+  cat(sprintf("Weight matrix (W):\n"))
+  print(Matrix(cvn$W, sparse = T))
+  
+  cat(sprintf("\n"))
+  print(cvn$results)
 }
 
 #' Strip CVN
@@ -348,6 +353,6 @@ strip_cvn <- function(cvn) {
 #' Plot Function for CVN Object Class
 #' 
 #' @export
-plot.CVN <- function(cvn, ...) { 
-  cat("TO DO, see https://kateto.net/network-visualization\n")
+plot.cvn <- function(cvn, ...) { 
+  CVN::visnetwork_cvn(cvn, ...)
 }

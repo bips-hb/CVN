@@ -31,8 +31,6 @@ updateZ(
 \item{Y}{A list with matrices with the current values of \eqn{Y}}
 
 \item{D}{A matrix used for solving the Generalized LASSO}
-
-\item{n_cores}{Number of cores used (Default: 1)}
 }
 \value{
 A list with matrices with the new values of \eqn{Z}
