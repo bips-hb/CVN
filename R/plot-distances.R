@@ -42,6 +42,7 @@ plot_hamming_distances <- function(distance_matrix,
   rownames(distance_matrix) <- sapply(1:m, function(i) as.character(i))
   
   data <- reshape2::melt(distance_matrix)
+  data$Var1 <- m - data$Var1 + 1
   
   p <- ggplot(data = data, aes(x = Var1, y = Var2, fill = value)) + 
     geom_tile() +
@@ -60,13 +61,14 @@ plot_hamming_distances <- function(distance_matrix,
   if (add_ticks_labels) { 
     p <- p + 
       scale_x_continuous(breaks = 1:m) + 
-      scale_y_continuous(breaks = m:1) + 
+      scale_y_reverse(breaks = m:1) + 
       theme(axis.text.x = element_text(margin = margin(t = t)), 
             axis.text.y = element_text(margin = margin(r = r)))
       
   } else { 
     p <- p + theme(axis.text.x = element_blank(), 
-                   axis.text.y = element_blank())  
+                   axis.text.y = element_blank()) + 
+      scale_y_reverse()
   }
   
   if (add_counts_to_cells) { 
