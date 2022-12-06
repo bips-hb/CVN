@@ -19,7 +19,7 @@ data <- CVN::grid
 W_grid  <- CVN::create_weight_matrix("grid")   # weight matrix for a 3x3 grid
 W_empty <- CVN::create_weight_matrix("glasso") # each graph is estimated separately, W = 0 
 
-# function that returns a grid matrix parameterized with alpha
+# function that returns a grid weight matrix parameterized with alpha
 W_radition <- function(alpha) {
   a <- alpha
   b <- 1 - alpha
@@ -48,12 +48,12 @@ cvn_no_smoothing <- CVN::CVN(data, W = W_empty,
                              lambda1 = lambda1, lambda2 = lambda2,
                              eps = 1e-4, maxiter = 1e4, verbose = TRUE)
 
-# estimate with no a grid
+# estimate with a grid
 cvn_grid <- CVN::CVN(data, W = W_grid, 
                      lambda1 = lambda1, lambda2 = lambda2, 
                      eps = 1e-4, maxiter = 1e4, verbose = TRUE)
 
-# estimate with a parameterized graph
+# estimate with a parameterized weight matrix
 cvn_parameterized <- CVN::CVN(data, W = W_radition(0.5), 
                               lambda1 = lambda1, lambda2 = lambda2, 
                               eps = 1e-4, maxiter = 1e4, verbose = TRUE)
