@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//' Solving Generalized LASSO with fixed \eqn{\lambda = 1}
+/' Solving Generalized LASSO with fixed \eqn{\lambda = 1}
 //' 
 //' Solves efficiently the generalized LASSO problem of the form 
 //' \deqn{
@@ -39,7 +39,7 @@ using namespace Rcpp;
 //' 
 //' @seealso \code{\link{genlasso_wrapper}}
 // [[Rcpp::export]]
-Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y, 
+Rcpp::NumericVector genlassoRcpp(Rcpp::NumericVector y, 
                                 const Rcpp::NumericMatrix& W, 
                                 const int m, 
                                 const int c, 
@@ -56,18 +56,16 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
   a = rho*a ; 
   double C = 1 / (1 + a) ; 
   
-  //Rf_PrintValue(W) ; 
-  
   /* initialize vectors for beta-update step in the ADMM */
-  Rcpp::DoubleVector beta_new (m) ; // beta^(k + 1)
-  Rcpp::DoubleVector beta_old (m) ; // beta^k
-  Rcpp::DoubleVector delta (m) ; // aux. vector for beta-update step
+  Rcpp::NumericVector beta_new (m) ; // beta^(k + 1)
+  Rcpp::NumericVector beta_old (m) ; // beta^k
+  Rcpp::NumericVector delta (m) ; // aux. vector for beta-update step
   
   /* initialize vectors for alpha-update step in the ADMM */
-  Rcpp::DoubleVector alpha_new (c) ; 
-  Rcpp::DoubleVector alpha_old1 (c) ;
-  Rcpp::DoubleVector alpha_old2 (c) ;
-  Rcpp::DoubleVector alpha (c) ; // used to store (2*alpha^k - alpha^(k-1))
+  //Rcpp::NumericVector alpha_new (c) ; 
+  Rcpp::NumericVector alpha_old1 (c) ;
+  Rcpp::NumericVector alpha_old2 (c) ;
+  Rcpp::NumericVector alpha (c) ; // used to store (2*alpha^k - alpha^(k-1))
   
   /* Indices used for the alpha-update step */
   Rcpp::IntegerVector steps (m-1) ; 
@@ -86,11 +84,13 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
   while (iter < max_iter) { 
     
     /* ------- beta-update step ---------*/
-    for (i = 0; i < c; i++) { 
-      alpha[i] = 2*alpha_old1[i] - alpha_old2[i] ; 
-    }
+    alpha = 2*alpha_old1 - alpha_old2 ; 
+    // for (i = 0; i < c; i++) {
+    //   alpha[i] = 2*alpha_old1[i] - alpha_old2[i] ;
+    // }
     
     // go over all possible pairs (i,j), same as D^T %*% (2 alpha^(k) - alpha^(k-1)) 
+    //delta = eta1 * alpha ; 
     for (i = 0; i < m; i++) { 
       delta[i] = eta1 * alpha[i] ;  
       
@@ -104,11 +104,14 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
     }
 
     // update beta with the computed delta and determine difference
-    diff = 0 ;
-    for (i = 0; i < m; i ++) { 
-      beta_new[i] = C*(a*beta_old[i] + y[i] - delta[i]) ;
-      diff += abs(beta_new[i] - beta_old[i]) ;  
-    }
+    //Rcpp::NumericVector beta_new (m) ;
+    beta_new = C*(a*beta_old + y - delta) ; 
+    diff = sum(abs(beta_new - beta_old)) ; 
+    // diff = 0 ;
+    // for (i = 0; i < m; i ++) {
+    //   beta_new[i] = C*(a*beta_old[i] + y[i] - delta[i]) ;
+    //   diff += abs(beta_new[i] - beta_old[i]) ;
+    // }
     
     // determine whether converged or not
     if (diff < eps) { 
@@ -122,10 +125,13 @@ Rcpp::DoubleVector genlassoRcpp(Rcpp::DoubleVector y,
     }
     
     /* --------- alpha update step ----------- */
-    for (i = 0; i < m; i++) { 
-      alpha_new[i] = alpha_old1[i] + rho * eta1 * beta_new[i] ; 
+    //alpha_new = Rcpp::clone(alpha_old1) + rho * eta1 * Rcpp::clone(beta_new) ; 
+    Rcpp::NumericVector alpha_new (c) ; 
+    //alpha_new = Rcpp::clone(alpha_old1) ; 
+    for (i = 0; i < m; i++) {
+      alpha_new[i] = alpha_old1[i] + rho * eta1 * beta_new[i] ;
     }
-    
+
     k = m; 
     // go over all unique pairs (i,j)
     for (i = 0; i < m-1; i++) { 
