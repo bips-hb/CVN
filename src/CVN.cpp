@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-/' Solving Generalized LASSO with fixed \eqn{\lambda = 1}
+//' Solving Generalized LASSO with fixed \eqn{\lambda = 1}
 //' 
 //' Solves efficiently the generalized LASSO problem of the form 
 //' \deqn{
