@@ -15,8 +15,6 @@ using namespace Rcpp;
  //' @param y The \eqn{y} vector of length \eqn{m}
  //' @param W The weight matrix \eqn{W} of dimensions \eqn{m x m}
  //' @param m The number of graphs 
- //' @param c Number of rows of matrix \eqn{D}, which is equal to 
- //'          \eqn{c = m + (m(m-1))/2}   
  //' @param eta1 Equals \eqn{\lambda_1 / rho} 
  //' @param eta2 Equals \eqn{\lambda_2 / rho} 
  //' @param a Value added to the diagonal of \eqn{-D'D} so that
@@ -42,7 +40,6 @@ using namespace Rcpp;
  NumericVector genlassoRcpp(const NumericVector Y, 
                             const NumericMatrix W, 
                             const int m, 
-                            const int c, 
                             const double eta1, 
                             const double eta2, 
                             double a, 
@@ -52,9 +49,12 @@ using namespace Rcpp;
                             const double truncate) { 
    
    
-   /* some frequently used constants */
+   // some frequently used constants 
    a = rho*a ; 
    const double C = 1 / (1 + a) ; 
+   
+   // number of rows in matrix D 
+   const int c = (m*m + m) / 2 ; 
    
    /* Compute y to a double array. I did this to make sure that the C compilation 
     * environment does not have an effect */
@@ -220,8 +220,6 @@ using namespace Rcpp;
 //' 
 //' @param m The number of graphs 
 //' @param p The number of variables
-//' @param c Number of rows of matrix \eqn{D}, which is equal to 
-//'          \eqn{c = m + (m(m-1))/2}   
 //' @param Theta A list of matrices with the \eqn{\Theta}-matrices
 //' @param Y A list of matrices with the \eqn{Y}-matrices
 //' @param eta1 Equals \eqn{\lambda_1 / rho} 
@@ -243,7 +241,6 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 Rcpp::ListMatrix updateZRcpp(const int m, 
                        const int p, 
-                       const int c, 
                        Rcpp::ListMatrix Theta, 
                        Rcpp::ListMatrix Y,
                        const Rcpp::NumericMatrix& W,  
@@ -304,7 +301,7 @@ Rcpp::ListMatrix updateZRcpp(const int m,
       }
       
       // determine the beta-vector
-      Rcpp::DoubleVector b = genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) ; 
+      Rcpp::DoubleVector b = genlassoRcpp(y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate) ; 
       
       // store the results in the beta matrix
       for (k = 0; k < m; k ++) { 

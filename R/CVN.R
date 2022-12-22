@@ -232,7 +232,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     # Estimate the graphs -------------------------------------
     eta1 <- res$lambda1[i] / rho 
     eta2 <- res$lambda2[i] / rho 
-    CVN::estimate(m, p, m*(m-1)/2 + m, W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
+    CVN::estimate(m, p, W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
                   rho, rho_genlasso, 
                   eps, eps_genlasso, 
                   maxiter, maxiter_genlasso, truncate = truncate, 

@@ -4,8 +4,8 @@
 #' Solving Generalized LASSO with fixed \eqn{\lambda = 1}
 NULL
 
-genlassoRcpp <- function(Y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) {
-    .Call('_CVN_genlassoRcpp', PACKAGE = 'CVN', Y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate)
+genlassoRcpp <- function(Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate) {
+    .Call('_CVN_genlassoRcpp', PACKAGE = 'CVN', Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
 
 #' The \eqn{Z}-update Step
@@ -16,8 +16,6 @@ genlassoRcpp <- function(Y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate
 #' 
 #' @param m The number of graphs 
 #' @param p The number of variables
-#' @param c Number of rows of matrix \eqn{D}, which is equal to 
-#'          \eqn{c = m + (m(m-1))/2}   
 #' @param Theta A list of matrices with the \eqn{\Theta}-matrices
 #' @param Y A list of matrices with the \eqn{Y}-matrices
 #' @param eta1 Equals \eqn{\lambda_1 / rho} 
@@ -36,7 +34,7 @@ genlassoRcpp <- function(Y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate
 #' @return The estimated vector \eqn{\hat{\beta}}
 #' 
 #' @seealso \code{\link{updateZ_wrapper}}
-updateZRcpp <- function(m, p, c, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate) {
-    .Call('_CVN_updateZRcpp', PACKAGE = 'CVN', m, p, c, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
+updateZRcpp <- function(m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate) {
+    .Call('_CVN_updateZRcpp', PACKAGE = 'CVN', m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
 

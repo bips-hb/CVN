@@ -4,15 +4,12 @@
 \alias{updateZRcpp}
 \title{The \eqn{Z}-update Step}
 \usage{
-updateZRcpp(m, p, c, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
+updateZRcpp(m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
 \arguments{
 \item{m}{The number of graphs}
 
 \item{p}{The number of variables}
-
-\item{c}{Number of rows of matrix \eqn{D}, which is equal to 
-\eqn{c = m + (m(m-1))/2}}
 
 \item{Theta}{A list of matrices with the \eqn{\Theta}-matrices}
 

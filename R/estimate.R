@@ -4,7 +4,7 @@
 #' See for more details \code{\link{CVN}}
 #' 
 #' @export 
-estimate <- function(m, p, nrow_D, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs, 
+estimate <- function(m, p, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs, 
                      rho, rho_genlasso, eps, eps_genlasso,
                      maxiter, maxiter_genlasso, truncate, 
                      truncate_genlasso,
@@ -26,7 +26,7 @@ estimate <- function(m, p, nrow_D, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_ob
   repeat{
     
     # Update Z -------------------------------------
-    Z <- updateZRcpp(m, p, nrow_D, 
+    Z <- updateZRcpp(m, p, 
                      as.matrix(Theta), as.matrix(Y), W, eta1, eta2, a, 
                      rho_genlasso, maxiter_genlasso, eps_genlasso, 
                      truncate_genlasso)  

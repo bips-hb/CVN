@@ -11,15 +11,14 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // genlassoRcpp
-NumericVector genlassoRcpp(const NumericVector Y, const NumericMatrix W, const int m, const int c, const double eta1, const double eta2, double a, const double rho, const int max_iter, const double eps, const double truncate);
-RcppExport SEXP _CVN_genlassoRcpp(SEXP YSEXP, SEXP WSEXP, SEXP mSEXP, SEXP cSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP aSEXP, SEXP rhoSEXP, SEXP max_iterSEXP, SEXP epsSEXP, SEXP truncateSEXP) {
+NumericVector genlassoRcpp(const NumericVector Y, const NumericMatrix W, const int m, const double eta1, const double eta2, double a, const double rho, const int max_iter, const double eps, const double truncate);
+RcppExport SEXP _CVN_genlassoRcpp(SEXP YSEXP, SEXP WSEXP, SEXP mSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP aSEXP, SEXP rhoSEXP, SEXP max_iterSEXP, SEXP epsSEXP, SEXP truncateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const NumericVector >::type Y(YSEXP);
     Rcpp::traits::input_parameter< const NumericMatrix >::type W(WSEXP);
     Rcpp::traits::input_parameter< const int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< const int >::type c(cSEXP);
     Rcpp::traits::input_parameter< const double >::type eta1(eta1SEXP);
     Rcpp::traits::input_parameter< const double >::type eta2(eta2SEXP);
     Rcpp::traits::input_parameter< double >::type a(aSEXP);
@@ -27,19 +26,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type max_iter(max_iterSEXP);
     Rcpp::traits::input_parameter< const double >::type eps(epsSEXP);
     Rcpp::traits::input_parameter< const double >::type truncate(truncateSEXP);
-    rcpp_result_gen = Rcpp::wrap(genlassoRcpp(Y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate));
+    rcpp_result_gen = Rcpp::wrap(genlassoRcpp(Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate));
     return rcpp_result_gen;
 END_RCPP
 }
 // updateZRcpp
-Rcpp::ListMatrix updateZRcpp(const int m, const int p, const int c, Rcpp::ListMatrix Theta, Rcpp::ListMatrix Y, const Rcpp::NumericMatrix& W, const double eta1, const double eta2, const double a, const double rho, const int max_iter, const double eps, const double truncate);
-RcppExport SEXP _CVN_updateZRcpp(SEXP mSEXP, SEXP pSEXP, SEXP cSEXP, SEXP ThetaSEXP, SEXP YSEXP, SEXP WSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP aSEXP, SEXP rhoSEXP, SEXP max_iterSEXP, SEXP epsSEXP, SEXP truncateSEXP) {
+Rcpp::ListMatrix updateZRcpp(const int m, const int p, Rcpp::ListMatrix Theta, Rcpp::ListMatrix Y, const Rcpp::NumericMatrix& W, const double eta1, const double eta2, const double a, const double rho, const int max_iter, const double eps, const double truncate);
+RcppExport SEXP _CVN_updateZRcpp(SEXP mSEXP, SEXP pSEXP, SEXP ThetaSEXP, SEXP YSEXP, SEXP WSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP aSEXP, SEXP rhoSEXP, SEXP max_iterSEXP, SEXP epsSEXP, SEXP truncateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int >::type m(mSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< const int >::type c(cSEXP);
     Rcpp::traits::input_parameter< Rcpp::ListMatrix >::type Theta(ThetaSEXP);
     Rcpp::traits::input_parameter< Rcpp::ListMatrix >::type Y(YSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type W(WSEXP);
@@ -50,14 +48,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type max_iter(max_iterSEXP);
     Rcpp::traits::input_parameter< const double >::type eps(epsSEXP);
     Rcpp::traits::input_parameter< const double >::type truncate(truncateSEXP);
-    rcpp_result_gen = Rcpp::wrap(updateZRcpp(m, p, c, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate));
+    rcpp_result_gen = Rcpp::wrap(updateZRcpp(m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_CVN_genlassoRcpp", (DL_FUNC) &_CVN_genlassoRcpp, 11},
-    {"_CVN_updateZRcpp", (DL_FUNC) &_CVN_updateZRcpp, 13},
+    {"_CVN_genlassoRcpp", (DL_FUNC) &_CVN_genlassoRcpp, 10},
+    {"_CVN_updateZRcpp", (DL_FUNC) &_CVN_updateZRcpp, 12},
     {NULL, NULL, 0}
 };
 

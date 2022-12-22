@@ -7,7 +7,6 @@
 estimate(
   m,
   p,
-  nrow_D,
   W,
   Theta0,
   Z0,
