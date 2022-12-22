@@ -222,11 +222,8 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     if (sum(W) == 0) { # if the weight matrix is empty, the value a = eta_1^2 + 1
       a <- (res$lambda1[i] / rho)^2 + 1 
     } else { 
-      # Generate matrix D for the generalized LASSO 
-      D <- CVN::create_matrix_D(W, res$lambda1[i], res$lambda2[i], rho, 
-                              remove_zero_row = FALSE)
-    
-      a <- CVN::matrix_A_inner_ADMM(D) + 1
+      # Determine the value of the diagonal matrix A such that A - D'D > 0 (positive definite)
+      a <- CVN::matrix_A_inner_ADMM(W, res$lambda1[i] / rho, res$lambda2[i] / rho) + 1
     }
     
     # Estimate the graphs -------------------------------------

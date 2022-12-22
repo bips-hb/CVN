@@ -16,7 +16,9 @@
 #' \eqn{A - D'D} is indeed positive semidefinite. It does so by solving 
 #' a semidefinite program very much related to the student educational problem. 
 #' 
-#' @param D Matrix D, see \code{\link{create_matrix_D}}
+#' @param W Weight matrix \eqn{W}
+#' @param eta1,eta2 The values \eqn{\eta_1 = \lambda_1 / \rho} and 
+#'                   \eqn{\eta_2 = \lambda_2 / \rho}
 #' 
 #' @return Value of \eqn{a}
 #' @references 
@@ -26,10 +28,10 @@
 #' 
 #' https://math.stackexchange.com/questions/665026/adding-elements-to-diagonal-of-symmetric-matrix-to-ensure-positive-definiteness
 #' @export
-matrix_A_inner_ADMM <- function(D) { 
+matrix_A_inner_ADMM <- function(W, eta1, eta2) { 
   
   # determine the number of graphs 
-  m <- ncol(D) 
+  m <- ncol(W) 
   
   # value on the diagonal
   a <- CVXR::Variable(1) 
@@ -37,8 +39,11 @@ matrix_A_inner_ADMM <- function(D) {
   # objective function
   objective <- CVXR::Minimize(a)
   
+  # determine D'D 
+  DtD <- -eta2^2 * (W*W) + eta1^2 * diag(m) + eta2^2*diag(rowSums(W*W))
+  
   # constraint
-  R <- CVXR::diag(a, m, m) - t(D) %*% D # R = A - D'D 
+  R <- CVXR::diag(a, m, m) - DtD # R = A - D'D 
   constraint <- {R %>>% 0} # A - D'D must be positive semidefinite 
 
   # define the problem using CVXR:

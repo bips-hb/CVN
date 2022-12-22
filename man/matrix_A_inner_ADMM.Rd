@@ -4,10 +4,13 @@
 \alias{matrix_A_inner_ADMM}
 \title{Determine matrix \eqn{A} for inner-ADMM for the \eqn{Z}-update step}
 \usage{
-matrix_A_inner_ADMM(D)
+matrix_A_inner_ADMM(W, eta1, eta2)
 }
 \arguments{
-\item{D}{Matrix D, see \code{\link{create_matrix_D}}}
+\item{W}{Weight matrix \eqn{W}}
+
+\item{eta1, eta2}{The values \eqn{\eta_1 = \lambda_1 / \rho} and 
+\eqn{\eta_2 = \lambda_2 / \rho}}
 }
 \value{
 Value of \eqn{a}
