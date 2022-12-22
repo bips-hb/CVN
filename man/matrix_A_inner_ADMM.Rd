@@ -4,11 +4,9 @@
 \alias{matrix_A_inner_ADMM}
 \title{Determine matrix \eqn{A} for inner-ADMM for the \eqn{Z}-update step}
 \usage{
-matrix_A_inner_ADMM(m, D)
+matrix_A_inner_ADMM(D)
 }
 \arguments{
-\item{m}{Number of graphs}
-
 \item{D}{Matrix D, see \code{\link{create_matrix_D}}}
 }
 \value{
@@ -21,7 +19,7 @@ us to solve a special Generalized LASSO problem of the form
   \hat{\beta} = \text{argmin } \frac{1}{2} || y - \beta ||_2^2 + ||D\beta||_1 
 }
 where \eqn{\beta} and \eqn{y} are \eqn{m}-dimensional vectors and 
-\eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c \geq m}. 
+\eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c = (m^2 + m) / 2}. 
 We solve this optimization problem using an adaption of the ADMM
 algorithm presented in Zhu (2017). 
 This algorithm requires the choice of a matrix \eqn{A} such that 

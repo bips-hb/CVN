@@ -226,7 +226,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
       D <- CVN::create_matrix_D(W, res$lambda1[i], res$lambda2[i], rho, 
                               remove_zero_row = FALSE)
     
-      a <- CVN::matrix_A_inner_ADMM(m, D) + 1
+      a <- CVN::matrix_A_inner_ADMM(D) + 1
     }
     
     # Estimate the graphs -------------------------------------
