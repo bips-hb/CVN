@@ -4,7 +4,7 @@ library(microbenchmark)
 library(tictoc)
 library(ggplot2)
 
-m = 10
+m = 1000
 lambda1 = .5
 lambda2 = .4
 rho = 1
@@ -30,7 +30,7 @@ Q = eta1^2*diag(m) + (2*eta2^2)*diag(rowSums(W*W))
 q = max(eta1^2 + 2*eta2^2 * rowSums(W*W)) 
 
 # determine a with programming
-a <- CVN::matrix_A_inner_ADMM(W, eta1, eta2) 
+#a <- CVN::matrix_A_inner_ADMM(W, eta1, eta2) 
 
 # there are two versions. 
 check <- function(Q, DtD) { 

@@ -8,10 +8,8 @@ Description: A package for inferring high-dimensional
   Gaussian graphical networks that change with 
   multiple discrete covariates
 Imports: 
-  CVXR
 Depends: 
 	R (>= 4.0.2), 
-	CVXR,
 	Rcpp,
 	doSNOW, 
 	visNetwork,

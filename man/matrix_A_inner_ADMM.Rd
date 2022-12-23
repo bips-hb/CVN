@@ -29,13 +29,11 @@ This algorithm requires the choice of a matrix \eqn{A} such that
 \eqn{A - D'D} is positive semidefinite. In order to optimize the ADMM, 
 we choose the matrix \eqn{A} to be diagonal with a fixed value \eqn{a}. 
 This function determines the smallest value of \eqn{a} such that 
-\eqn{A - D'D} is indeed positive semidefinite. It does so by solving 
-a semidefinite program very much related to the student educational problem.
+\eqn{A - D'D} is indeed positive semidefinite. We do this be determining 
+the largest eigenvalue
 }
 \references{
 Zhu, Y. (2017). An Augmented ADMM Algorithm With Application to the 
 Generalized Lasso Problem. Journal of Computational and Graphical Statistics, 
 26(1), 195–204. https://doi.org/10.1080/10618600.2015.1114491
-
-https://math.stackexchange.com/questions/665026/adding-elements-to-diagonal-of-symmetric-matrix-to-ensure-positive-definiteness
 }
