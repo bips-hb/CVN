@@ -1,15 +1,21 @@
 library(CVN)
 library(matrixcalc)
+library(microbenchmark)
+library(tictoc)
+library(ggplot2)
 
-m = 5
+m = 10
 lambda1 = .5
 lambda2 = .4
 rho = 1
 
+
+
+
+
 eta1 = lambda1 / rho
 eta2 = lambda2 / rho
 
-#set.seed(1)
 W <- CVN::create_weight_matrix(type = "uniform-random", m = m)
 
 DtD = -eta2^2 * (W*W) + eta1^2 * diag(m) + eta2^2*diag(rowSums(W*W)) 
@@ -18,7 +24,7 @@ rowsum <- rowSums(W*W)
 A = -DtD 
 
 # constructing matrix Q, such that Q - DtD is positive definite
-Q = diag(m) + eta1^2*diag(m) + (2*eta2^2)*diag(rowSums(W*W)) 
+Q = eta1^2*diag(m) + (2*eta2^2)*diag(rowSums(W*W)) 
 
 # get the maximum value on the diag of Q
 q = max(eta1^2 + 2*eta2^2 * rowSums(W*W)) 
@@ -48,9 +54,14 @@ print.matrixA <- function(res) {
     cat(sprintf("%g  ", v))
   }
   cat(blue("\n\neigenvalues: \n"))
-  for (e in res$eigenvalues) { 
-    cat(sprintf("%g  ", e))
+  for (e in res$eigenvalues) {
+    if (e < 0) {
+      cat(red(sprintf("%g  ", e)))
+    } else { 
+      cat(sprintf("%g  ", e))
+    }
   }
+  
   if (res$positive_definite) { 
     cat(green(sprintf("\n\n\u2713 positive definite\n")))
   } else { 
@@ -63,3 +74,15 @@ check(Q, DtD)
 check(q*diag(m), DtD)
 
 check(a*diag(m), DtD)
+
+cat(sprintf("\n\tq = %g\ta = %g\n\n", q, a))
+
+e <- eigen(DtD)
+C <- max(e$values) * diag(m)
+check(C, DtD)
+
+cat(sprintf("\n\tC = %g\ta = %g\n\n", max(e$values), a))
+
+# We can
+
+
