@@ -10,11 +10,18 @@
 #'          weight matrix \eqn{W}
 #' @param lambda1 A vector of \eqn{\lambda_1}'s LASSO penalty terms 
 #' @param lambda2 A vector of \eqn{\lambda_2}'s global smoothing parameters
+#' @param gamma1 A vector of \eqn{\gamma_1}'s LASSO penalty terms. Note that 
+#'              \eqn{\gamma_1 = \frac{2 \lambda_1}{m p (1 - p)}} 
+#' @param gamma2 A vector of \eqn{\gamma_2}'s global smoothing parameters. Note 
+#'               that \eqn{\gamma_2 = \frac{4 \lambda_2}{m(m-1)p(p-1)}}
 #' @param rho The \eqn{\rho} ADMM's penalty parameter 
 #'        
 #' @seealso \code{\link{CVN}}
 #' @export
-check_correctness_input <- function(raw_data, W, lambda1, lambda2, rho) { 
+check_correctness_input <- function(raw_data, W, 
+                                    lambda1, lambda2, 
+                                    gamma1, gamma2, 
+                                    rho) { 
   
   if (!is.list(raw_data)) { 
     stop("raw_data input should be a list") 
@@ -67,6 +74,9 @@ check_correctness_input <- function(raw_data, W, lambda1, lambda2, rho) {
   if (!isSymmetric(W)) { 
     stop("The weight matrix W has to be symmetric") 
   }
+  
+  if ()
+  
   
   if (length(lambda1) < 1) { 
     stop("lambda1 cannot be an empty vector") 

@@ -10,6 +10,8 @@ CVN(
   W,
   lambda1 = 1:2,
   lambda2 = 1:2,
+  gamma1 = NULL,
+  gamma2 = NULL,
   rho = 1,
   eps = 1e-04,
   maxiter = 100,

@@ -104,6 +104,7 @@
 #' (cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, eps = 1e-3, maxiter = 1000, verbose = TRUE))
 #' @export
 CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2, 
+                gamma1 = NULL, gamma2 = NULL, 
                 rho = 1,
                 eps = 1e-4,
                 maxiter = 100, 
@@ -119,7 +120,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 verbose = TRUE) { 
   
   # Check correctness input -------------------------------
-  CVN::check_correctness_input(data, W, lambda1, lambda2, rho)
+  CVN::check_correctness_input(data, W, lambda1, lambda2, gamma1, gamma2, rho)
   
   # When the weight matrix is completely zero, there is no smoothing
   # between graphs. Therefore, the value of lambda2 is irrelevant. 
