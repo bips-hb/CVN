@@ -75,8 +75,23 @@ check_correctness_input <- function(raw_data, W,
     stop("The weight matrix W has to be symmetric") 
   }
   
-  if ()
+  if (!is.null(gamma1)) { 
+    
+    if (is.null(gamma2)) { 
+      stop("If gamma1 is specified, gamma2 cannot be NULL")  
+    }
+    
+    lambda1 <- (gamma1*m*p*(p-1)) / 2
+  }
   
+  if (!is.null(gamma2)) { 
+    
+    if (is.null(gamma1)) { 
+      stop("If gamma2 is specified, gamma1 cannot be NULL")  
+    }
+    
+    lambda2 <- (gamma2*m*(m-1)*p*(p-1)) / 4
+  }
   
   if (length(lambda1) < 1) { 
     stop("lambda1 cannot be an empty vector") 

@@ -41,6 +41,14 @@ weight matrix \eqn{W}}
 \item{lambda2}{Vector with different \eqn{\lambda_2} global smoothing parameter values 
 (Default: \code{1:2})}
 
+\item{gamma1}{A vector of \eqn{\gamma_1}'s LASSO penalty terms, where 
+\eqn{\gamma_1 = \frac{2 \lambda_1}{m p (1 - p)}}. If \code{gamma1} 
+is set, the value of \code{lambda1} is ignored. (Default: \code{NULL}).}
+
+\item{gamma2}{A vector of \eqn{\gamma_2}'s global smoothing parameters, where
+that \eqn{\gamma_2 = \frac{4 \lambda_2}{m(m-1)p(p-1)}}. If \code{gamma2} 
+is set, the value of \code{lambda2} is ignored.(Default: \code{NULL}).}
+
 \item{rho}{The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})}
 
 \item{eps}{If the relative difference between two update steps is 
@@ -88,7 +96,9 @@ A \code{CVN} object containing the estimates for all the graphs
    the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data frame
    \code{results}. It consists of multiple columns, namely: 
    \item{\code{lambda1}}{\eqn{\lambda_1} value}
-   \item{\code{lambda2}}{\eqn{\lambda_1} value}
+   \item{\code{lambda2}}{\eqn{\lambda_2} value}
+   \item{\code{gamma1}}{\eqn{\gamma_1} value}
+   \item{\code{gamma2}}{\eqn{\gamma_2} value}
    \item{\code{converged}}{whether algorithm converged or not}
    \item{\code{value}}{value of the negative log-likelihood function}
    \item{\code{n_iterations}}{number of iterations of the ADMM}

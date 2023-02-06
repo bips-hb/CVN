@@ -18,6 +18,12 @@
 #'                (Default: \code{1:2})
 #' @param lambda2 Vector with different \eqn{\lambda_2} global smoothing parameter values 
 #'                (Default: \code{1:2})
+#' @param gamma1 A vector of \eqn{\gamma_1}'s LASSO penalty terms, where 
+#'              \eqn{\gamma_1 = \frac{2 \lambda_1}{m p (1 - p)}}. If \code{gamma1} 
+#'              is set, the value of \code{lambda1} is ignored. (Default: \code{NULL}). 
+#' @param gamma2 A vector of \eqn{\gamma_2}'s global smoothing parameters, where
+#'               that \eqn{\gamma_2 = \frac{4 \lambda_2}{m(m-1)p(p-1)}}. If \code{gamma2} 
+#'               is set, the value of \code{lambda2} is ignored.(Default: \code{NULL}).
 #' @param rho The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})
 #' @param eps If the relative difference between two update steps is 
 #'                smaller than \eqn{\epsilon}, the algorithm stops. 
@@ -52,7 +58,9 @@
 #'    the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data frame
 #'    \code{results}. It consists of multiple columns, namely: 
 #'    \item{\code{lambda1}}{\eqn{\lambda_1} value}
-#'    \item{\code{lambda2}}{\eqn{\lambda_1} value}
+#'    \item{\code{lambda2}}{\eqn{\lambda_2} value}
+#'    \item{\code{gamma1}}{\eqn{\gamma_1} value}
+#'    \item{\code{gamma2}}{\eqn{\gamma_2} value}
 #'    \item{\code{converged}}{whether algorithm converged or not}
 #'    \item{\code{value}}{value of the negative log-likelihood function}
 #'    \item{\code{n_iterations}}{number of iterations of the ADMM}
@@ -121,6 +129,15 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   
   # Check correctness input -------------------------------
   CVN::check_correctness_input(data, W, lambda1, lambda2, gamma1, gamma2, rho)
+  
+  # convert the lambda values to gamma values or the other way around
+  if (is.null(gamma1) && is.null(gamma2)) { 
+    gamma1 <- 2*lambda1 / (m*p*(p-1))  
+    gamma2 <- 4*lambda2 / (m*(m-1)*p*(p-1))  
+  } else { 
+    lambda1 <- (gamma1*m*p*(p-1)) / 2 
+    lambda2 <- (gamma2*m*(m-1)*p*(p-1)) / 4
+  }
   
   # When the weight matrix is completely zero, there is no smoothing
   # between graphs. Therefore, the value of lambda2 is irrelevant. 
@@ -200,6 +217,9 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                                 value = NA, 
                                 n_iterations = NA, 
                                 aic = NA))
+  res$gamma1 <- 2*res$lambda1 / (m*p*(p-1))  
+  res$gamma2 <- 4*res$lambda2 / (m*(m-1)*p*(p-1)) 
+  
   res$id <- 1:nrow(res)
   
   # estimate the graphs for the different values of (lambda1, lambda2) --------
