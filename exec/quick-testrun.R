@@ -14,4 +14,4 @@ lambda1 = c(1, 2)
 lambda2 = c(1, 2)
 
 (cvn <- CVN::CVN(grid, W, warmstart = TRUE, eps = 1e-4, maxiter = 1000,
-                 gamma1 = c(1,2), lambda1 = lambda1, lambda2 = lambda2, verbose = TRUE))
+                 lambda1 = lambda1, lambda2 = lambda2, verbose = TRUE))

@@ -130,6 +130,11 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   # Check correctness input -------------------------------
   CVN::check_correctness_input(data, W, lambda1, lambda2, gamma1, gamma2, rho)
   
+  # Extract variables -------------------------------------
+  m <- length(data)       # total number of graphs  
+  p <- ncol(data[[1]])    # total number of variables
+  n_obs <- sapply(data, function(X) nrow(X))    # no. of observations per graph 
+  
   # convert the lambda values to gamma values or the other way around
   if (is.null(gamma1) && is.null(gamma2)) { 
     gamma1 <- 2*lambda1 / (m*p*(p-1))  
@@ -146,11 +151,6 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     warning("Since weight matrix W is zero, there is no smoothing. lambda2 is fixed to 1")
     lambda2 <- 1
   }
-  
-  # Extract variables -------------------------------------
-  m <- length(data)       # total number of graphs  
-  p <- ncol(data[[1]])    # total number of variables
-  n_obs <- sapply(data, function(X) nrow(X))    # no. of observations per graph 
   
   # Set-up cluster ---------------------------
   if (n_cores > 1) { 
