@@ -13,14 +13,13 @@ determine_information_criterion <- function(Theta, adj_matrices, Sigma, n_obs,
   if (type[1] == "AIC" || type[1] == "aic") {
     return(sum(
       sapply(1:m, function(i) { 
-        n_obs[i] * ( sum(diag( Sigma[[i]] %*% Theta[[i]] )) - log(det(Theta[[i]])) ) + 2*E[i] 
+        n_obs[i] * ( sum(diag( Sigma[[i]] %*% Theta[[i]] ))) - n_obs[i] * log(det(Theta[[i]])) + 2*E[i]
       })
     ))
   } else if (type[1] == "BIC" || type[1] == "bic") { 
-    warning("BIC needs to be implemented") 
     return(sum(
       sapply(1:m, function(i) { 
-        n_obs[i] * ( sum(diag( Sigma[[i]] %*% Theta[[i]] )) - log(det(Theta[[i]])) ) + 2*E[i] 
+        n_obs[i] * ( sum(diag( Sigma[[i]] %*% Theta[[i]] ))) - n_obs[i] * log(det(Theta[[i]])) + 2*log(n_obs[i]) * E[i]
       })
     )) 
   } else { 

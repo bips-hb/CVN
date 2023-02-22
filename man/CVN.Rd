@@ -97,13 +97,14 @@ A \code{CVN} object containing the estimates for all the graphs
    \code{results}. It consists of multiple columns, namely: 
    \item{\code{lambda1}}{\eqn{\lambda_1} value}
    \item{\code{lambda2}}{\eqn{\lambda_2} value}
-   \item{\code{gamma1}}{\eqn{\gamma_1} value}
-   \item{\code{gamma2}}{\eqn{\gamma_2} value}
    \item{\code{converged}}{whether algorithm converged or not}
    \item{\code{value}}{value of the negative log-likelihood function}
    \item{\code{n_iterations}}{number of iterations of the ADMM}
-   \item{\code{aic}}{Aikake information criteration}
+   \item{\code{aic}}{Aikake information criterion}
+   \item{\code{gamma1}}{\eqn{\gamma_1} value}
+   \item{\code{gamma2}}{\eqn{\gamma_2} value}
    \item{\code{id}}{The id. This corresponds to the indices of the lists}
+   \item{\code{bic}}{Bayesian information criterion}
    The estimates of the precision matrices and the corresponding adjacency matrices
    for the different values of \eqn{(\lambda_1, \lambda_2)} can be found 
    \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m}, 
