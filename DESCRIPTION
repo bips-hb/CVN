@@ -20,7 +20,8 @@ Depends:
 	glasso,
 	crayon, 
 	ggplot2, 
-	reshape2
+	reshape2,
+	dplyr
 LinkingTo: Rcpp
 License: GPL-3
 Encoding: UTF-8
