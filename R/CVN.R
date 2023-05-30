@@ -95,6 +95,8 @@
 #'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
 #'   \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
 #'   \item{\code{minimal}}{If \code{TRUE}, \code{data}, \code{Theta} and \code{Sigma} are not added}
+#'   \item{\code{hits_border_aic}}{If \code{TRUE}, the optimal model based on the AIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
+#'   \item{\code{hits_border_bic}}{If \code{TRUE}, the optimal model based on the BIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 #' @examples 
 #' data(grid)
 #' m <- 9 # must be 9 for this example
@@ -304,6 +306,12 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   if (n_cores > 1) { 
     stopCluster(cl) 
   }
+  
+  # determine whether the optimal model based on the AIC or BIC hits the border
+  # of lambda1 and/or lambda2
+  hit <- CVN::hits_end_lambda_intervals(res)
+  global_res$hits_border_aic <- hit$hits_border_aic
+  global_res$hits_border_bic <- hit$hits_border_bic
      
   # Collect all the results & input ---------------------------
   global_res$results  <- res                  

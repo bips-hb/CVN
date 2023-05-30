@@ -133,6 +133,8 @@ A \code{CVN} object containing the estimates for all the graphs
   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
   \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
   \item{\code{minimal}}{If \code{TRUE}, \code{data}, \code{Theta} and \code{Sigma} are not added}
+  \item{\code{hits_border_aic}}{If \code{TRUE}, the optimal model based on the AIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
+  \item{\code{hits_border_bic}}{If \code{TRUE}, the optimal model based on the BIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 }
 \description{
 Estimates a covariate-varying network model (CVN), i.e., \eqn{m} 
