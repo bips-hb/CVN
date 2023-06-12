@@ -16,8 +16,8 @@ hits_end_lambda_intervals <- function(results) {
   hits_border_aic <- FALSE
   hits_border_bic <- FALSE
   
-  lambda1 <- results$lambda1
-  lambda2 <- results$lambda2
+  lambda1 <- unique(results$lambda1)
+  lambda2 <- unique(results$lambda2)
   
   # if there are less than 3 entries for both lambda1 and lambda2, there is no point
   # in checking whether the optimal estimate based on the AIC or the BIC lies on 
