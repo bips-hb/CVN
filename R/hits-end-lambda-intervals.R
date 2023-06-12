@@ -39,55 +39,61 @@ hits_end_lambda_intervals <- function(results) {
     # For the BIC score ----------------------------------------------------------
     temp <- results %>% filter(bic == max(bic))
     
-    # if lambda1 hits one of the left border
-    if (temp$lambda1 == min(lambda1)) {
-      warning(message_warning("BIC", "lambda1", "smallest"))
-      hits_border_bic <- TRUE
-    }
-    
-    # if lambda1 hits one of the right border
-    if (temp$lambda1 == max(lambda1)) {
-      warning(message_warning("BIC", "lambda1", "largest"))
-      hits_border_bic <- TRUE
-    }
-    
-    # if lambda1 hits one of the left border
-    if (temp$lambda2 == min(lambda2)) {
-      warning(message_warning("BIC", "lambda2", "largest"))
-      hits_border_bic <- TRUE
-    }
-    
-    # if lambda1 hits one of the left border
-    if (temp$lambda2 == max(lambda2)) {
-      warning(message_warning("BIC", "lambda2", "largest"))
-      hits_border_bic <- TRUE
+    # check whether it has a unique maximum
+    if (nrow(temp) == 1) {
+      # if lambda1 hits one of the left border
+      if (temp$lambda1 == min(lambda1)) {
+        warning(message_warning("BIC", "lambda1", "smallest"))
+        hits_border_bic <- TRUE
+      }
+      
+      # if lambda1 hits one of the right border
+      if (temp$lambda1 == max(lambda1)) {
+        warning(message_warning("BIC", "lambda1", "largest"))
+        hits_border_bic <- TRUE
+      }
+      
+      # if lambda1 hits one of the left border
+      if (temp$lambda2 == min(lambda2)) {
+        warning(message_warning("BIC", "lambda2", "largest"))
+        hits_border_bic <- TRUE
+      }
+      
+      # if lambda1 hits one of the left border
+      if (temp$lambda2 == max(lambda2)) {
+        warning(message_warning("BIC", "lambda2", "largest"))
+        hits_border_bic <- TRUE
+      }
     }
     
     # For the AIC score ----------------------------------------------------------
-    temp <- cvn$results %>% filter(aic == max(aic))
+    temp <- results %>% filter(aic == max(aic))
     
-    # if lambda1 hits one of the left border
-    if (temp$lambda1 == min(lambda1)) {
-      warning(message_warning("AIC", "lambda1", "smallest"))
-      hits_border_aic <- TRUE
-    }
-    
-    # if lambda1 hits one of the right border
-    if (temp$lambda1 == max(lambda1)) {
-      warning(message_warning("AIC", "lambda1", "largest"))
-      hits_border_aic <- TRUE
-    }
-    
-    # if lambda1 hits one of the left border
-    if (temp$lambda2 == min(lambda2)) {
-      warning(message_warning("AIC", "lambda2", "largest"))
-      hits_border_aic <- TRUE
-    }
-    
-    # if lambda1 hits one of the left border
-    if (temp$lambda2 == max(lambda2)) {
-      warning(message_warning("AIC", "lambda2", "largest"))
-      hits_border_aic <- TRUE
+    # check whether it has a unique maximum
+    if (nrow(temp) == 1) {
+      # if lambda1 hits one of the left border
+      if (temp$lambda1 == min(lambda1)) {
+        warning(message_warning("AIC", "lambda1", "smallest"))
+        hits_border_aic <- TRUE
+      }
+      
+      # if lambda1 hits one of the right border
+      if (temp$lambda1 == max(lambda1)) {
+        warning(message_warning("AIC", "lambda1", "largest"))
+        hits_border_aic <- TRUE
+      }
+      
+      # if lambda1 hits one of the left border
+      if (temp$lambda2 == min(lambda2)) {
+        warning(message_warning("AIC", "lambda2", "largest"))
+        hits_border_aic <- TRUE
+      }
+      
+      # if lambda1 hits one of the left border
+      if (temp$lambda2 == max(lambda2)) {
+        warning(message_warning("AIC", "lambda2", "largest"))
+        hits_border_aic <- TRUE
+      }
     }
   } 
   
