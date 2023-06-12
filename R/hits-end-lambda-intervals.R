@@ -37,7 +37,7 @@ hits_end_lambda_intervals <- function(results) {
     }
     
     # For the BIC score ----------------------------------------------------------
-    temp <- cvn$results %>% filter(bic == max(bic))
+    temp <- results %>% filter(bic == max(bic))
     
     # if lambda1 hits one of the left border
     if (temp$lambda1 == min(lambda1)) {
