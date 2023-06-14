@@ -7,7 +7,6 @@
 updateZ_wrapper(
   m,
   p,
-  nrow_D,
   Theta,
   Y,
   W,
@@ -24,8 +23,6 @@ updateZ_wrapper(
 \item{m}{Number of graphs}
 
 \item{p}{Number of variables}
-
-\item{nrow_D}{Number of rows of the \eqn{D}-matrix}
 
 \item{Theta}{A list with matrices with the current values of \eqn{\Theta}}
 
