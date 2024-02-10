@@ -17,12 +17,15 @@ Imports:
     ggplot2,
     glasso,
     huge,
+    magrittr,
     Matrix,
     parallel,
     progress,
     Rcpp,
     reshape2,
-    visNetwork    
+    stats,
+    utils,
+    visNetwork
 LinkingTo: 
     Rcpp
 Encoding: UTF-8

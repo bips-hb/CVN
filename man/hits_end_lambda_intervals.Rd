@@ -10,13 +10,13 @@ hits_end_lambda_intervals(results)
 \item{results}{Results of the \code{\link{CVN}} function}
 }
 \value{
-List with two values: 
+List with two values:
    \item{\code{hits_border_aic}}{If \code{TRUE}, hits the border for the AIC}
    \item{\code{hits_border_bic}}{If \code{TRUE}, hits the border for the BIC}
 }
 \description{
 One often selected the optimal model for the \eqn{(\lambda_1, \lambda_2)}-values
-based on the AIC and BIC. 
-This function checks and warns when the optimal value lies on the border of the 
+based on the AIC and BIC.
+This function checks and warns when the optimal value lies on the border of the
 values \eqn{(\lambda_1, \lambda_2)} takes.
 }

@@ -27,54 +27,54 @@ CVN(
 )
 }
 \arguments{
-\item{data}{A list with matrices, each entry associated with a single graph. 
-The number of columns should be the same for each matrix. 
+\item{data}{A list with matrices, each entry associated with a single graph.
+The number of columns should be the same for each matrix.
 Number of observations can differ}
 
-\item{W}{The \eqn{(m \times m)}-dimensional symmetric 
+\item{W}{The \eqn{(m \times m)}-dimensional symmetric
 weight matrix \eqn{W}}
 
-\item{lambda1}{Vector with different \eqn{\lambda_1} LASSO penalty terms 
+\item{lambda1}{Vector with different \eqn{\lambda_1} LASSO penalty terms
 (Default: \code{1:2})}
 
-\item{lambda2}{Vector with different \eqn{\lambda_2} global smoothing parameter values 
+\item{lambda2}{Vector with different \eqn{\lambda_2} global smoothing parameter values
 (Default: \code{1:2})}
 
-\item{gamma1}{A vector of \eqn{\gamma_1}'s LASSO penalty terms, where 
-\eqn{\gamma_1 = \frac{2 \lambda_1}{m p (1 - p)}}. If \code{gamma1} 
+\item{gamma1}{A vector of \eqn{\gamma_1}'s LASSO penalty terms, where
+\eqn{\gamma_1 = \frac{2 \lambda_1}{m p (1 - p)}}. If \code{gamma1}
 is set, the value of \code{lambda1} is ignored. (Default: \code{NULL}).}
 
 \item{gamma2}{A vector of \eqn{\gamma_2}'s global smoothing parameters, where
-that \eqn{\gamma_2 = \frac{4 \lambda_2}{m(m-1)p(p-1)}}. If \code{gamma2} 
+that \eqn{\gamma_2 = \frac{4 \lambda_2}{m(m-1)p(p-1)}}. If \code{gamma2}
 is set, the value of \code{lambda2} is ignored.(Default: \code{NULL}).}
 
 \item{rho}{The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})}
 
-\item{eps}{If the relative difference between two update steps is 
-smaller than \eqn{\epsilon}, the algorithm stops. 
+\item{eps}{If the relative difference between two update steps is
+smaller than \eqn{\epsilon}, the algorithm stops.
 See \code{\link{relative_difference_precision_matrices}}
 (Default: \code{1e-4})}
 
 \item{maxiter}{Maximum number of iterations (Default: \code{100})}
 
-\item{truncate}{All values of the final \eqn{\hat{\Theta}_i}'s below \code{truncate} will be 
+\item{truncate}{All values of the final \eqn{\hat{\Theta}_i}'s below \code{truncate} will be
 set to \code{0}. (Default: \code{1e-5})}
 
-\item{rho_genlasso}{The \eqn{\rho} penalty parameter for the ADMM algorithm 
+\item{rho_genlasso}{The \eqn{\rho} penalty parameter for the ADMM algorithm
 used to solve the generalized LASSO (Default: \code{1})}
 
-\item{eps_genlasso}{If the relative difference between two update steps is 
-smaller than \eqn{\epsilon}, the algorithm stops. 
+\item{eps_genlasso}{If the relative difference between two update steps is
+smaller than \eqn{\epsilon}, the algorithm stops.
 (Default: \code{1e-10})}
 
-\item{maxiter_genlasso}{Maximum number of iterations for solving 
+\item{maxiter_genlasso}{Maximum number of iterations for solving
 the generalized LASSO problem (Default: \code{100})}
 
-\item{truncate_genlasso}{All values of the final \eqn{\hat{\beta}} below 
-\code{truncate_genlasso} will be set to \code{0}. 
+\item{truncate_genlasso}{All values of the final \eqn{\hat{\beta}} below
+\code{truncate_genlasso} will be set to \code{0}.
 (Default: \code{1e-4})}
 
-\item{n_cores}{Number of cores used (Default: max. number of cores - 1, or 
+\item{n_cores}{Number of cores used (Default: max. number of cores - 1, or
 the total number penalty term pairs if that is less)}
 
 \item{normalized}{Data is normalized if \code{TRUE}. Otherwise the data is only
@@ -83,17 +83,17 @@ centered (Default: \code{FALSE})}
 \item{warmstart}{If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
 the individual graphs first (Default: \code{TRUE})}
 
-\item{minimal}{If \code{TRUE}, the returned \code{cvn} is minimal in terms of 
-memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not 
+\item{minimal}{If \code{TRUE}, the returned \code{cvn} is minimal in terms of
+memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not
 returned (Default: \code{FALSE})}
 
 \item{verbose}{Verbose (Default: \code{TRUE})}
 }
 \value{
-A \code{CVN} object containing the estimates for all the graphs 
-   for each different value of \eqn{(\lambda_1, \lambda_2)}. General results for 
+A \code{CVN} object containing the estimates for all the graphs
+   for each different value of \eqn{(\lambda_1, \lambda_2)}. General results for
    the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data frame
-   \code{results}. It consists of multiple columns, namely: 
+   \code{results}. It consists of multiple columns, namely:
    \item{\code{lambda1}}{\eqn{\lambda_1} value}
    \item{\code{lambda2}}{\eqn{\lambda_2} value}
    \item{\code{converged}}{whether algorithm converged or not}
@@ -105,15 +105,15 @@ A \code{CVN} object containing the estimates for all the graphs
    \item{\code{id}}{The id. This corresponds to the indices of the lists}
    \item{\code{bic}}{Bayesian information criterion}
    The estimates of the precision matrices and the corresponding adjacency matrices
-   for the different values of \eqn{(\lambda_1, \lambda_2)} can be found 
-   \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m}, 
+   for the different values of \eqn{(\lambda_1, \lambda_2)} can be found
+   \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m},
                        (only if \code{minimal = FALSE})}
-   \item{\code{adj_matrices}}{A list with the estimated adjacency matrices corresponding to the 
-                              estimated precision matrices in \code{Theta}. The entries 
-                              are \code{1} if there is an edge, \code{0} otherwise. 
+   \item{\code{adj_matrices}}{A list with the estimated adjacency matrices corresponding to the
+                              estimated precision matrices in \code{Theta}. The entries
+                              are \code{1} if there is an edge, \code{0} otherwise.
                               The matrices are sparse using package \code{\link[Matrix]{Matrix}}}
    In addition, the input given to the CVN function is stored in the object as well:
-   \item{\code{Sigma}}{Empirical covariance matrices \eqn{\{\hat{\Sigma}_i\}_{i = 1}^m}, 
+   \item{\code{Sigma}}{Empirical covariance matrices \eqn{\{\hat{\Sigma}_i\}_{i = 1}^m},
                              (only if \code{minimal = FALSE})}
    \item{\code{m}}{Number of graphs}
    \item{\code{p}}{Number of variables}
@@ -121,12 +121,12 @@ A \code{CVN} object containing the estimates for all the graphs
   \item{\code{data}}{The \code{data}, but then normalized or centered (only if \code{minimal = FALSE})}
   \item{\code{W}}{The \eqn{(m \times m)}-dimensional weight matrix \eqn{W}}
   \item{\code{maxiter}}{Maximum number of iterations for the ADMM}
-  \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter} 
-  \item{\code{eps}}{The stopping criterion \eqn{\epsilon}} 
+  \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter}
+  \item{\code{eps}}{The stopping criterion \eqn{\epsilon}}
   \item{\code{truncate}}{Truncation value for \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
   \item{\code{maxiter_genlasso}}{Maximum number of iterations for the generarlzed LASSO}
-  \item{\code{rho_genlasso}}{The \eqn{\rho} generalized LASSO penalty parameter} 
-  \item{\code{eps_genlasso}}{The stopping criterion \eqn{\epsilon} for the generalized LASSO} 
+  \item{\code{rho_genlasso}}{The \eqn{\rho} generalized LASSO penalty parameter}
+  \item{\code{eps_genlasso}}{The stopping criterion \eqn{\epsilon} for the generalized LASSO}
   \item{\code{truncate_genlasso}}{Truncation value for \eqn{\beta} of the generalized LASSO}
   \item{\code{n_lambda_values}}{Total number of \eqn{(\lambda_1, \lambda_2)} value combinations}
   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
@@ -136,15 +136,15 @@ A \code{CVN} object containing the estimates for all the graphs
   \item{\code{hits_border_bic}}{If \code{TRUE}, the optimal model based on the BIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 }
 \description{
-Estimates a covariate-varying network model (CVN), i.e., \eqn{m} 
-Gaussian graphical models that change with (multiple) external covariate(s). 
+Estimates a covariate-varying network model (CVN), i.e., \eqn{m}
+Gaussian graphical models that change with (multiple) external covariate(s).
 The smoothing between the graphs is specified by the \eqn{(m \times m)}-dimensional
-weight matrix \eqn{W}. The function returns the estimated precision matrices 
+weight matrix \eqn{W}. The function returns the estimated precision matrices
 for each graph.
 }
 \section{Reusing Estimates}{
- When estimating the graph for different values of 
-\eqn{\lambda_1} and \eqn{\lambda_2}, we use the graph estimated (if available) 
+ When estimating the graph for different values of
+\eqn{\lambda_1} and \eqn{\lambda_2}, we use the graph estimated (if available)
 for other \eqn{\lambda_1} and \eqn{\lambda_2} values closest to them.
 }
 
@@ -152,8 +152,8 @@ for other \eqn{\lambda_1} and \eqn{\lambda_2} values closest to them.
 data(grid)
 m <- 9 # must be 9 for this example
 
-#' Choice of the weight matrix W. 
-#' (uniform random) 
+#' Choice of the weight matrix W.
+#' (uniform random)
 W <- matrix(runif(m*m), ncol = m)
 W <- W \%*\% t(W)
 W <- W / max(W)
