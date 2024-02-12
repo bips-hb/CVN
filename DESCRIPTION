@@ -14,15 +14,16 @@ Imports:
     crayon,
     doSNOW,
     dplyr,
+    foreach,
     ggplot2,
     glasso,
-    huge,
     magrittr,
     Matrix,
     parallel,
     progress,
     Rcpp,
     reshape2,
+    snow,
     stats,
     utils,
     visNetwork
@@ -31,3 +32,5 @@ LinkingTo:
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1
+Suggests: 
+    igraph

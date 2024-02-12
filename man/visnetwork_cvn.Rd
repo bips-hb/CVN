@@ -16,12 +16,12 @@ visnetwork_cvn(
 )
 }
 \arguments{
-\item{cvn}{A \code{cvn} object, see \code{\link{CVN::CVN}} 
+\item{cvn}{A \code{cvn} object, see \code{\link{CVN::CVN}}
 or \code{\link{CVN::glasso}}}
 
 \item{node_titles}{Vector with title of the nodes (Default: \code{1:p})}
 
-\item{titles}{A list with \code{n_lambda_values} vectors. Each vector is of the 
+\item{titles}{A list with \code{n_lambda_values} vectors. Each vector is of the
 lenght \code{m}. Regulates the titles of the graphs (Default: no title)}
 
 \item{show_core_graph, width, color}{Show the core graph using the width and colors}
@@ -30,6 +30,6 @@ lenght \code{m}. Regulates the titles of the graphs (Default: no title)}
 List
 }
 \description{
-Creates all \code{visNetwork} plots, see \code{\link{CVN::visnetwork}}, 
+Creates all \code{visNetwork} plots, see \code{\link{CVN::visnetwork}},
 for all graphs in a \code{cvn} object
 }

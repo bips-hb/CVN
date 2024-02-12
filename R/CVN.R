@@ -112,7 +112,8 @@
 #' lambda1 = 1:2
 #' lambda2 = 1:2
 #'
-#' (cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, eps = 1e-3, maxiter = 1000, verbose = TRUE))
+#' (cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2,
+#'                  eps = 1e-3, maxiter = 1000, verbose = TRUE))
 #' @export
 CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 gamma1 = NULL, gamma2 = NULL,
@@ -328,25 +329,30 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
 #' Print Function for the CVN Object Class
 #'
 #' @export
-print.cvn <- function(cvn, ...) {  # TODO
+print.cvn <- function(x, ...) {  # TODO
   cat(sprintf("Covariate-varying Network (CVN)\n\n"))
 
-  if (all(cvn$results$converged)) {
-    cat(green(sprintf("\u2713 all converged\n\n")))
+  if (all(x$results$converged)) {
+    cat(crayon::green(sprintf("\u2713 all converged\n\n")))
   } else {
-    cat(red(sprintf("\u2717 did not converge (maxiter of %d not sufficient)\n\n", cvn$maxiter)))
+    cat(crayon::red(sprintf("\u2717 did not converge (maxiter of %d not sufficient)\n\n", x$maxiter)))
   }
 
   # print following variables
-  cat(sprintf("Number of graphs (m)    : %d\n", cvn$m))
-  cat(sprintf("Number of variables (p) : %d\n", cvn$p))
-  cat(sprintf("Number of lambda pairs  : %d\n\n", cvn$n_lambda_values))
+  cat(sprintf("Number of graphs (m)    : %d\n", x$m))
+  cat(sprintf("Number of variables (p) : %d\n", x$p))
+  cat(sprintf("Number of lambda pairs  : %d\n\n", x$n_lambda_values))
 
-  cat(sprintf("Weight matrix (W):\n"))
-  print(Matrix::Matrix(cvn$W, sparse = T))
+  # If x is an object returned by CVN::glasso() it doesn't have a $W element and this errors
+  # Causes example in glasso.R to error during R CMD check
+  # TODO: Check if glasso() behaves correctly, possibly adjust print method for CVN:glasso subclass?
+  if (!is.null(x$W)) {
+    cat(sprintf("Weight matrix (W):\n"))
+    print(Matrix::Matrix(x$W, sparse = T))
+  }
 
   cat(sprintf("\n"))
-  print(cvn$results)
+  print(x$results)
 }
 
 #' Strip CVN
@@ -384,6 +390,6 @@ strip_cvn <- function(cvn) {
 #' Plot Function for CVN Object Class
 #'
 #' @export
-plot.cvn <- function(cvn, ...) {
-  CVN::visnetwork_cvn(cvn, ...)
+plot.cvn <- function(x, ...) {
+  CVN::visnetwork_cvn(x)
 }

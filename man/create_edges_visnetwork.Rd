@@ -13,8 +13,8 @@ create_edges_visnetwork(adj_matrix)
 Data frame that be used as input for \code{visNetwork}
 }
 \description{
-In order to visualize a graph, we need to create a 
-\code{data.frame} that can be used by the \code{visNetwork} package. 
+In order to visualize a graph, we need to create a
+\code{data.frame} that can be used by the \code{visNetwork} package.
 This function returns the needed \code{data.frame} given a
 adjacency matrix.
 }
