@@ -33,25 +33,25 @@ updateZ_wrapper(
 
 \item{W}{Weight matrix}
 
-\item{eta1}{}
+\item{eta1}{TODO}
 
 \item{rho_genlasso}{The \eqn{\rho} penalty parameter for the ADMM algorithm}
 
-\item{maxiter_genlasso}{Maximum number of iterations for solving 
+\item{maxiter_genlasso}{Maximum number of iterations for solving
 the generalized LASSO problem}
 
-\item{eps_genlasso}{If the relative difference between two update steps is 
+\item{eps_genlasso}{If the relative difference between two update steps is
 smaller than \eqn{\epsilon}, the algorithm stops}
 
-\item{truncate_genlasso}{All values of the final \eqn{\hat{\beta}} below 
+\item{truncate_genlasso}{All values of the final \eqn{\hat{\beta}} below
 \code{truncate_genlasso} will be set to \code{0}.}
 }
 \value{
 A list with matrices with the new values of \eqn{Z}
 }
 \description{
-A wrapper for the \code{C} function that returns the 
-updated value of \eqn{Z} for the ADMM given the previously 
+A wrapper for the \code{C} function that returns the
+updated value of \eqn{Z} for the ADMM given the previously
 updated values of \eqn{\Theta} and \eqn{Y}
 }
 \seealso{

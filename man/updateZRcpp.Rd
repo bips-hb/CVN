@@ -20,26 +20,26 @@ updateZRcpp(m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
 \item{eta2}{Equals \eqn{\lambda_2 / rho}}
 
 \item{a}{Value added to the diagonal of \eqn{-D'D} so that
-the matrix is positive definite, see 
+the matrix is positive definite, see
 \code{\link{matrix_A_inner_ADMM}}}
 
 \item{rho}{The ADMM's parameter}
 
 \item{max_iter}{Maximum number of iterations}
 
-\item{eps}{Stopping criterion. If differences 
+\item{eps}{Stopping criterion. If differences
 are smaller than \eqn{\epsilon}, algorithm
 is halted}
 
-\item{truncate}{Values below \code{truncate} are 
+\item{truncate}{Values below \code{truncate} are
 set to \code{0}}
 }
 \value{
 The estimated vector \eqn{\hat{\beta}}
 }
 \description{
-A \code{C} implementation of the \eqn{Z}-update step. We 
-solve a generalized LASSO problem repeatedly for each of the 
+A \code{C} implementation of the \eqn{Z}-update step. We
+solve a generalized LASSO problem repeatedly for each of the
 individual edges
 }
 \seealso{

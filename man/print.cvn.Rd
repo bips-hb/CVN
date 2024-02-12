@@ -4,7 +4,7 @@
 \alias{print.cvn}
 \title{Print Function for the CVN Object Class}
 \usage{
-\method{print}{cvn}(cvn, ...)
+\method{print}{cvn}(x, ...)
 }
 \description{
 Print Function for the CVN Object Class

@@ -15,19 +15,19 @@ glasso(
 )
 }
 \arguments{
-\item{data}{A list with matrices, each entry associated with a single graph. 
-The number of columns should be the same for each matrix. 
+\item{data}{A list with matrices, each entry associated with a single graph.
+The number of columns should be the same for each matrix.
 Number of observations can differ}
 
-\item{lambda1}{Vector with different \eqn{\lambda_1} LASSO penalty terms 
+\item{lambda1}{Vector with different \eqn{\lambda_1} LASSO penalty terms
 (Default: \code{1:2})}
 
-\item{eps}{Threshold for convergence (Default: \code{1e-4}; the same as in the 
+\item{eps}{Threshold for convergence (Default: \code{1e-4}; the same as in the
 \code{glasso} package)}
 
 \item{maxiter}{Maximum number of iterations (Default: 10,000)}
 
-\item{n_cores}{Number of cores used (Default: max. number of cores - 1, or 
+\item{n_cores}{Number of cores used (Default: max. number of cores - 1, or
 the total number penalty term pairs if that is less)}
 
 \item{normalized}{Data is normalized if \code{TRUE}. Otherwise the data is only
@@ -36,20 +36,20 @@ centered (Default: \code{FALSE})}
 \item{verbose}{Verbose (Default: \code{TRUE})}
 }
 \value{
-A \code{CVN} object containing the estimates for all the graphs 
-   for different value of \eqn{\lambda_1}. General results for 
+A \code{CVN} object containing the estimates for all the graphs
+   for different value of \eqn{\lambda_1}. General results for
    the different value of \eqn{\lambda_1} can be found in the data frame
-   \code{results}. It consists of multiple columns, namely: 
+   \code{results}. It consists of multiple columns, namely:
    \item{\code{lambda1}}{\eqn{\lambda_1} value}
    \item{\code{value}}{value of the negative log-likelihood function}
    \item{\code{aic}}{Aikake information criteration}
    \item{\code{id}}{The id. This corresponds to the indices of the lists}
    The estimates of the precision matrices and the corresponding adjacency matrices
-   for the different values of \eqn{\lambda_1} can be found 
+   for the different values of \eqn{\lambda_1} can be found
    \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1) \}_{i = 1}^m}}
-   \item{\code{adj_matrices}}{A list with the estimated adjacency matrices corresponding to the 
-                              estimated precision matrices in \code{Theta}. The entries 
-                              are \code{1} if there is an edge, \code{0} otherwise. 
+   \item{\code{adj_matrices}}{A list with the estimated adjacency matrices corresponding to the
+                              estimated precision matrices in \code{Theta}. The entries
+                              are \code{1} if there is an edge, \code{0} otherwise.
                               The matrices are sparse using package \code{\link[Matrix]{Matrix}}}
    In addition, the input given to this function is stored in the object as well:
    \item{\code{Sigma}}{Empirical covariance matrices \eqn{\{\hat{\Sigma}_i\}_{i = 1}^m}}
@@ -58,23 +58,23 @@ A \code{CVN} object containing the estimates for all the graphs
    \item{\code{n_obs}}{Vector of length \eqn{m} with number of observations for each graph}
   \item{\code{data}}{The \code{data}, but then normalized or centered}
   \item{\code{maxiter}}{Maximum number of iterations for the ADMM}
-  \item{\code{eps}}{The stopping criterion \eqn{\epsilon}} 
+  \item{\code{eps}}{The stopping criterion \eqn{\epsilon}}
   \item{\code{n_lambda_values}}{Total number of \eqn{\lambda_1} values}
   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
 }
 \description{
-A wrapper for the GLASSO in the context of CVNs. Each graph 
-is estimated individually. There is NO smoothing between the graphs. 
-This function relies completely on the \code{\link{glasso}} package. 
-The output is, therefore, slightly different than for the 
+A wrapper for the GLASSO in the context of CVNs. Each graph
+is estimated individually. There is NO smoothing between the graphs.
+This function relies completely on the \code{\link{glasso}} package.
+The output is, therefore, slightly different than for the
 \code{\link{CVN}} function.
 }
 \examples{
 data(grid)
 m <- 9 # must be 9 for this example
 
-#' Choice of the weight matrix W. 
-#' (uniform random) 
+#' Choice of the weight matrix W.
+#' (uniform random)
 W <- matrix(runif(m*m), ncol = m)
 W <- W \%*\% t(W)
 W <- W / max(W)

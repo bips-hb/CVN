@@ -4,7 +4,7 @@
 \alias{plot.cvn}
 \title{Plot Function for CVN Object Class}
 \usage{
-\method{plot}{cvn}(cvn, ...)
+\method{plot}{cvn}(x, ...)
 }
 \description{
 Plot Function for CVN Object Class
