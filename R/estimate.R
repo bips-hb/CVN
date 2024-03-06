@@ -7,6 +7,7 @@
 estimate <- function(m, p, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs, 
                      rho, rho_genlasso, eps, eps_genlasso,
                      maxiter, maxiter_genlasso, truncate, 
+                     flsa_package_used, connList,
                      truncate_genlasso,
                      verbose = FALSE) {
   
@@ -26,11 +27,17 @@ estimate <- function(m, p, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs,
   repeat{
     
     # Update Z -------------------------------------
-    Z <- updateZRcpp(m, p, 
-                     as.matrix(Theta), as.matrix(Y), W, eta1, eta2, a, 
-                     rho_genlasso, maxiter_genlasso, eps_genlasso, 
-                     truncate_genlasso)  
-    Z <- as.list(Z[,1])
+    if (flsa_package_used) {
+      Z <- CVN::updateZ_flsa_package(m, p, Theta, Y, connListObj = connList$connList, 
+                                     connList_is_null = connList$connList_is_null, 
+                                     eta1, eta2)
+    } else { 
+      Z <- updateZRcpp(m, p, 
+                       as.matrix(Theta), as.matrix(Y), W, eta1, eta2, a, 
+                       rho_genlasso, maxiter_genlasso, eps_genlasso, 
+                       truncate_genlasso)  
+      Z <- as.list(Z[,1])
+    }
     
     # Update Y -------------------------------------
     Y <- CVN::updateY(Theta, Z, Y) 

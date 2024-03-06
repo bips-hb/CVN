@@ -51,6 +51,7 @@
 #' @param minimal If \code{TRUE}, the returned \code{cvn} is minimal in terms of 
 #'                  memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not 
 #'                  returned (Default: \code{FALSE})
+#' @param use_flsa Uses the FLSA package when possible (Default: \code{TRUE})
 #' @param verbose Verbose (Default: \code{TRUE}) 
 #' 
 #' @return A \code{CVN} object containing the estimates for all the graphs 
@@ -128,6 +129,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 normalized = FALSE, 
                 warmstart = TRUE, 
                 minimal = FALSE, 
+                use_flsa = TRUE,
                 verbose = TRUE) { 
   
   # Check correctness input -------------------------------
@@ -153,6 +155,29 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   if (sum(W) == 0) { 
     warning("Since weight matrix W is zero, there is no smoothing. lambda2 is fixed to 1")
     lambda2 <- 1
+  }
+  
+  # whether the flsa package is used to solve the weighted fused lasso signal 
+  # approximator. Only possible when weight matrix is binary
+  if (use_flsa && is_binary_matrix(W)) {
+    flsa_package_used <- TRUE
+    
+    if (verbose) {
+      cat('flsa package is used...\n')
+    }
+    
+    # Since the flsa package is used, we need to create the corresponding connListObj
+    # object used by the flsa package given the weight matrix (see ?flsa::flsa)
+    connList <- CVN::create_connListObj(W)
+    
+    
+  } else {
+    flsa_package_used <- FALSE
+    connList <- NULL
+    
+    if (verbose) {
+      cat('flsa package is not used...\n')
+    }
   }
   
   # Set-up cluster ---------------------------
@@ -243,11 +268,12 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     }
     
     # Initialize variables for the algorithm -----------------
-    if (sum(W) == 0) { # if the weight matrix is empty, the value a = eta_1^2 + 1
-      a <- (res$lambda1[i] / rho)^2 + 1 
-    } else { 
+    
+    if(!flsa_package_used) {
       # Determine the value of the diagonal matrix A such that A - D'D > 0 (positive definite)
       a <- CVN::matrix_A_inner_ADMM(W, res$lambda1[i] / rho, res$lambda2[i] / rho) + 1
+    } else {
+      a <- NULL
     }
     
     # Estimate the graphs -------------------------------------
@@ -256,6 +282,8 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     CVN::estimate(m, p, W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
                   rho, rho_genlasso, 
                   eps, eps_genlasso, 
+                  flsa_package_used = flsa_package_used, 
+                  connList = connList, 
                   maxiter, maxiter_genlasso, truncate = truncate, 
                   truncate_genlasso = truncate_genlasso, 
                   verbose = verbose) 

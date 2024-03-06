@@ -23,6 +23,8 @@ estimate(
   maxiter,
   maxiter_genlasso,
   truncate,
+  flsa_package_used,
+  connList,
   truncate_genlasso,
   verbose = FALSE
 )

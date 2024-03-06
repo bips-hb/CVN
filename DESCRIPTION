@@ -16,6 +16,7 @@ Depends:
 	parallel,
 	progress,
 	Matrix,
+	flsa,
 	huge, 
 	glasso,
 	crayon, 

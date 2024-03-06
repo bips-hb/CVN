@@ -24,6 +24,7 @@ CVN(
   normalized = FALSE,
   warmstart = TRUE,
   minimal = FALSE,
+  use_flsa = TRUE,
   verbose = TRUE
 )
 }
@@ -87,6 +88,8 @@ the individual graphs first (Default: \code{TRUE})}
 \item{minimal}{If \code{TRUE}, the returned \code{cvn} is minimal in terms of 
 memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not 
 returned (Default: \code{FALSE})}
+
+\item{use_flsa}{Uses the FLSA package when possible (Default: \code{TRUE})}
 
 \item{verbose}{Verbose (Default: \code{TRUE})}
 }
