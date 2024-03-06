@@ -1,7 +1,9 @@
-m = 4
-p = 5
+library(wflsa)
 
-W <- CVN::create_weight_matrix('uniform-random', m = m)
+m = 100
+p = 10
+
+W <- CVN::create_weight_matrix('full', m = m)
 
 connList <- CVN::create_connListObj(W)
 
@@ -55,10 +57,17 @@ y <- sapply(1:m, function(i) Theta[[i]][s,t] + Y[[i]][s,t])
 
 
 if(connList$connList_is_null) {
-  fit <- flsa::flsa(y, lambda1 = eta1, lambda2 = 0)
+  fit <- as.vector(flsa::flsa(y, lambda1 = eta1, lambda2 = 0))
 } else {
-  fit <- flsa::flsa(y, lambda1 = eta1, lambda2 = eta2, connListObj = connList$connList)
+  fit <- as.vector(flsa::flsa(y, lambda1 = eta1, lambda2 = eta2, connListObj = connList$connList))
 }
+
+as.vector(wflsa::wflsa(y, W, lambda1 = eta1, lambda2 = eta2))
+
+microbenchmark::microbenchmark(
+  as.vector(flsa::flsa(y, lambda1 = eta1, connListObj = connList$connList)),
+  as.vector(wflsa::wflsa(y, W = CVN::create_weight_matrix('uniform-random', m), lambda1 = eta1, lambda2 = eta2))
+)
 
 as.vector(fit)
 
