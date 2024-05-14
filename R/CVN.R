@@ -16,7 +16,7 @@
 #'          weight matrix \eqn{W}
 #' @param lambda1 Vector with different \eqn{\lambda_1} LASSO penalty terms 
 #'                (Default: \code{1:2})
-#' @param lambda2 Vector with different \eqn{\lambda_2} global smoothing parameter values 
+#' @param <- Vector with different \eqn{\lambda_2} global smoothing parameter values 
 #'                (Default: \code{1:2})
 #' @param gamma1 A vector of \eqn{\gamma_1}'s LASSO penalty terms, where 
 #'              \eqn{\gamma_1 = \frac{2 \lambda_1}{m p (1 - p)}}. If \code{gamma1} 
@@ -149,10 +149,10 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   
   # When the weight matrix is completely zero, there is no smoothing
   # between graphs. Therefore, the value of lambda2 is irrelevant. 
-  # In this case, we fix lambda2 to 1 and inform the user of this fact
+  # In this case, we fix lambda2 to 0 and inform the user of this fact
   if (sum(W) == 0) { 
-    warning("Since weight matrix W is zero, there is no smoothing. lambda2 is fixed to 1")
-    lambda2 <- 1
+    warning("Since weight matrix W is zero, there is no smoothing. lambda2 is fixed to 0")
+    lambda2 <- 0
   }
   
   # Set-up cluster ---------------------------
