@@ -5,3 +5,4 @@
 ^test-dataset\.RDS$
 ^sandbox$
 ^example\.R$
+^\.github$
