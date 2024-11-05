@@ -14,7 +14,7 @@ Reduced cvn where \code{Theta}, \code{data} and \code{Sigma}
         are removed
 }
 \description{
-Function that removes most of the items to make the CVN object 
-more memory sufficient. This is especially important when the 
+Function that removes most of the items to make the CVN object
+more memory sufficient. This is especially important when the
 graphs are rather larger
 }

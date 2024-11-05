@@ -16,27 +16,27 @@ visnetwork(
 A \code{visNetwork} plot
 }
 \description{
-Creates a \code{visNetwork} plot given a list of 
-nodes and edges. The nodes data frame can be 
-created with \code{\link{create_nodes_visnetwork}}; 
-the edges with \code{create_edges_visnetwork}.  
-In order to highlight edges, you can use 
+Creates a \code{visNetwork} plot given a list of
+nodes and edges. The nodes data frame can be
+created with \code{\link{create_nodes_visnetwork}};
+the edges with \code{create_edges_visnetwork}.
+In order to highlight edges, you can use
 \code{\link{set_attributes_to_edges_visnetwork}}.
 }
 \examples{
 nodes <- CVN::create_nodes_visnetwork(n_nodes = 5, labels = LETTERS[1:5])
 
-adj_matrix <- matrix(c(0, 1, 0, 1, 0, 
-                       1, 0, 1, 0, 0, 
-                       0, 1, 0, 0, 0, 
+adj_matrix <- matrix(c(0, 1, 0, 1, 0,
+                       1, 0, 1, 0, 0,
+                       0, 1, 0, 0, 0,
                        1, 0, 0, 0, 1,
                        0, 0, 0, 1, 0), ncol = 5)
 
 edges <- CVN::create_edges_visnetwork(adj_matrix)
 
-edges <- set_attributes_to_edges_visnetwork(edges, 
+edges <- set_attributes_to_edges_visnetwork(edges,
                                             subset_edges = list(from = c(1, 2), to = c(4, 3)),
-                                            width = c(3, .5), 
+                                            width = c(3, .5),
                                             color = c("red", "blue"))
 
 CVN::visnetwork(nodes, edges)

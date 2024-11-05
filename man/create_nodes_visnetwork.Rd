@@ -9,13 +9,13 @@ create_nodes_visnetwork(n_nodes, labels = 1:n_nodes)
 \arguments{
 \item{n_nodes}{Number of nodes in the graph}
 
-\item{labels}{The labels for the individual nodes 
+\item{labels}{The labels for the individual nodes
 (Default: \code{1:n_nodes})}
 }
 \value{
 Data frame with two columns: \code{id} and \code{title}
 }
 \description{
-Creates a data frame that can be used for the 
+Creates a data frame that can be used for the
 \code{visNetwork} package.
 }

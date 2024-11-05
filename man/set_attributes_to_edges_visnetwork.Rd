@@ -14,24 +14,24 @@ set_attributes_to_edges_visnetwork(
 \arguments{
 \item{edges}{A data.frame create by \code{\link{create_edges_visnetwork}}}
 
-\item{subset_edges}{A list with the elements \code{from} and \code{to}. Both 
-\code{from} and \code{to} are vectors of the same length 
+\item{subset_edges}{A list with the elements \code{from} and \code{to}. Both
+\code{from} and \code{to} are vectors of the same length
 denoting the different edges}
 
-\item{width}{Vector with two values. The first is assigned to the 
+\item{width}{Vector with two values. The first is assigned to the
 edges in the subset given by \code{subset_edges}. The second
-value is assigned to the rest. If \code{width = c(NA,NA)}, 
+value is assigned to the rest. If \code{width = c(NA,NA)},
 no width is assigned}
 
-\item{color}{Vector with two values. The first is assigned to the 
+\item{color}{Vector with two values. The first is assigned to the
 edges in the subset given by \code{subset_edges}. The second
-value is assigned to the rest. If \code{color = c(NULL,NULL)}, 
+value is assigned to the rest. If \code{color = c(NULL,NULL)},
 no color is assigned}
 }
 \value{
 A data frame that can be used by the \code{visNetwork} package
 }
 \description{
-A subset of edges can be assign a different thickness 
+A subset of edges can be assign a different thickness
 or color.
 }
