@@ -1,2 +1,11 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^LICENSE\.md$
+^exec$
+^test-dataset\.RDS$
+^sandbox$
+^example\.R$
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

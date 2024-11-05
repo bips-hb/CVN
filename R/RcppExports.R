@@ -8,32 +8,6 @@ genlassoRcpp <- function(Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate) {
     .Call('_CVN_genlassoRcpp', PACKAGE = 'CVN', Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
 
-#' The \eqn{Z}-update Step
-#' 
-#' A \code{C} implementation of the \eqn{Z}-update step. We 
-#' solve a generalized LASSO problem repeatedly for each of the 
-#' individual edges 
-#' 
-#' @param m The number of graphs 
-#' @param p The number of variables
-#' @param Theta A list of matrices with the \eqn{\Theta}-matrices
-#' @param Y A list of matrices with the \eqn{Y}-matrices
-#' @param eta1 Equals \eqn{\lambda_1 / rho} 
-#' @param eta2 Equals \eqn{\lambda_2 / rho} 
-#' @param a Value added to the diagonal of \eqn{-D'D} so that
-#'          the matrix is positive definite, see 
-#'          \code{\link{matrix_A_inner_ADMM}}
-#' @param rho The ADMM's parameter
-#' @param max_iter Maximum number of iterations
-#' @param eps Stopping criterion. If differences 
-#'            are smaller than \eqn{\epsilon}, algorithm
-#'            is halted
-#' @param truncate Values below \code{truncate} are 
-#'                 set to \code{0}
-#'
-#' @return The estimated vector \eqn{\hat{\beta}}
-#' 
-#' @seealso \code{\link{updateZ_wrapper}}
 updateZRcpp <- function(m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate) {
     .Call('_CVN_updateZRcpp', PACKAGE = 'CVN', m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
