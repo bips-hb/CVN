@@ -3,7 +3,7 @@
 #' lasso for inverse covariance estimation across multiple classes. 
 #' Journal of the Royal Statistical Society. Series B: Statistical 
 #' Methodology, 76(2), 373–397. https://doi.org/10.1111/rssb.12033
-#' @export
+#' @keywords internal
 determine_information_criterion <- function(Theta, adj_matrices, Sigma, n_obs,
                                             type = c("AIC", "BIC")) { 
   
@@ -32,7 +32,7 @@ determine_information_criterion <- function(Theta, adj_matrices, Sigma, n_obs,
 #' Determines a given information criteria for a \code{cvn} object, 
 #' see \code{\link{CVN}}. 
 #' 
-#' @export
+#' @keywords internal
 determine_information_criterion_cvn <- function(cvn, type = c("AIC", "BIC")) { 
   if (!("cvn" %in% class(cvn))) { 
     stop("cvn parameter must be of type 'cvn'") 
@@ -41,10 +41,10 @@ determine_information_criterion_cvn <- function(cvn, type = c("AIC", "BIC")) {
   # compute for each different lambda1 and lambda2 pair
   # the information criterion 
   sapply(1:cvn$n_lambda_values, function(i) { 
-       CVN::determine_information_criterion(cvn$Theta[[i]], 
-                                            cvn$adj_matrices[[i]], 
-                                            cvn$Sigma, 
-                                            cvn$n_obs,
-                                            type = type)
+       determine_information_criterion(cvn$Theta[[i]], 
+                                       cvn$adj_matrices[[i]], 
+                                       cvn$Sigma, 
+                                       cvn$n_obs,
+                                       type = type)
     })
 }

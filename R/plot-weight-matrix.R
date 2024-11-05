@@ -12,6 +12,9 @@
 #' @param t Distance between tick labels and x-axis (Default: -6)
 #' @param r Distance between tick labels and y-axis (Default: -8)
 #' 
+#' @importFrom Matrix Matrix
+#' @import ggplot2 
+#'
 #' @return A heatmap plot                   
 #' @export
 plot_weight_matrix <- function(W,
@@ -21,7 +24,7 @@ plot_weight_matrix <- function(W,
                                add_ticks_labels = TRUE,
                                t = -6,
                                r = -8) {
-
+  
   m <- nrow(W)
   
   W <- t(apply(W, 2, rev)) # rotate matrix
@@ -31,6 +34,9 @@ plot_weight_matrix <- function(W,
   
   data <- reshape2::melt(W)
   data$Var1 <- m - data$Var1 + 1
+  
+  # needed for package building: visible binding for global variables Var1,...
+  Var1 <- Var2 <- value <- geom_tile <- NULL
   
   p <- ggplot(data = data, aes(x = Var1, y = Var2, fill = value)) + 
     geom_tile() +

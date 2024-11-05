@@ -1,0 +1,89 @@
+---
+title: "Covariate-varying Networks"
+author: "Louis Dijkstra, Arne Godt, Ronja Foraita"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{my-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, warning=FALSE}
+library(CVN)
+```
+
+<!-- devtools::build_rmd("vignettes/cvn-vignette.Rmd") -->
+
+
+TEXT: What are CVN?
+
+# Basics
+
+
+## Data
+The input of a CVN is a list of $m$ data sets. The number of variables $p$ must be 
+equal in each list element, the number of observations may differ.
+
+
+
+```{r data}
+# Load data: a list of 9 data sets with p variables an n_i observations.
+data(grid)
+m <- length(grid)
+```
+## Weigth matrix
+
+The weight matrix is a $m \times m$ symmetric matrix. It reflects the *meta-graph*.
+
+```{r W}
+W_full <- create_weight_matrix("full", m = m)  
+W_grid <- create_weight_matrix("grid", m = m)
+W_gl   <- create_weight_matrix("glasso", m = m)
+```
+
+## Tuning parameter space
+
+```{r tp}
+lambda1 = seq(0.5, 2, length = 3)  # sparsity
+lambda2 = c(0.5, 1)                # smoothing
+```
+
+
+## Estimate a CVN
+
+```{r cvn, eval=FALSE}
+cvn <- CVN::CVN(data = grid, 
+                W = W_grid, 
+                lambda1 = lambda1, lambda2 = lambda2, 
+                eps = 1e-3, maxiter = 1000, 
+                verbose = FALSE)
+
+print(cvn)
+
+best.aic <- cvn$results[which.min(cvn$results$aic), "id"]
+best.bic <- cvn$results[which.min(cvn$results$bic), "id"]
+
+```
+
+
+# Print and Plots
+```{r pp, eval=FALSE}
+
+plot_cvn <- visnetwork_cvn(cvn)
+
+
+hamming_distance_adj_matrices(cvn$adj_matrices[[best.aic]]) 
+hamming_distance_adj_matrices(cvn$adj_matrices[[best.bic]]) 
+
+plot_hamming_distances_cvn(cvn)
+
+```
+
+# Interpolate

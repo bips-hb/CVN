@@ -17,7 +17,7 @@ updateZ_wrapper(
   rho_genlasso,
   maxiter_genlasso,
   eps_genlasso,
-  truncate_genlasso
+  truncate_genlasso = 1e-04
 )
 }
 \arguments{
@@ -33,7 +33,9 @@ updateZ_wrapper(
 
 \item{W}{Weight matrix}
 
-\item{eta1}{}
+\item{eta1}{lambda1 / rho, with \eqn{\rho} is penalty parameter for the global ADMM algorithm (Default: \code{1})}
+
+\item{eta2}{}
 
 \item{rho_genlasso}{The \eqn{\rho} penalty parameter for the ADMM algorithm}
 
@@ -57,3 +59,4 @@ updated values of \eqn{\Theta} and \eqn{Y}
 \seealso{
 \code{\link{create_matrix_D}}
 }
+\keyword{internal}

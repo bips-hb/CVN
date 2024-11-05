@@ -6,6 +6,11 @@
 \usage{
 \method{print}{cvn}(cvn, ...)
 }
+\arguments{
+\item{cvn}{\code{cvn} object}
+
+\item{...}{Additional arguments to pass to \code{\link[CVN]{CVN}}}
+}
 \description{
-Print Function for the CVN Object Class
+Custom print method for CVN objects.
 }

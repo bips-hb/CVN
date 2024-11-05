@@ -14,9 +14,9 @@
 #'             Number of observations can differ
 #' @param W The \eqn{(m \times m)}-dimensional symmetric 
 #'          weight matrix \eqn{W}
-#' @param lambda1 Vector with different \eqn{\lambda_1} LASSO penalty terms 
+#' @param lambda1 Vector with different \eqn{\lambda_1}. LASSO penalty terms 
 #'                (Default: \code{1:2})
-#' @param <- Vector with different \eqn{\lambda_2} global smoothing parameter values 
+#' @param lambda2 <- Vector with different \eqn{\lambda_2}. The global smoothing parameter values 
 #'                (Default: \code{1:2})
 #' @param gamma1 A vector of \eqn{\gamma_1}'s LASSO penalty terms, where 
 #'              \eqn{\gamma_1 = \frac{2 \lambda_1}{m p (1 - p)}}. If \code{gamma1} 
@@ -97,6 +97,13 @@
 #'   \item{\code{minimal}}{If \code{TRUE}, \code{data}, \code{Theta} and \code{Sigma} are not added}
 #'   \item{\code{hits_border_aic}}{If \code{TRUE}, the optimal model based on the AIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 #'   \item{\code{hits_border_bic}}{If \code{TRUE}, the optimal model based on the BIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
+#' 
+#' @importFrom Matrix Matrix   
+#' @importFrom parallel makeCluster stopCluster
+#' @importFrom doSNOW registerDoSNOW
+#' @importFrom foreach %dopar% foreach
+#' @importFrom stats cov
+#'     
 #' @examples 
 #' data(grid)
 #' m <- 9 # must be 9 for this example
@@ -109,10 +116,11 @@
 #' diag(W) <- 0
 #' 
 #' # lambdas:
-#' lambda1 = 1:2
-#' lambda2 = 1:2
+#' lambda1 = 1  # can also be lambda1 = 1:2 
+#' lambda2 = 1
 #' 
-#' (cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, eps = 1e-3, maxiter = 1000, verbose = TRUE))
+#' (cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, 
+#'                  eps = 1e-3, maxiter = 1000, verbose = TRUE))
 #' @export
 CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2, 
                 gamma1 = NULL, gamma2 = NULL, 
@@ -131,7 +139,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 verbose = TRUE) { 
   
   # Check correctness input -------------------------------
-  CVN::check_correctness_input(data, W, lambda1, lambda2, gamma1, gamma2, rho)
+  check_correctness_input(data, W, lambda1, lambda2, gamma1, gamma2, rho)
   
   # Extract variables -------------------------------------
   m <- length(data)       # total number of graphs  
@@ -157,8 +165,8 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   
   # Set-up cluster ---------------------------
   if (n_cores > 1) { 
-    cl <- makeCluster(n_cores)
-    registerDoSNOW(cl)
+    cl <- parallel::makeCluster(n_cores)
+    doSNOW::registerDoSNOW(cl)
     opts <- list(progress = function(i) {i}) # empty place holder for foreach
   }
   
@@ -187,7 +195,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   data <- lapply(data, function(X) scale(X, scale = normalized))
   
   # Compute the empirical covariance matrices --------------
-  Sigma <- lapply(1:m, function(i) cov(data[[i]])*(n_obs[i] - 1) / n_obs[i])
+  Sigma <- lapply(1:m, function(i) stats::cov(data[[i]])*(n_obs[i] - 1) / n_obs[i])
   
   # initialize results list ------------
   global_res <- list(
@@ -247,13 +255,13 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
       a <- (res$lambda1[i] / rho)^2 + 1 
     } else { 
       # Determine the value of the diagonal matrix A such that A - D'D > 0 (positive definite)
-      a <- CVN::matrix_A_inner_ADMM(W, res$lambda1[i] / rho, res$lambda2[i] / rho) + 1
+      a <- matrix_A_inner_ADMM(W, res$lambda1[i] / rho, res$lambda2[i] / rho) + 1
     }
     
     # Estimate the graphs -------------------------------------
     eta1 <- res$lambda1[i] / rho 
     eta2 <- res$lambda2[i] / rho 
-    CVN::estimate(m, p, W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
+    estimate(m, p, W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs, 
                   rho, rho_genlasso, 
                   eps, eps_genlasso, 
                   maxiter, maxiter_genlasso, truncate = truncate, 
@@ -263,7 +271,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   
   # go over each pair of penalty terms
   if (n_cores > 1) { # parallel
-    est <- foreach(i = 1:(length(lambda1) * length(lambda2)),
+    est <- foreach::foreach(i = 1:(length(lambda1) * length(lambda2)),
                    .options.snow = opts) %dopar% {
                      estimate_lambda_values(i)
                    }
@@ -283,14 +291,14 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     res$n_iterations[i] <- est[[i]]$n_iterations
   
     # determine the AIC
-    res$aic[i] <- CVN::determine_information_criterion(Theta = est[[i]]$Z, 
+    res$aic[i] <- determine_information_criterion(Theta = est[[i]]$Z, 
                                                      adj_matrices = est[[i]]$adj_matrices, 
                                                      Sigma = Sigma, 
                                                      n_obs = n_obs,
                                                      type = "AIC") 
     
     # determine the BIC
-    res$bic[i] <- CVN::determine_information_criterion(Theta = est[[i]]$Z, 
+    res$bic[i] <- determine_information_criterion(Theta = est[[i]]$Z, 
                                                        adj_matrices = est[[i]]$adj_matrices, 
                                                        Sigma = Sigma, 
                                                        n_obs = n_obs,
@@ -304,18 +312,19 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   
   # stop the cluster
   if (n_cores > 1) { 
-    stopCluster(cl) 
+    parallel::stopCluster(cl) 
   }
   
   # determine whether the optimal model based on the AIC or BIC hits the border
   # of lambda1 and/or lambda2
-  hit <- CVN::hits_end_lambda_intervals(res)
+  hit <- hits_end_lambda_intervals(res)
   global_res$hits_border_aic <- hit$hits_border_aic
   global_res$hits_border_bic <- hit$hits_border_bic
      
   # Collect all the results & input ---------------------------
   global_res$results  <- res                  
   
+  # Set the class of the object to "cvn"
   class(global_res) <- c("cvn", "list") 
   
   if (minimal) { 
@@ -326,9 +335,23 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
 }
 
 #' Print Function for the CVN Object Class
-#'
+#' 
+#' Custom print method for CVN objects.
+#' 
+#' @param cvn \code{cvn} object
+#' @param ... Additional arguments to pass to \code{\link[CVN]{CVN}}
+#' 
+#' @importFrom Matrix Matrix
+#' @importFrom crayon green
+#' 
+#' @method print cvn  
+#' 
+#' @importFrom crayon green red
+#' 
 #' @export
-print.cvn <- function(cvn, ...) {  # TODO
+print.cvn <- function(cvn, ...) {  
+  FUN <- match.fun(.Generic)
+  
   cat(sprintf("Covariate-varying Network (CVN)\n\n"))
   
   if (all(cvn$results$converged)) { 
@@ -343,10 +366,11 @@ print.cvn <- function(cvn, ...) {  # TODO
   cat(sprintf("Number of lambda pairs  : %d\n\n", cvn$n_lambda_values))
   
   cat(sprintf("Weight matrix (W):\n"))
-  print(Matrix(cvn$W, sparse = T))
+  print(Matrix::Matrix(cvn$W, sparse = T))
   
   cat(sprintf("\n"))
-  print(cvn$results)
+  # print(cvn$results)
+  structure(FUN(cvn$results), class = "cvn")
 }
 
 #' Strip CVN
@@ -383,7 +407,12 @@ strip_cvn <- function(cvn) {
 
 #' Plot Function for CVN Object Class
 #' 
+#' Custom plot method for CVN objects.
+#' 
+#' @param cvn \code{cvn} object
+#' @param ... Additional arguments to pass to \code{\link[CVN]{CVN}}
+#' @method plot cvn  
 #' @export
-plot.cvn <- function(cvn, ...) { 
-  CVN::visnetwork_cvn(cvn, ...)
-}
+# plot.cvn <- function(cvn, ...) { 
+#   visnetwork_cvn(cvn, ...)
+# }

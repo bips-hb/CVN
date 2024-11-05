@@ -36,18 +36,7 @@ lambda1 <- .2
 lambda2 <- .4
 rho <- 1
 
-CVN::create_matrix_D(W, lambda1, lambda2, rho) 
-#      [,1] [,2] [,3] [,4]
-# [1,]  0.2  0.0  0.0  0.0
-# [2,]  0.0  0.2  0.0  0.0
-# [3,]  0.0  0.0  0.2  0.0
-# [4,]  0.0  0.0  0.0  0.2
-# [5,]  0.4 -0.4  0.0  0.0
-# [6,]  0.4  0.0 -0.4  0.0
-# [7,]  0.4  0.0  0.0 -0.4
-# [8,]  0.0  0.4 -0.4  0.0
-# [9,]  0.0  0.4  0.0 -0.4
-# [10,]  0.0  0.0  0.4 -0.4
+CVN:::create_matrix_D(W, lambda1, lambda2, rho) 
 }
 \references{
 Tibshirani, R. J., & Taylor, J. (2011). 
@@ -55,3 +44,4 @@ Tibshirani, R. J., & Taylor, J. (2011).
             Annals of Statistics, 39(3), 1335–1371. 
             https://doi.org/10.1214/11-AOS878
 }
+\keyword{internal}

@@ -3,12 +3,11 @@
 #' An estimator for graphical models changing with multiple discrete
 #' external covariates
 #'
-#' @docType package
+#' @keywords internal
 #' @author Louis Dijkstra
 #' @import Rcpp
 #' @useDynLib CVN
-#' @name CVN
-NULL
+"_PACKAGE"
 
 #' Data for a grid of graphs (3 x 3)
 #'
@@ -20,7 +19,13 @@ NULL
 #' @usage data(grid)
 #' @docType data
 #' @keywords datasets
-#' @format List
+#' @format A list of length 9
 #' @references \url{https://github.com/bips-hb/CVNSim}
-grid
+#'
+"grid"
 
+utils::globalVariables("aic")
+utils::globalVariables("bic")
+utils::globalVariables("optim")
+utils::globalVariables("lambda1")
+utils::globalVariables("lambda2")

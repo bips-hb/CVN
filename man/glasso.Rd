@@ -73,15 +73,6 @@ The output is, therefore, slightly different than for the
 data(grid)
 m <- 9 # must be 9 for this example
 
-#' Choice of the weight matrix W. 
-#' (uniform random) 
-W <- matrix(runif(m*m), ncol = m)
-W <- W \%*\% t(W)
-W <- W / max(W)
-diag(W) <- 0
-
-# lambdas:
-lambda1 = 1:4
-
-(glasso_est <- CVN::glasso(grid, lambda1 = lambda1))
+(glasso_est <- CVN:::glasso(grid, lambda1 = 1:2, n_cores = 1))
 }
+\keyword{internal}

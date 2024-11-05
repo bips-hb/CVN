@@ -10,7 +10,8 @@
 #' @param Theta A list with matrices with the current values of \eqn{\Theta}
 #' @param Y A list with matrices with the current values of \eqn{Y} 
 #' @param W Weight matrix 
-#' @param eta1 
+#' @param eta1  lambda1 / rho, with \eqn{\rho} is penalty parameter for the global ADMM algorithm (Default: \code{1})
+#' @param eta2 
 #' @param rho_genlasso The \eqn{\rho} penalty parameter for the ADMM algorithm 
 #' @param eps_genlasso If the relative difference between two update steps is 
 #'                smaller than \eqn{\epsilon}, the algorithm stops
@@ -23,11 +24,11 @@
 #'
 #' @seealso \code{\link{create_matrix_D}} 
 #' 
-#' @export
+#' @keywords internal
 updateZ_wrapper <- function(m, p, nrow_D, 
                             Theta, Y, W, eta1, eta2, a, 
                             rho_genlasso, maxiter_genlasso, eps_genlasso, 
-                            truncate_genlasso) { 
+                            truncate_genlasso=1e-4) { 
   
   updateZRcpp(m, p, nrow_D, 
                Theta, Y, W, eta1, eta2, a, 

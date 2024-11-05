@@ -5,7 +5,7 @@
 \alias{grid}
 \title{Data for a grid of graphs (3 x 3)}
 \format{
-List
+A list of length 9
 }
 \usage{
 data(grid)

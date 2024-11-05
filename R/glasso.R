@@ -45,22 +45,20 @@
 #'   \item{\code{eps}}{The stopping criterion \eqn{\epsilon}} 
 #'   \item{\code{n_lambda_values}}{Total number of \eqn{\lambda_1} values}
 #'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
+#'   
+#' @importFrom Matrix Matrix   
+#' @importFrom parallel makeCluster stopCluster
+#' @importFrom doSNOW registerDoSNOW
+#' @importFrom foreach %dopar% foreach
+#' @importFrom stats cov
+#' @importFrom glasso glasso
+#' 
 #' @examples 
 #' data(grid)
 #' m <- 9 # must be 9 for this example
 #' 
-#' #' Choice of the weight matrix W. 
-#' #' (uniform random) 
-#' W <- matrix(runif(m*m), ncol = m)
-#' W <- W %*% t(W)
-#' W <- W / max(W)
-#' diag(W) <- 0
-#' 
-#' # lambdas:
-#' lambda1 = 1:4
-#' 
-#' (glasso_est <- CVN::glasso(grid, lambda1 = lambda1))
-#' @export
+#' (glasso_est <- CVN:::glasso(grid, lambda1 = 1:2, n_cores = 1))
+#' @keywords internal
 glasso <- function(data, lambda1 = 1:2, 
                 eps = 1e-4,
                 maxiter = 10000, 
@@ -136,15 +134,15 @@ glasso <- function(data, lambda1 = 1:2,
       global_res$Theta[[i]][[k]] <- est[[i]][[k]]$wi
       
       # create the adjacency matrix given the precision matrix
-      global_res$adj_matrices[[i]][[k]] <- Matrix( as.numeric( abs(est[[i]][[k]]$wi) >= 2*.Machine$double.eps), ncol = ncol(est[[i]][[k]]$wi) , sparse = TRUE)
+      global_res$adj_matrices[[i]][[k]] <- Matrix::Matrix( as.numeric( abs(est[[i]][[k]]$wi) >= 2*.Machine$double.eps), ncol = ncol(est[[i]][[k]]$wi) , sparse = TRUE)
       diag(global_res$adj_matrices[[i]][[k]]) <- 0
     }
     
-    res$aic[i] <- CVN::determine_information_criterion(Theta = global_res$Theta[[i]], 
-                                                       adj_matrices = global_res$adj_matrices[[i]], 
-                                                       Sigma = Sigma, 
-                                                       n_obs = n_obs,
-                                                       type = "AIC") 
+    res$aic[i] <- determine_information_criterion(Theta = global_res$Theta[[i]], 
+                                           adj_matrices = global_res$adj_matrices[[i]], 
+                                                  Sigma = Sigma, 
+                                                  n_obs = n_obs,
+                                                   type = "AIC") 
   }
   
   # stop the progress bar 
@@ -156,9 +154,11 @@ glasso <- function(data, lambda1 = 1:2,
   stopCluster(cl) 
   
   # Collect all the results & input ---------------------------
-  global_res$results  <- res                  
+  
+  global_res$results  <- res       
+  global_res$W <- FALSE
   
   class(global_res) <- c("cvn", "cvn:glasso", "list")
-  
+
   return(global_res)
 }

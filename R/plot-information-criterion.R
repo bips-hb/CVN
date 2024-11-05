@@ -23,6 +23,10 @@
 #' @param limits The limits for the values of the Hamming distance 
 #' 
 #' @return A heatmap plot  
+#' 
+#' @import ggplot2
+#' @importFrom dplyr %>% 
+#'  
 #' @export                  
 plot_information_criterion <- function(cvn,
                                        criterion = c('bic', 'aic'),
@@ -33,6 +37,9 @@ plot_information_criterion <- function(cvn,
                                        ylabel = NULL,
                                        legend_label = NULL,
                                        limits = c(NA, NA)) {
+  
+  # needed for package building: visible binding for global variables Var1,...
+  gamma1 <- gamma2 <- geom_tile <- geom_point <- NULL
   
   # get the criterion. Tolower, since we also accept 'BIC' and 'AIC'
   criterion <- tolower(criterion[1])

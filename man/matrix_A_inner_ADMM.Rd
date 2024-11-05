@@ -16,7 +16,7 @@ matrix_A_inner_ADMM(W, eta1, eta2)
 Value of \eqn{a}
 }
 \description{
-The \eqn{Z}-update step, see \code{\link{updateZ}}, requires 
+The \eqn{Z}-update step requires 
 us to solve a special Generalized LASSO problem of the form 
 \deqn{
   \hat{\beta} = \text{argmin } \frac{1}{2} || y - \beta ||_2^2 + ||D\beta||_1 
@@ -37,3 +37,4 @@ Zhu, Y. (2017). An Augmented ADMM Algorithm With Application to the
 Generalized Lasso Problem. Journal of Computational and Graphical Statistics, 
 26(1), 195–204. https://doi.org/10.1080/10618600.2015.1114491
 }
+\keyword{internal}

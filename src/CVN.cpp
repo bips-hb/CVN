@@ -45,7 +45,7 @@ using namespace Rcpp;
                             double a, 
                             const double rho, 
                             const int max_iter,
-                            const double eps, 
+                            const double eps,  // truncate: remove const
                             const double truncate) { 
    
    
@@ -246,7 +246,7 @@ Rcpp::ListMatrix updateZRcpp(const int m,
                        const Rcpp::NumericMatrix& W,  
                        const double eta1, 
                        const double eta2, 
-                       const double a, 
+                       const double a,  // a, truncate: const gestrichen
                        const double rho, 
                        const int max_iter,
                        const double eps, 

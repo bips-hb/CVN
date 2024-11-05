@@ -10,7 +10,9 @@
 #' @return List with two values: 
 #'    \item{\code{hits_border_aic}}{If \code{TRUE}, hits the border for the AIC}
 #'    \item{\code{hits_border_bic}}{If \code{TRUE}, hits the border for the BIC}
-#' @export
+#'    
+#' @importFrom dplyr %>% filter
+#' @keywords internal
 hits_end_lambda_intervals <- function(results) { 
   
   hits_border_aic <- FALSE
@@ -37,7 +39,7 @@ hits_end_lambda_intervals <- function(results) {
     }
     
     # For the BIC score ----------------------------------------------------------
-    temp <- results %>% filter(bic == max(bic))
+    temp <- results %>% dplyr::filter(bic == max(bic))
     
     # check whether it has a unique maximum
     if (nrow(temp) == 1) {

@@ -8,6 +8,7 @@
 #'             (Default: \code{1:n_nodes})
 #'
 #' @return Data frame with two columns: \code{id} and \code{title}  
+#' @importFrom dplyr %>% rename arrange
 #' @export 
 create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
   nodes <- data.frame(id = 1:n_nodes)
@@ -25,6 +26,8 @@ create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
 #' @param adj_matrix A symmetric adjacency matrix
 #' 
 #' @return Data frame that be used as input for \code{visNetwork} 
+#' 
+#' @importFrom dplyr %>% rename arrange
 #' @export
 create_edges_visnetwork <- function(adj_matrix) { 
   
@@ -39,12 +42,9 @@ create_edges_visnetwork <- function(adj_matrix) {
   
   # rename the columns of the data.frame to 'from' and 'to' which 
   # is required for visNetwork
-  edges %>% 
-    dplyr::rename(
-      from = row,
-      to = col
-    ) %>% 
-    dplyr::arrange(from)
+  from <- NULL
+  rename(edges, from = row, to = col) %>% 
+      arrange(from)
 }
 
 #' Add Attributes to Subset of Edges for \code{visNetwork}
@@ -52,7 +52,7 @@ create_edges_visnetwork <- function(adj_matrix) {
 #' A subset of edges can be assign a different thickness 
 #' or color. 
 #' 
-#' @param edges A data.frame create by \code{\link{create_edges_visnetwork}}
+#' @param edges A data.frame create by \code{\link[CVN]{create_edges_visnetwork}}
 #' @param subset_edges A list with the elements \code{from} and \code{to}. Both 
 #'              \code{from} and \code{to} are vectors of the same length 
 #'              denoting the different edges 
@@ -66,6 +66,7 @@ create_edges_visnetwork <- function(adj_matrix) {
 #'              no color is assigned
 #'              
 #' @return A data frame that can be used by the \code{visNetwork} package
+#' @importFrom dplyr %>% filter select 
 #' @export
 set_attributes_to_edges_visnetwork <- function(edges, 
                                                subset_edges, 
@@ -89,9 +90,9 @@ set_attributes_to_edges_visnetwork <- function(edges,
   edges$id <- 1:nrow(edges)
   
   # filter out the edges that are in the subset_edges list
-  ids <- edges %>% dplyr::filter(
-    from %in% subset_edges$from, 
-    to %in% subset_edges$to
+  from <- to <- NULL
+  ids <- edges %>% filter(from %in% subset_edges$from, 
+                            to %in% subset_edges$to
   )
   
   # find the id codes of the edges in the 'in_group', i.e., 
@@ -116,19 +117,30 @@ set_attributes_to_edges_visnetwork <- function(edges,
   }
   
   # remove the initially added 'id' column
-  edges %>% dplyr::select(-id)
+  # id <- NULL
+  # edges %>% select(-c(id))
+  select(edges, -"id")
 }
 
 #' A \code{visNetwork} plot
 #' 
 #' Creates a \code{visNetwork} plot given a list of 
 #' nodes and edges. The nodes data frame can be 
-#' created with \code{\link{create_nodes_visnetwork}}; 
+#' created with \code{\link[CVN]{create_nodes_visnetwork}}; 
 #' the edges with \code{create_edges_visnetwork}.  
 #' In order to highlight edges, you can use 
-#' \code{\link{set_attributes_to_edges_visnetwork}}. 
+#' \code{\link[CVN]{set_attributes_to_edges_visnetwork}}. 
+#' 
+#' @param nodes A data frame with rows equal to the number of nodes with columns "id" and "title". 
+#'              Can be created with \code{\link[CVN]{create_nodes_visnetwork}}.
+#' @param edges A data frame with columns "from" and "to. Each row represents an edge between two nodes (integer)
+#' @param node_titles Vector with title of the nodes (Default: \code{1:p}) 
+#' @param title A list with \code{n_lambda_values} vectors. Each vector is of the 
+#'         lenght \code{m}. Regulates the titles of the graphs (Default: no title)
+#' @param igraph_layout igraph layout (default: layout_in_circle)
 #' 
 #' @return A \code{visNetwork} plot
+#' @seealso \code{\link[CVN]{CVN}}, \code{\link[CVN]{create_nodes_visnetwork}}
 #' @examples 
 #' nodes <- CVN::create_nodes_visnetwork(n_nodes = 5, labels = LETTERS[1:5])
 #'
@@ -152,6 +164,7 @@ visnetwork <- function(nodes,
                        node_titles = nodes$id, 
                        title = "", 
                        igraph_layout = "layout_in_circle") { 
+
   visNetwork(nodes, edges, width = "100%", main = list(text = title)) %>% 
     visIgraphLayout(layout = igraph_layout) %>%
     visOptions(highlightNearest = list(enabled = T, hover = T))
@@ -160,18 +173,27 @@ visnetwork <- function(nodes,
 
 #' All \code{visNetwork} plots for a CVN object
 #' 
-#' Creates all \code{visNetwork} plots, see \code{\link{CVN::visnetwork}}, 
+#' Creates all \code{visNetwork} plots, see \code{\link[CVN]{visnetwork}}, 
 #' for all graphs in a \code{cvn} object
 #' 
-#' @param cvn A \code{cvn} object, see \code{\link{CVN::CVN}} 
-#'        or \code{\link{CVN::glasso}}
+#' @param cvn A \code{cvn} object, see \code{\link[CVN]{CVN}} 
+#'        or \code{\link[CVN]{glasso}}
 #' @param node_titles Vector with title of the nodes (Default: \code{1:p})
 #' @param titles A list with \code{n_lambda_values} vectors. Each vector is of the 
 #'         lenght \code{m}. Regulates the titles of the graphs (Default: no title)
 #' @param show_core_graph,width,color Show the core graph using the width and colors
+#' @param igraph_layout igraph layout (default: layout_in_circle)
+#' @param verbose Verbose (Default: \code{TRUE}) 
+#' 
+#' @importFrom visNetwork visNetwork visIgraphLayout visOptions
+#' @importFrom dplyr %>% 
+#' 
+#' @seealso \code{\link[CVN]{CVN}}, \code{\link[CVN]{glasso}}, \code{\link[CVN]{visnetwork}}
 #' 
 #' @return List 
 #' @export
+
+
 visnetwork_cvn <- function(cvn, 
                            node_titles = 1:cvn$p, 
                            titles = lapply(1:cvn$n_lambda_values, function(i) sapply(1:cvn$m, function(j) "")), 
@@ -180,6 +202,8 @@ visnetwork_cvn <- function(cvn,
                            color = c("red", "blue"), 
                            igraph_layout = "layout_in_circle", 
                            verbose = TRUE) {
+
+  FUN <- match.fun(.Generic)
 
   if (!(length(node_titles) == cvn$p)) { 
     stop("number of node labels does not correspond to the number of nodes") 
@@ -199,7 +223,7 @@ visnetwork_cvn <- function(cvn,
     results = cvn$results
   )
   
-  nodes <- CVN::create_nodes_visnetwork(n_nodes = cvn$p, labels = node_titles) 
+  nodes <- create_nodes_visnetwork(n_nodes = cvn$p, labels = node_titles) 
   
   # the edges that are constant in the different graphs are 
   # displayed differently 
@@ -210,7 +234,7 @@ visnetwork_cvn <- function(cvn,
       cat(sprintf("Determining the 'core graphs'...\n"))
     }
   
-    core_graphs <- CVN::find_core_graph(cvn)
+    core_graphs <- find_core_graph(cvn)
   
     if (verbose) { 
       cat(sprintf("Create the subset of edges in the core graphs...\n\n"))
@@ -239,12 +263,12 @@ visnetwork_cvn <- function(cvn,
   all_edges <- lapply(1:cvn$n_lambda_values, function(i) {
      lapply(1:cvn$m, function(k) { 
        # cat(sprintf("%d\t%d\n", i,k))
-       edges <- CVN::create_edges_visnetwork(cvn$adj_matrices[[i]][[k]])
+       edges <- create_edges_visnetwork(cvn$adj_matrices[[i]][[k]])
        # check whether there are core edges, since sometimes graphs are 
        # completely empty
        if (show_core_graph && length(subset_edges[[i]]$from) != 0) { 
-         edges <- CVN::set_attributes_to_edges_visnetwork(edges, subset_edges = subset_edges[[i]],
-                                                 width = width, color = color)
+         edges <- set_attributes_to_edges_visnetwork(edges, subset_edges = subset_edges[[i]],
+                                                     width = width, color = color)
        }
        
        if (verbose) { 
@@ -267,7 +291,7 @@ visnetwork_cvn <- function(cvn,
       if (verbose) { 
         pb_plots$tick()
       }
-      return(CVN::visnetwork(nodes, all_edges[[i]][[k]], title = titles[[i]][[k]], igraph_layout = igraph_layout))
+      return(visnetwork(nodes, all_edges[[i]][[k]], title = titles[[i]][[k]], igraph_layout = igraph_layout))
     })
   })
   
@@ -277,4 +301,5 @@ visnetwork_cvn <- function(cvn,
   }
   
   return(res)
+  
 }

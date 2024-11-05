@@ -2,7 +2,7 @@
 #' 
 #' This function generates different weight matrices, \eqn{W}. 
 #' There are several types: 
-#' \itemize{
+#' \describe{
 #' \item{\code{full} }{All graphs are fully connected with weight 1}
 #' \item{\code{glasso} }{All graphs are disconnected with weight 0. This 
 #'              mimicks the GLASSO, where each graph is estimated independently}
@@ -12,7 +12,9 @@
 #' }
 #' 
 #' @param type The type of weight matrix
-#' @param m Number of graphs
+#' @param m Number of graphs (works currently only for m = 9)
+#' 
+#' @importFrom stats runif
 #' 
 #' @return Weight matrix
 #' @export

@@ -12,7 +12,7 @@ create_weight_matrix(
 \arguments{
 \item{type}{The type of weight matrix}
 
-\item{m}{Number of graphs}
+\item{m}{Number of graphs (works currently only for m = 9)}
 }
 \value{
 Weight matrix
@@ -20,7 +20,7 @@ Weight matrix
 \description{
 This function generates different weight matrices, \eqn{W}. 
 There are several types: 
-\itemize{
+\describe{
 \item{\code{full} }{All graphs are fully connected with weight 1}
 \item{\code{glasso} }{All graphs are disconnected with weight 0. This 
              mimicks the GLASSO, where each graph is estimated independently}

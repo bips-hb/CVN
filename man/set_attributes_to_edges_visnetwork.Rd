@@ -12,7 +12,7 @@ set_attributes_to_edges_visnetwork(
 )
 }
 \arguments{
-\item{edges}{A data.frame create by \code{\link{create_edges_visnetwork}}}
+\item{edges}{A data.frame create by \code{\link[CVN]{create_edges_visnetwork}}}
 
 \item{subset_edges}{A list with the elements \code{from} and \code{to}. Both 
 \code{from} and \code{to} are vectors of the same length 
