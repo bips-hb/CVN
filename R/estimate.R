@@ -2,8 +2,6 @@
 #' 
 #' A function for estimating a CVN for a single \eqn{(\lambda_1, \lambda_2)}-value. 
 #' See for more details \code{\link{CVN}}
-#' 
-#' @importFrom Matrix Matrix
 #' @keywords internal
 estimate <- function(m, p, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs, 
                      rho, rho_genlasso, eps, eps_genlasso,

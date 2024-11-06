@@ -139,7 +139,7 @@ set_attributes_to_edges_visnetwork <- function(edges,
 #' @param igraph_layout igraph layout (default: layout_in_circle)
 #' 
 #' @return A \code{visNetwork} plot
-#' @seealso \code{\link{CVN}}, \code{\link{create_nodes_visnetwork}}
+#' @seealso \code{CVN}, \code{\link{create_nodes_visnetwork}}
 #' @examples 
 #' nodes <- CVN::create_nodes_visnetwork(n_nodes = 5, labels = LETTERS[1:5])
 #'
@@ -176,11 +176,11 @@ visnetwork <- function(nodes,
 
 #' All \code{visNetwork} plots for a CVN object
 #'
-#' Creates all \code{visNetwork} plots, see \code{\link{CVN::visnetwork}},
+#' Creates all \code{visNetwork} plots, see \code{\link{visnetwork}},
 #' for all graphs in a \code{cvn} object
 #'
-#' @param cvn A \code{cvn} object, see \code{\link{CVN::CVN}}
-#'        or \code{\link{CVN::glasso}}
+#' @param cvn A \code{cvn} object, see \code{\link{CVN}}
+#'        or \code{\link[CVN]{glasso}}
 #' @param node_titles Vector with title of the nodes (Default: \code{1:p})
 #' @param titles A list with \code{n_lambda_values} vectors. Each vector is of the
 #'         lenght \code{m}. Regulates the titles of the graphs (Default: no title)
@@ -191,7 +191,7 @@ visnetwork <- function(nodes,
 #' @importFrom visNetwork visNetwork visIgraphLayout visOptions
 #' @importFrom dplyr %>% 
 #' 
-#' @seealso \code{\link{CVN}}, \code{\link{glasso}}, \code{\link{visnetwork}}
+#' @seealso \code{\link{CVN}}, \code{\link[CVN]{glasso}}, \code{\link{visnetwork}}
 #' 
 #' @return List 
 #' @export

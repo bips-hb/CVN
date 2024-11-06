@@ -98,6 +98,8 @@
 #'   \item{\code{hits_border_aic}}{If \code{TRUE}, the optimal model based on the AIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 #'   \item{\code{hits_border_bic}}{If \code{TRUE}, the optimal model based on the BIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 #'   
+#' @name CVN function
+#' @aliases CVN
 #' @examples 
 #' data(grid)
 #' m <- 9 # must be 9 for this example
@@ -256,7 +258,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     # Estimate the graphs -------------------------------------
     eta1 <- res$lambda1[i] / rho
     eta2 <- res$lambda2[i] / rho
-    CVN::estimate(m, p, W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs,
+         estimate(m, p, W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs,
                   rho, rho_genlasso,
                   eps, eps_genlasso,
                   maxiter, maxiter_genlasso, truncate = truncate,
@@ -266,8 +268,9 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
 
   # go over each pair of penalty terms
   if (n_cores > 1) { # parallel
-    est <- foreach::foreach(i = 1:(length(lambda1) * length(lambda2)),
-                   .options.snow = opts) %dopar% {
+    est <- foreach(i = 1:(length(lambda1) * length(lambda2)),
+                   .options.snow = opts,
+                   .export = c("estimate")) %dopar% {
                      estimate_lambda_values(i)
                    }
   } else { # sequential
@@ -286,14 +289,14 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     res$n_iterations[i] <- est[[i]]$n_iterations
 
     # determine the AIC
-    res$aic[i] <- CVN::determine_information_criterion(Theta = est[[i]]$Z,
+    res$aic[i] <- determine_information_criterion(Theta = est[[i]]$Z,
                                                      adj_matrices = est[[i]]$adj_matrices,
                                                      Sigma = Sigma,
                                                      n_obs = n_obs,
                                                      type = "AIC")
 
     # determine the BIC
-    res$bic[i] <- CVN::determine_information_criterion(Theta = est[[i]]$Z,
+    res$bic[i] <- determine_information_criterion(Theta = est[[i]]$Z,
                                                        adj_matrices = est[[i]]$adj_matrices,
                                                        Sigma = Sigma,
                                                        n_obs = n_obs,
@@ -328,89 +331,4 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   return(global_res)
 }
 
-#' Print Function for the CVN Object Class
-#' 
-#' Custom print method for CVN objects.
-#' 
-#' @param cvn \code{cvn} object
-#' @param ... Additional arguments to pass to \code{\link[CVN]{CVN}}
-#' 
-#' @importFrom Matrix Matrix
-#' @importFrom crayon green
-#' 
-#' @method print cvn  
-#' 
-#' @importFrom crayon green red
-#' 
-#' @export
-print.cvn <- function(x, ...) {  # TODO
-  cat(sprintf("Covariate-varying Network (CVN)\n\n"))
-
-  if (all(x$results$converged)) {
-    cat(crayon::green(sprintf("\u2713 all converged\n\n")))
-  } else {
-    cat(crayon::red(sprintf("\u2717 did not converge (maxiter of %d not sufficient)\n\n", x$maxiter)))
-  }
-
-  # print following variables
-  cat(sprintf("Number of graphs (m)    : %d\n", x$m))
-  cat(sprintf("Number of variables (p) : %d\n", x$p))
-  cat(sprintf("Number of lambda pairs  : %d\n\n", x$n_lambda_values))
-
-  # If x is an object returned by CVN::glasso() it doesn't have a $W element and this errors
-  # Causes example in glasso.R to error during R CMD check
-  # TODO: Check if glasso() behaves correctly, possibly adjust print method for CVN:glasso subclass?
-  if (!is.null(x$W)) {
-    cat(sprintf("Weight matrix (W):\n"))
-    print(Matrix::Matrix(x$W, sparse = T))
-  }
-
-  cat(sprintf("\n"))
-  print(x$results)
-}
-
-#' Strip CVN
-#'
-#' Function that removes most of the items to make the CVN object
-#' more memory sufficient. This is especially important when the
-#' graphs are rather larger
-#'
-#' @param cvn \code{cvn} object
-#'
-#' @return Reduced cvn where \code{Theta}, \code{data} and \code{Sigma}
-#'         are removed
-#' @export
-strip_cvn <- function(cvn) {
-
-  if ('Theta' %in% names(cvn)) {
-    cvn <- within(cvn, rm(Theta))
-  }
-
-  if ('data' %in% names(cvn)) {
-    cvn <- within(cvn, rm(data))
-  }
-
-  if ('Sigma' %in% names(cvn)) {
-    cvn <- within(cvn, rm(Sigma))
-  }
-
-  # set the variable keeping track of whether the cvn is
-  # striped to TRUE
-  cvn$minimal <- TRUE
-
-  return(cvn)
-}
-
-#' Plot Function for CVN Object Class
-#' 
-#' Custom plot method for CVN objects.
-#' 
-#' @param cvn \code{cvn} object
-#' @param ... Additional arguments to pass to \code{\link[CVN]{CVN}}
-#' @method plot cvn  
-#'
-#' @export
-plot.cvn <- function(x, ...) {
-  CVN::visnetwork_cvn(x)
-}
 

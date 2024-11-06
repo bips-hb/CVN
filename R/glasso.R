@@ -134,7 +134,7 @@ glasso <- function(data, lambda1 = 1:2,
       diag(global_res$adj_matrices[[i]][[k]]) <- 0
     }
 
-    res$aic[i] <- CVN::determine_information_criterion(Theta = global_res$Theta[[i]],
+    res$aic[i] <- determine_information_criterion(Theta = global_res$Theta[[i]],
                                                        adj_matrices = global_res$adj_matrices[[i]],
                                                        Sigma = Sigma,
                                                        n_obs = n_obs,
