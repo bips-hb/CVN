@@ -45,23 +45,14 @@
 #'   \item{\code{eps}}{The stopping criterion \eqn{\epsilon}}
 #'   \item{\code{n_lambda_values}}{Total number of \eqn{\lambda_1} values}
 #'   \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
-#' @examples
+#' 
+#' @examples 
 #' data(grid)
 #' m <- 9 # must be 9 for this example
-#'
-#' #' Choice of the weight matrix W.
-#' #' (uniform random)
-#' W <- matrix(runif(m*m), ncol = m)
-#' W <- W %*% t(W)
-#' W <- W / max(W)
-#' diag(W) <- 0
-#'
-#' # lambdas:
-#' lambda1 = 1:4
-#'
-#' (glasso_est <- CVN::glasso(grid, lambda1 = lambda1))
-#' @export
-glasso <- function(data, lambda1 = 1:2,
+#' 
+#' (glasso_est <- CVN:::glasso(grid, lambda1 = 1:2, n_cores = 1))
+#' @keywords internal
+glasso <- function(data, lambda1 = 1:2, 
                 eps = 1e-4,
                 maxiter = 10000,
                 n_cores = min(length(lambda1), parallel::detectCores() - 1),
@@ -143,7 +134,7 @@ glasso <- function(data, lambda1 = 1:2,
       diag(global_res$adj_matrices[[i]][[k]]) <- 0
     }
 
-    res$aic[i] <- CVN::determine_information_criterion(Theta = global_res$Theta[[i]],
+    res$aic[i] <- determine_information_criterion(Theta = global_res$Theta[[i]],
                                                        adj_matrices = global_res$adj_matrices[[i]],
                                                        Sigma = Sigma,
                                                        n_obs = n_obs,
@@ -160,6 +151,7 @@ glasso <- function(data, lambda1 = 1:2,
 
   # Collect all the results & input ---------------------------
   global_res$results  <- res
+  global_res$W <- FALSE       # new
 
   class(global_res) <- c("cvn", "cvn:glasso", "list")
 

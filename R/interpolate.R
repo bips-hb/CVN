@@ -22,6 +22,11 @@
 #'   \code{results}. It consists of two columns:
 #'   \item{\code{lambda1}}{\eqn{\lambda_1} value}
 #'   \item{\code{lambda2}}{\eqn{\lambda_2} value}
+#'   
+#' @importFrom dplyr %>% 
+#' @importFrom Matrix Matrix    
+#' @importFrom utils combn    
+#' 
 #' @export
 interpolate <- function(cvn, weights, truncate = NULL) { 
   
@@ -59,7 +64,7 @@ interpolate <- function(cvn, weights, truncate = NULL) {
     lambda2 <- cvn$results$lambda2[i]
     
     # initial the matrix
-    adj_matrix <- Matrix(0, nrow = cvn$p, ncol = cvn$p, sparse = TRUE)
+    adj_matrix <- Matrix::Matrix(0, nrow = cvn$p, ncol = cvn$p, sparse = TRUE)
     
     # go over all potential edges (s,t)
     combn(cvn$p, 2, function(pair) {

@@ -7,7 +7,6 @@
 updateZ_wrapper(
   m,
   p,
-  nrow_D,
   Theta,
   Y,
   W,
@@ -17,7 +16,7 @@ updateZ_wrapper(
   rho_genlasso,
   maxiter_genlasso,
   eps_genlasso,
-  truncate_genlasso
+  truncate_genlasso = 1e-04
 )
 }
 \arguments{
@@ -25,22 +24,22 @@ updateZ_wrapper(
 
 \item{p}{Number of variables}
 
-\item{nrow_D}{Number of rows of the \eqn{D}-matrix}
-
 \item{Theta}{A list with matrices with the current values of \eqn{\Theta}}
 
 \item{Y}{A list with matrices with the current values of \eqn{Y}}
 
 \item{W}{Weight matrix}
 
-\item{eta1}{TODO}
+\item{eta1}{lambda1 / rho, with \eqn{\rho} is penalty parameter for the global ADMM algorithm (Default: \code{1})}
+
+\item{eta2}{}
 
 \item{rho_genlasso}{The \eqn{\rho} penalty parameter for the ADMM algorithm}
 
 \item{maxiter_genlasso}{Maximum number of iterations for solving
 the generalized LASSO problem}
 
-\item{eps_genlasso}{If the relative difference between two update steps is
+\item{eps_genlasso}{If the relative difference between two update steps is 
 smaller than \eqn{\epsilon}, the algorithm stops}
 
 \item{truncate_genlasso}{All values of the final \eqn{\hat{\beta}} below
@@ -57,3 +56,4 @@ updated values of \eqn{\Theta} and \eqn{Y}
 \seealso{
 \code{\link{create_matrix_D}}
 }
+\keyword{internal}

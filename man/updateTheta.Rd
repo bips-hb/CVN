@@ -26,3 +26,4 @@ A list with matrices with the new values of \eqn{\Theta}
 \code{updateTheta} returns the updated value of \eqn{\Theta} for the 
 ADMM given the previously updated values of \eqn{Z} and \eqn{Y}
 }
+\keyword{internal}

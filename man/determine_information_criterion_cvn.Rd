@@ -10,3 +10,4 @@ determine_information_criterion_cvn(cvn, type = c("AIC", "BIC"))
 Determines a given information criteria for a \code{cvn} object, 
 see \code{\link{CVN}}.
 }
+\keyword{internal}

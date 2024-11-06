@@ -1,3 +1,4 @@
+#' @aliases CVN-package NULL
 #' @keywords internal
 "_PACKAGE"
 
@@ -16,9 +17,12 @@
 #' @importFrom stats runif
 #' @importFrom stats var
 #' @importFrom utils combn
+#' @importFrom dplyr %>% filter
+#' @importFrom crayon green red
 #' @useDynLib CVN
 ## usethis namespace: end
 NULL
+
 
 # Silence global variable warning
 # Ideally this would be solved more cleanly, but this suffices
@@ -31,3 +35,28 @@ utils::globalVariables(c(
   "value",
   "aic", "bic"
 ))
+
+
+#' Covariate-varying Networks
+#'
+#' Inferring high-dimensional Gaussian graphical networks that 
+#' change with multiple discrete covariates. 
+#'
+#' @name CVN-package
+#' @docType package
+#' @aliases CVN-package
+#' @author Louis Dijkstra\cr Maintainer and contributors:
+#' Lukas Burk, Ronja Foraita <foraita@@leibniz-bips.de>
+#' @references Dijkstra L, Godt A, Foraita R 
+#' \emph{xxx (2024), Arxiv},
+#' \url{https://arxiv.org/abs/2407.19978}.
+#' @keywords graphical models 
+#' @rdname CVN-package
+#' @examples
+#'
+#' data(grid)
+#' W <- create_weight_matrix(type = "grid")
+#' 
+#' cvn <- CVN(grid, W, lambda1 = 1, lambda2 = 1:2, 
+#'            eps = 1e-3, maxiter = 1000, verbose = TRUE)
+NULL

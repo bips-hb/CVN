@@ -10,8 +10,9 @@
 #' @return List with two values:
 #'    \item{\code{hits_border_aic}}{If \code{TRUE}, hits the border for the AIC}
 #'    \item{\code{hits_border_bic}}{If \code{TRUE}, hits the border for the BIC}
-#' @export
-hits_end_lambda_intervals <- function(results) {
+#'    
+#' @keywords internal
+hits_end_lambda_intervals <- function(results) { 
 
   hits_border_aic <- FALSE
   hits_border_bic <- FALSE
