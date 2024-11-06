@@ -5,7 +5,6 @@
 #' @param y A numeric vector 
 #' @param W Weight matrix 
 #' @param m Number of graphs
-#' @param c constant
 #' @param eta1 lambda1 / rho, with \eqn{\rho} is penalty parameter for the global ADMM algorithm (Default: \code{1})
 #' @param eta2 lambda2 / rho
 #' @param a  constant
@@ -23,8 +22,6 @@
 #'
 #' @seealso \code{\link{genlassoRcpp}}
 #' @export
-# FIXME: This passes an addiitonal argument 'c' that is not listed in the definition
-# of genlassoRcpp in CVN.cpp
-genlasso_wrapper <- function(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate) {
-  genlassoRcpp(y, W, m, c, eta1, eta2, a, rho, max_iter, eps, truncate)
+genlasso_wrapper <- function(y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate) {
+  genlassoRcpp(y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate)
 }

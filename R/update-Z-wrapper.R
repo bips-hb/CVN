@@ -6,7 +6,6 @@
 #'
 #' @param m Number of graphs
 #' @param p Number of variables
-#' @param nrow_D Number of rows of the \eqn{D}-matrix
 #' @param Theta A list with matrices with the current values of \eqn{\Theta}
 #' @param Y A list with matrices with the current values of \eqn{Y} 
 #' @param W Weight matrix 
@@ -25,12 +24,12 @@
 #' @seealso \code{\link{create_matrix_D}} 
 #' 
 #' @keywords internal
-updateZ_wrapper <- function(m, p, nrow_D, 
+updateZ_wrapper <- function(m, p,  
                             Theta, Y, W, eta1, eta2, a, 
                             rho_genlasso, maxiter_genlasso, eps_genlasso, 
                             truncate_genlasso=1e-4) { 
   
-  updateZRcpp(m, p, nrow_D, 
+  updateZRcpp(m, p, 
                Theta, Y, W, eta1, eta2, a, 
                rho_genlasso, maxiter_genlasso, eps_genlasso, 
                truncate_genlasso)  

@@ -2,6 +2,8 @@ Package: CVN
 Title: Covariate-varying Networks
 Version: 1.1
 Author: Louis Dijkstra [aut],
+        Lukas Burk [ctb],
+        DFG [fnd],
         Ronja Foraita [cre]
 Maintainer: Ronja Foraita <foraita@leibniz-bips.de>
 Description: Inferring high-dimensional Gaussian graphical networks that 
