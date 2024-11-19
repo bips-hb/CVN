@@ -10,16 +10,20 @@ determine_information_criterion <- function(Theta, adj_matrices, Sigma, n_obs,
   m <- length(Theta)             # number of graphs
   E <- mapply(sum, adj_matrices) # number of non-zero edges
 
+  # Scale Matrices for calculating determinant
+  T_scaled <- lapply(Theta, function(x) x / max(abs(x)))
+  Sigma_scaled <- lapply(Sigma, function(x) x / max(abs(x)))
+
   if (type[1] == "AIC" || type[1] == "aic") {
     return(sum(
       sapply(1:m, function(i) { 
-        n_obs[i] * ( sum(diag( Sigma[[i]] %*% Theta[[i]] ))) - n_obs[i] * log(det(Theta[[i]])) + 2*E[i]
+        as.numeric(n_obs[i] * ( sum(diag( Sigma[[i]] %*% Theta[[i]] ))) - n_obs[i] * determinant(T_scaled[[i]], logarithm = TRUE)$modulus + 2*E[i])
       })
     ))
   } else if (type[1] == "BIC" || type[1] == "bic") { 
     return(sum(
       sapply(1:m, function(i) { 
-        n_obs[i] * ( sum(diag( Sigma[[i]] %*% Theta[[i]] ))) - n_obs[i] * log(det(Theta[[i]])) + 2*log(n_obs[i]) * E[i]
+        as.numeric(n_obs[i] * ( sum(diag( Sigma[[i]] %*% Theta[[i]] ))) - n_obs[i] * determinant(T_scaled[[i]], logarithm = TRUE)$modulus + 2*log(n_obs[i]) * E[i])
       })
     )) 
   } else { 
