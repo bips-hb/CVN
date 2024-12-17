@@ -48,7 +48,10 @@ determine_information_criterion_cvn <- function (cvn, gamma = 0.5)
     stop("cvn parameter must be of type 'cvn'")
   }
   sapply(1:cvn$n_lambda_values, function(i) {
-    dic(cvn$Theta[[i]],
-        cvn$adj_matrices[[i]], cvn$Sigma, cvn$n_obs, gamma = gamma)
+    determine_information_criterion(cvn$Theta[[i]],
+                                    cvn$adj_matrices[[i]], 
+                                    cvn$Sigma, 
+                                    cvn$n_obs, 
+                                    gamma = gamma)
   })
 }

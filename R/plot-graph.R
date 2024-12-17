@@ -180,7 +180,6 @@ visnetwork <- function(nodes,
 #' for all graphs in a \code{cvn} object
 #'
 #' @param cvn A \code{cvn} object, see \code{\link{CVN}}
-#'        or \code{\link[CVN]{glasso}}
 #' @param node_titles Vector with title of the nodes (Default: \code{1:p})
 #' @param titles A list with \code{n_lambda_values} vectors. Each vector is of the
 #'         lenght \code{m}. Regulates the titles of the graphs (Default: no title)
@@ -191,7 +190,7 @@ visnetwork <- function(nodes,
 #' @importFrom visNetwork visNetwork visIgraphLayout visOptions
 #' @importFrom dplyr %>% 
 #' 
-#' @seealso \code{\link{CVN}}, \code{\link[CVN]{glasso}}, \code{\link{visnetwork}}
+#' @seealso \code{\link{CVN}}, \code{\link{visnetwork}}
 #' 
 #' @return List 
 #' @export

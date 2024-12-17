@@ -75,7 +75,8 @@ return(W)
 #' @keywords internal
 #'
 #' @examples
-#' create_grid_adjacency(k = 2, l = 3)
+#' CVN:::create_grid_adjacency(k = 2, l = 3)
+
 create_grid_adjacency <- function(k, l) {
   # Total number of nodes
   n <- k * l
@@ -112,34 +113,4 @@ create_grid_adjacency <- function(k, l) {
   return(adjacency_matrix)
 }
 
-
-
-
-#' Plot weight matrix as grid
-#'
-#' @param W The weight matrix which equals an adjacency matrix
-#' @param k Number of categories in the first external covariate
-#' @param l Number of categories in the second external covariate
-#'
-#' @return An igraph object
-#' 
-#' @importFrom igraph graph_from_adjacency_matrix layout_on_grid
-#' 
-#' @export
-#'
-#' @examples
-#' W <- create_weight_matrix(type = "grid", k = 2, l = 3, plot = FALSE)
-#' plot_weight_matrix(W, k=2, l=3)
-#' 
-plot_weight_matrix <- function(W, k, l){
-  
-  # Convert the adjacency matrix to an igraph object
-  g <- graph_from_adjacency_matrix(W, mode = "undirected", diag = FALSE)
-
-  # Plot the graph with the grid layout
-  plot(g, layout = layout_on_grid(g, width = k, height = l), 
-       vertex.size = 20, vertex.label.cex = 1,
-       vertex.color = "skyblue")
-
-}
 

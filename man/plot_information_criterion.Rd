@@ -6,7 +6,7 @@
 \usage{
 plot_information_criterion(
   cvn,
-  criterion = c("bic", "aic"),
+  criterion = c("bic", "aic", "ebic"),
   use_gammas = TRUE,
   show_minimum = TRUE,
   title = "",
@@ -50,4 +50,16 @@ A heatmap plot
 }
 \description{
 Returns a heat map of the AIC or BIC for a fitted CVN
+}
+\examples{
+data(grid)
+m <- 9
+
+W <- create_weight_matrix(type="grid", 3, 3, plot=FALSE)
+(cvn <- CVN::CVN(grid, W, lambda1 = 1:2, lambda2 = c(.5, 1)))
+
+plot_information_criterion(cvn, criterion = "aic")
+plot_information_criterion(cvn, criterion = "bic")
+plot_information_criterion(cvn, criterion = "ebic")
+
 }

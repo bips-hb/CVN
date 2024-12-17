@@ -24,6 +24,7 @@ CVN(
   normalized = FALSE,
   warmstart = TRUE,
   minimal = FALSE,
+  gamma_ebic = 0.5,
   verbose = TRUE
 )
 }
@@ -38,7 +39,7 @@ weight matrix \eqn{W}}
 \item{lambda1}{Vector with different \eqn{\lambda_1}. LASSO penalty terms 
 (Default: \code{1:2})}
 
-\item{lambda2}{<- Vector with different \eqn{\lambda_2}. The global smoothing parameter values 
+\item{lambda2}{Vector with different \eqn{\lambda_2}. The global smoothing parameter values 
 (Default: \code{1:2})}
 
 \item{gamma1}{A vector of \eqn{\gamma_1}'s LASSO penalty terms, where
@@ -88,6 +89,8 @@ the individual graphs first (Default: \code{TRUE})}
 memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not
 returned (Default: \code{FALSE})}
 
+\item{gamma_ebic}{Gamma value for the eBIC (Default: 0.5)}
+
 \item{verbose}{Verbose (Default: \code{TRUE})}
 }
 \value{
@@ -95,16 +98,18 @@ A \code{CVN} object containing the estimates for all the graphs
    for each different value of \eqn{(\lambda_1, \lambda_2)}. General results for
    the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data frame
    \code{results}. It consists of multiple columns, namely:
+   \item{\code{id}}{The id. This corresponds to the indices of the lists}
    \item{\code{lambda1}}{\eqn{\lambda_1} value}
    \item{\code{lambda2}}{\eqn{\lambda_2} value}
+   \item{\code{gamma1}}{\eqn{\gamma_1} value}
+   \item{\code{gamma2}}{\eqn{\gamma_2} value}    
    \item{\code{converged}}{whether algorithm converged or not}
    \item{\code{value}}{value of the negative log-likelihood function}
    \item{\code{n_iterations}}{number of iterations of the ADMM}
    \item{\code{aic}}{Aikake information criterion}
-   \item{\code{gamma1}}{\eqn{\gamma_1} value}
-   \item{\code{gamma2}}{\eqn{\gamma_2} value}
-   \item{\code{id}}{The id. This corresponds to the indices of the lists}
    \item{\code{bic}}{Bayesian information criterion}
+   \item{\code{ebic}}{Extended Bayesian information criterion}
+   \item{\code{sparsity}}{Median sparsity of the m estimated graphs}
    The estimates of the precision matrices and the corresponding adjacency matrices
    for the different values of \eqn{(\lambda_1, \lambda_2)} can be found
    \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m},

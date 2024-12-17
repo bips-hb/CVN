@@ -166,7 +166,6 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   # Set-up cluster ---------------------------
   if (n_cores > 1) {
     cl <- makeCluster(n_cores)
-    #registerDoSNOW(cl)              # 16Dec
     registerDoParallel(cl)           # 16Dec
     
     # Export CVN library to workers  # 16Dec
@@ -192,7 +191,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
       pb$tick()
 
       progress <- function(i) pb$tick()
-      opts     <- list(progress = progress) # used by doSNOW
+      opts     <- list(progress = progress) 
     }
   }
 
@@ -283,12 +282,6 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
 
   # go over each pair of penalty terms
   if (n_cores > 1) { # parallel
-    # est <- foreach(i = 1:(length(lambda1)*length(lambda2)),
-    #                .options.snow = opts,
-    #                .export = c("estimate")) %dopar% {
-    #                  estimate_lambda_values(i)
-    #                }
- 
     est <- foreach(i = 1:(length(lambda1)*length(lambda2)),
             .multicombine = TRUE,
             .export = c("estimate")) %dopar% {

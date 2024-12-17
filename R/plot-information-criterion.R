@@ -26,10 +26,21 @@
 #' 
 #' @import ggplot2
 #' @importFrom dplyr %>% 
-#'  
+#' 
+#' @examples 
+#' data(grid)
+#' m <- 9
+#' 
+#' W <- create_weight_matrix(type="grid", 3, 3, plot=FALSE)
+#' (cvn <- CVN::CVN(grid, W, lambda1 = 2, lambda2 = .5))
+#' 
+#' plot_information_criterion(cvn, criterion = "aic")
+#' plot_information_criterion(cvn, criterion = "bic")
+#' plot_information_criterion(cvn, criterion = "ebic")
+#' 
 #' @export                  
 plot_information_criterion <- function(cvn,
-                                       criterion = c('bic', 'aic'),
+                                       criterion = c('bic', 'aic', 'ebic'),
                                        use_gammas = TRUE,
                                        show_minimum = TRUE,
                                        title = "",
@@ -37,15 +48,16 @@ plot_information_criterion <- function(cvn,
                                        ylabel = NULL,
                                        legend_label = NULL,
                                        limits = c(NA, NA)) {
-  
+
   # needed for package building: visible binding for global variables Var1,...
   gamma1 <- gamma2 <- geom_tile <- geom_point <- NULL
   
   # get the criterion. Tolower, since we also accept 'BIC' and 'AIC'
   criterion <- tolower(criterion[1])
+  criterion <- match.arg(criterion)
   
-  if (!(criterion %in% c('aic', 'bic'))) {
-    stop("Selected criterion must be either 'aic' or 'bic'")
+  if (!(criterion %in% c('aic', 'bic', 'ebic'))) {
+    stop("Selected criterion must be either 'aic', 'bic or ebic'")
   }
   
   # determine the x-, y- and legend labels
@@ -60,8 +72,10 @@ plot_information_criterion <- function(cvn,
   if (is.null(legend_label)) {
     if (criterion == 'aic') {
       legend_label <- "AIC"
-    } else {
+    } else if (criterion == 'bic') {
       legend_label <- "BIC"
+    } else {
+      legend_label <- "eBIC"
     }
   }
   
@@ -85,24 +99,36 @@ plot_information_criterion <- function(cvn,
     }
   }
   
+  if (criterion == "ebic") {
+    if (use_gammas) {
+      p <- p + geom_tile(aes(x = gamma1, y = gamma2, fill = ebic))
+    } else {
+      p <- p + geom_tile(aes(x = lambda1, y = lambda2, fill = ebic))
+    }
+  }
+  
   # add the labels and title
   p <- p + ggtitle(title) + xlab(xlabel) + ylab(ylabel)  
   
   # add a dot where the minimum value is 
   if (show_minimum) {
     
-    # determine the minimum for either the AIC or BIC
+    # determine the minimum for either the AIC, BIC or eBIC
     if (criterion == 'aic') {
       minimum <- cvn$results %>% dplyr::slice(which.min(aic))
-    } else { 
+    } else if(criterion == 'bic'){
       minimum <- cvn$results %>% dplyr::slice(which.min(bic))
+    } else { 
+      minimum <- cvn$results %>% dplyr::slice(which.min(ebic))
     }
     
     # use either the gammas or lambdas
     if (use_gammas) {
-      p <- p + geom_point(minimum, color = "orange", size = 4, mapping = aes(x = gamma1, y = gamma2, fill = NULL))
+      p <- p + geom_point(minimum, color = "orange", size = 4, 
+                          mapping = aes(x = gamma1, y = gamma2, fill = NULL))
     } else {
-      p <- p + geom_point(minimum, color = "orange", size = 4, mapping = aes(x = lambda1, y = lambda2, fill = NULL))
+      p <- p + geom_point(minimum, color = "orange", size = 4, 
+                          mapping = aes(x = lambda1, y = lambda2, fill = NULL))
     }
   }
  

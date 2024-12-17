@@ -9,13 +9,16 @@
 #' @importFrom foreach %dopar%
 #' @importFrom foreach foreach
 #' @importFrom Matrix Matrix
-#' @importFrom snow makeCluster
-#' @importFrom snow stopCluster
-#' @importFrom doSNOW registerDoSNOW
+#' @importFrom doParallel registerDoParallel
+#' @importFrom parallel clusterEvalQ
+#' @importFrom parallel makeCluster
+#' @importFrom parallel stopCluster
 #' @importFrom stats cov
 #' @importFrom stats optim
 #' @importFrom stats runif
 #' @importFrom stats var
+#' @importFrom stats median
+#' @importFrom stats IQR
 #' @importFrom utils combn
 #' @importFrom dplyr %>% filter
 #' @importFrom crayon green red
@@ -33,7 +36,7 @@ utils::globalVariables(c(
   "Theta", "Sigma", "data",
   "Var1", "Var2",
   "value",
-  "aic", "bic"
+  "aic", "bic", "ebic"
 ))
 
 
@@ -43,7 +46,7 @@ utils::globalVariables(c(
 #' change with multiple discrete covariates. 
 #'
 #' @name CVN-package
-#' @docType package
+#' _PACKAGE
 #' @aliases CVN-package
 #' @author Louis Dijkstra\cr Maintainer and contributors:
 #' Lukas Burk, Ronja Foraita <foraita@@leibniz-bips.de>
@@ -55,7 +58,7 @@ utils::globalVariables(c(
 #' @examples
 #'
 #' data(grid)
-#' W <- create_weight_matrix(type = "grid")
+#' W <- create_weight_matrix(type = "grid", k=3, l=3, plot = FALSE)
 #' 
 #' cvn <- CVN(grid, W, lambda1 = 1, lambda2 = 1:2, 
 #'            eps = 1e-3, maxiter = 1000, verbose = TRUE)

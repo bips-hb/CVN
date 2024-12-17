@@ -4,7 +4,7 @@
 \alias{determine_information_criterion_cvn}
 \title{Information Criteria for a \code{cvn} object}
 \usage{
-determine_information_criterion_cvn(cvn, type = c("AIC", "BIC"))
+determine_information_criterion_cvn(cvn, gamma = 0.5)
 }
 \description{
 Determines a given information criteria for a \code{cvn} object, 
