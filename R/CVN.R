@@ -16,7 +16,7 @@
 #'          weight matrix \eqn{W}
 #' @param lambda1 Vector with different \eqn{\lambda_1}. LASSO penalty terms 
 #'                (Default: \code{1:2})
-#' @param lambda2 <- Vector with different \eqn{\lambda_2}. The global smoothing parameter values 
+#' @param lambda2 Vector with different \eqn{\lambda_2}. The global smoothing parameter values 
 #'                (Default: \code{1:2})
 #' @param gamma1 A vector of \eqn{\gamma_1}'s LASSO penalty terms, where
 #'              \eqn{\gamma_1 = \frac{2 \lambda_1}{m p (1 - p)}}. If \code{gamma1}
@@ -51,22 +51,25 @@
 #' @param minimal If \code{TRUE}, the returned \code{cvn} is minimal in terms of
 #'                  memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not
 #'                  returned (Default: \code{FALSE})
+#' @param gamma_ebic Gamma value for the eBIC (Default: 0.5)                  
 #' @param verbose Verbose (Default: \code{TRUE})
 #'
 #' @return A \code{CVN} object containing the estimates for all the graphs
 #'    for each different value of \eqn{(\lambda_1, \lambda_2)}. General results for
 #'    the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data frame
 #'    \code{results}. It consists of multiple columns, namely:
+#'    \item{\code{id}}{The id. This corresponds to the indices of the lists}
 #'    \item{\code{lambda1}}{\eqn{\lambda_1} value}
 #'    \item{\code{lambda2}}{\eqn{\lambda_2} value}
+#'    \item{\code{gamma1}}{\eqn{\gamma_1} value}
+#'    \item{\code{gamma2}}{\eqn{\gamma_2} value}    
 #'    \item{\code{converged}}{whether algorithm converged or not}
 #'    \item{\code{value}}{value of the negative log-likelihood function}
 #'    \item{\code{n_iterations}}{number of iterations of the ADMM}
 #'    \item{\code{aic}}{Aikake information criterion}
-#'    \item{\code{gamma1}}{\eqn{\gamma_1} value}
-#'    \item{\code{gamma2}}{\eqn{\gamma_2} value}
-#'    \item{\code{id}}{The id. This corresponds to the indices of the lists}
 #'    \item{\code{bic}}{Bayesian information criterion}
+#'    \item{\code{ebic}}{Extended Bayesian information criterion}
+#'    \item{\code{sparsity}}{Median sparsity of the m estimated graphs}
 #'    The estimates of the precision matrices and the corresponding adjacency matrices
 #'    for the different values of \eqn{(\lambda_1, \lambda_2)} can be found
 #'    \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m},
@@ -132,6 +135,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 normalized = FALSE,
                 warmstart = TRUE,
                 minimal = FALSE,
+                gamma_ebic = 0.5,
                 verbose = TRUE) {
 
   # Check correctness input -------------------------------
@@ -162,7 +166,12 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   # Set-up cluster ---------------------------
   if (n_cores > 1) {
     cl <- makeCluster(n_cores)
-    registerDoSNOW(cl)
+    #registerDoSNOW(cl)              # 16Dec
+    registerDoParallel(cl)           # 16Dec
+    
+    # Export CVN library to workers  # 16Dec
+    clusterEvalQ(cl, library(CVN))
+    
     opts <- list(progress = function(i) {i}) # empty place holder for foreach
   }
 
@@ -219,15 +228,21 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   )
 
   # data frame with the results for each unique (lambda1,lambda2) pair
-  res <- data.frame(expand.grid(lambda1 = lambda1,
+  res <- data.frame(id = NA,
+                    expand.grid(lambda1 = lambda1,
                                 lambda2 = lambda2,
+                                gamma1 = NA,
+                                gamma2 = NA,
                                 converged = FALSE,
                                 value = NA,
                                 n_iterations = NA,
-                                aic = NA))
+                                aic = NA,
+                                bic = NA,
+                                ebic = NA,
+                                sparsity = NA,
+                                sparsity_iqr = NA))
   res$gamma1 <- 2*res$lambda1 / (m*p*(p-1))
   res$gamma2 <- 4*res$lambda2 / (m*(m-1)*p*(p-1))
-
   res$id <- 1:nrow(res)
 
   # estimate the graphs for the different values of (lambda1, lambda2) --------
@@ -268,16 +283,24 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
 
   # go over each pair of penalty terms
   if (n_cores > 1) { # parallel
-    est <- foreach(i = 1:(length(lambda1) * length(lambda2)),
-                   .options.snow = opts,
-                   .export = c("estimate")) %dopar% {
-                     estimate_lambda_values(i)
-                   }
+    # est <- foreach(i = 1:(length(lambda1)*length(lambda2)),
+    #                .options.snow = opts,
+    #                .export = c("estimate")) %dopar% {
+    #                  estimate_lambda_values(i)
+    #                }
+ 
+    est <- foreach(i = 1:(length(lambda1)*length(lambda2)),
+            .multicombine = TRUE,
+            .export = c("estimate")) %dopar% {
+             estimate_lambda_values(i)
+            }
   } else { # sequential
     est <- lapply(1:(length(lambda1) * length(lambda2)), function(i) {
       estimate_lambda_values(i)
     })
   }
+
+  
 
   # Process results -----------------------------------------
   for (i in 1:(length(lambda1)*length(lambda2))) {
@@ -287,20 +310,21 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     res$converged[i]    <- est[[i]]$converged
     res$value[i]        <- est[[i]]$value
     res$n_iterations[i] <- est[[i]]$n_iterations
+    
 
-    # determine the AIC
-    res$aic[i] <- determine_information_criterion(Theta = est[[i]]$Z,
-                                                     adj_matrices = est[[i]]$adj_matrices,
-                                                     Sigma = Sigma,
-                                                     n_obs = n_obs,
-                                                     type = "AIC")
+    ic <- determine_information_criterion(Theta = est[[i]]$Z,
+                                          adj_matrices = est[[i]]$adj_matrices,
+                                          Sigma = Sigma,
+                                          n_obs = n_obs,
+                                          gamma = gamma_ebic)
+    res$aic[i] <- ic$aic
+    res$bic[i] <- ic$bic
+    res$ebic[i] <- ic$ebic
+    
+    # Median sparsity
+    res$sparsity[i] <- median(mapply(sum, est[[i]]$adj_matrices) / 2)
+    res$sparsity_iqr[i] <- IQR(mapply(sum, est[[i]]$adj_matrices) / 2)
 
-    # determine the BIC
-    res$bic[i] <- determine_information_criterion(Theta = est[[i]]$Z,
-                                                       adj_matrices = est[[i]]$adj_matrices,
-                                                       Sigma = Sigma,
-                                                       n_obs = n_obs,
-                                                       type = "BIC")
   }
 
   # stop the progress bar

@@ -16,7 +16,7 @@ Depends:
     R (>= 4.0.2),
 Imports: 
     crayon,
-    doSNOW,
+    doParallel,
     dplyr,
     foreach,
     ggplot2,

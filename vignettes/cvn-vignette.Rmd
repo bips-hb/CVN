@@ -15,42 +15,127 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, warning=FALSE}
-library(CVN)
-```
-
 <!-- devtools::build_rmd("vignettes/cvn-vignette.Rmd") -->
 
+Covariate-varying networks are high-dimensional dynamic graphical models that vary 
+with multiple external covariates. The methodology is explained in detail
+in the pre-print by [Dijkstra, Godt and Foraita (2024)](https://arxiv.org/abs/2407.19978).
+In this vignette we describe how to apply the method to data with the associated
+R package `CVN`.
 
-TEXT: What are CVN?
+A CVN is represented as graphical model with the quintupel 
 
-# Basics
+$$
+\text{CVN} = \{\mathbf{X}, \mathbf{U}, \mathcal{U}, f(\mathbf{X} \mid \mathbf{U}), 
+\{G(u) = (V, E(u)) \}_{u \in \mathcal{U}} \},
+$$
+where $\mathbf{X} = (X_1, X_2 \ldots, X_p)^\top$ is a $p$-dimensional random vector and 
+$\mathbf{U} = (U_1, U_2, \ldots, U_q)^\top$ is a random vector representing $q$ 
+external discrete covariates. The external covariates are not included in the graph. 
+These covariates have $(K_1,\ldots, K_q)^\top$ categories.
+
+The vector $\mathbf{U}$ lies in the discrete space $\mathcal{U}$ with cardinality 
+$m \leq \prod_{k=1}^q K_k$. The joint density function of $\mathbf{X}$ conditioned on 
+$\mathbf{U}$ is $f(\mathbf{X} \mid \mathbf{U})$. 
+The fifth element of the CVN is a set of $m$ graphs, one for each value $u$ in $\mathcal{U}$. 
+The vertices of $G(u)$, $V = \{1, 2, \ldots, p\}$, correspond to the variables 
+$X_1, X_2, \ldots, X_p$ and do not change with $\mathbf{U}$. 
+
+We assume that $\mathbf{X} \mid \mathbf{U}$ follows a multivariate normal distribution
+with $\mathbf{\mu}(u) = 0$ and covariance matrix $\mathbf{\Sigma}(u)$. 
+To estimate the structure of the graph, we focus on the precision matrix 
+$\mathbf{\Theta}(u) = \mathbf{\Sigma}(u)^{-1}$ which has the following property 
+under the normality assumption:
+
+$$
+\theta_{ij}(u) = 0 \Leftrightarrow 
+X_i \not\!\perp\!\!\!\perp X_j \mid \mathbf{X}_{V \setminus \{i,j\}} \land U = u  
+\Leftrightarrow 
+\text{edge } \{i,j\} \notin E(u)
+$$
+Hence, the (in)dependence structure of the CVN can be estimated by determining the zero entries of 
+the precision matrices.
+Our goal is to enable a CVN to handle high-dimensional data and identify structural similarities between graphs. Therefore, we define the CVN estimator of $\mathbf{ \Theta}_{\text{CVN}} = \{ \widehat{\mathbf{\Theta}}_i \}_{i = 1}^m$ 
+as follows
+
+$$ \mathbf{ \Theta}_{\text{CVN}} = \text{argmin}_{\{ \mathbf{\Theta}_{i}\}_{i = 1}^m} 
+	\Bigg[ \sum_{i = 1}^m \ell\left({\mathbf{\Theta}_i}\right) 
+	 + \lambda_1 \sum_{i = 1}^m \left\rVert \mathbf{\Theta}_i \right\rVert_1 
+	 + \lambda_2 \sum_{i < j} w_{ij} \left\lVert \mathbf{\Theta}_i - \mathbf{\Theta}_j \right\rVert_1 \Bigg],$$
+
+
+where $\mathbf{ \Theta}_i$ is the $i$-th precision matrix, $\ell\left({\mathbf{\Theta}_i}\right)$ the log-likelihood function for precision matrix $i$, $w_{ij}$ values of the symmetric
+weighted adjacency matrix of the meta-graph (see below) and $\lambda_1, \lambda_2$ are
+two tuning parameters. 
+
 
 
 ## Data
-The input of a CVN is a list of $m$ data sets. The number of variables $p$ must be 
-equal in each list element, the number of observations may differ.
+Suppose you have two external variables $U_1$ and $U_2$, each having $K = L = 3$ categories. 
+The input of a CVN is then a list of $K \cdot L = m$ data sets. 
+The number of variables $p$ must be equal in each list element, the number of observations may differ.
 
 
 
-```{r data}
+```{r data, warning=FALSE}
+# Load required library
+library(CVN)
+library(dplyr)
+
+
 # Load data: a list of 9 data sets with p variables an n_i observations.
-data(grid)
-m <- length(grid)
+# data(grid)
+# m <- length(grid)
+
+# Simulate the dataset
+set.seed(2024)  
+n <- 300  
+
+# Create 10 normally distributed variables for the graph
+data <- as.data.frame(matrix(rnorm(n * 10), ncol = 10))
+colnames(data) <- paste0("X", 1:10)
+
+# Add two discrete external covariates
+data$dosis <- sample(1:3, n, replace = TRUE)  
+data$bmi <- sample(c("normal", "overweight"), n, replace = TRUE)
+
+# Split the dataset into subsets based on dosis and bmi
+data_list <- data %>%
+  group_by(dosis, bmi) %>%
+  group_split() %>%
+  lapply(function(df) df %>% select(-dosis, -bmi))
+
+names(data_list) <- apply(expand.grid(dosis = 1:3, bmi = c("normal", "overweight")), 1, 
+                               function(x) paste0("dosis_", x[1], "_", x[2]))
+
 ```
 ## Weigth matrix
 
-The weight matrix is a $m \times m$ symmetric matrix. It reflects the *meta-graph*.
+The weight matrix is a $m \times m$ symmetric matrix. It reflects the *meta-graph* which
+encodes the smoothing structure between the graphs. A weight of 0 does not smooth 
+the structure between two graphs. Weights must be chosen between 0 and 1.  
 
-```{r W}
-W_full <- create_weight_matrix("full", m = m)  
-W_grid <- create_weight_matrix("grid", m = m)
-W_gl   <- create_weight_matrix("glasso", m = m)
+In case of two external covariates, the weight matrix 
+can be generated using a simple function. 
+
+```{r W, eval=FALSE}
+W_full <- create_weight_matrix("full", k = 3, l = 2)  
+W_grid <- create_weight_matrix("grid", k = 3, l = 2)
+W_gl   <- create_weight_matrix("glasso", k = 3, l = 2)
 ```
 
 ## Tuning parameter space
 
+A CVN requires to select two tuning parameters which control the regularization applied
+to the CVN. These parameters are usually searched for in a predetermined regularization path.
+$\lambda_1$ introduces sparsity in the CVN, which gets sparser the larger $\lambda_1$ is 
+chosen. $\lambda_2$ penalizes differences between the precision matrices that are 
+connected in the meta-graph. It encourages similar values in the precision
+matrices and hence also if an edge is included in the graph or not. The graphs in the CVN
+are getting more and more similar the larger $\lambda_2$ is selected. 
+
 ```{r tp}
+# Lets choose a regularization path for each tuning parameter
 lambda1 = seq(0.5, 2, length = 3)  # sparsity
 lambda2 = c(0.5, 1)                # smoothing
 ```
