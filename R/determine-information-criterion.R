@@ -6,6 +6,7 @@
 #' @keywords internal
 determine_information_criterion <- function (Theta, adj_matrices, Sigma, n_obs, gamma = 0.5) 
 {
+  if(gamma < 0 | gamma > 1) stop("gamma value must be between 0 and 1")
   
   m <- length(Theta)
   E <- mapply(sum, adj_matrices)              # edges in each subgraph

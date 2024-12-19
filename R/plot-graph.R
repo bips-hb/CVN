@@ -234,7 +234,7 @@ visnetwork_cvn <- function(cvn,
       cat(sprintf("Determining the 'core graphs'...\n"))
     }
 
-    core_graphs <- CVN::find_core_graph(cvn)
+    core_graphs <- find_core_graph(cvn)
 
     if (verbose) {
       cat(sprintf("Create the subset of edges in the core graphs...\n\n"))
@@ -260,15 +260,18 @@ visnetwork_cvn <- function(cvn,
   }
 
   # create the edge dataframes for all the graphs
+  browser()
   all_edges <- lapply(1:cvn$n_lambda_values, function(i) {
      lapply(1:cvn$m, function(k) {
        # cat(sprintf("%d\t%d\n", i,k))
-       edges <- CVN::create_edges_visnetwork(cvn$adj_matrices[[i]][[k]])
+       edges <- create_edges_visnetwork(cvn$adj_matrices[[i]][[k]])
        # check whether there are core edges, since sometimes graphs are
        # completely empty
        if (show_core_graph && length(subset_edges[[i]]$from) != 0) {
-         edges <- CVN::set_attributes_to_edges_visnetwork(edges, subset_edges = subset_edges[[i]],
-                                                 width = width, color = color)
+         edges <- set_attributes_to_edges_visnetwork(edges, 
+                                                     subset_edges = subset_edges[[i]],
+                                                     width = width, 
+                                                     color = color)
        }
 
        if (verbose) {
@@ -291,7 +294,9 @@ visnetwork_cvn <- function(cvn,
       if (verbose) {
         pb_plots$tick()
       }
-      return(visnetwork(nodes, all_edges[[i]][[k]], title = titles[[i]][[k]], igraph_layout = igraph_layout))
+      return(visnetwork(nodes, all_edges[[i]][[k]],
+                        title = titles[[i]][[k]], 
+                        igraph_layout = igraph_layout))
     })
   })
 

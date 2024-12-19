@@ -24,10 +24,13 @@ plot_weight_matrix <- function(W, k, l){
          call. = FALSE)
   }
   
-  if(requireNamespace("igraph")) {
-  g <- igraph::graph_from_adjacency_matrix(W, mode = "undirected", diag = FALSE)
+  W <- round(W,1)
   
+  if(requireNamespace("igraph")) {
+  g <- igraph::graph_from_adjacency_matrix(W, mode = "undirected", 
+                                           weighted = TRUE, diag = FALSE)
   plot(g, layout = igraph::layout_on_grid(g, width = k, height = l), 
-               vertex.size = 20, vertex.label.cex = 1,
-               vertex.color = "skyblue") 
+          vertex.size = 20, vertex.label.cex = 1,
+          edge.width = E(g)$weight * 5,
+          vertex.color = "skyblue") 
 }}

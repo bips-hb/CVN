@@ -120,9 +120,20 @@ can be generated using a simple function.
 
 ```{r W, eval=FALSE}
 W_full <- create_weight_matrix("full", k = 3, l = 2)  
-W_grid <- create_weight_matrix("grid", k = 3, l = 2)
-W_gl   <- create_weight_matrix("glasso", k = 3, l = 2)
+W_grid <- create_weight_matrix("grid", k = 3, l = 3)
+# plots can be turned off by setting plot = FALSE
+W_gl   <- create_weight_matrix("glasso", k = 3, l = 2, plot = FALSE)
+W_random <- round(create_weight_matrix("uniform-random", k = 4, l = 3, plot = FALSE), 2)
 ```
+
+Weight matrices can be plotted as a grid graph or as a heatmap:
+```{r W-heat}
+plot_weight_matrix(W_random, k = 4, l = 3)
+hd_weight_matrix(W_random)  # randomly chosen weights
+```
+
+
+
 
 ## Tuning parameter space
 
@@ -143,27 +154,55 @@ lambda2 = c(0.5, 1)                # smoothing
 
 ## Estimate a CVN
 
+The CVN is simply estimated by the following. It will parallelize by default if there are
+more than one $\lambda_1$ or $\lambda_2$ values.  
+
 ```{r cvn, eval=FALSE}
-cvn <- CVN::CVN(data = grid, 
+fit <- CVN::CVN(data = grid, 
                 W = W_grid, 
-                lambda1 = lambda1, lambda2 = lambda2, 
-                eps = 1e-3, maxiter = 1000, 
-                verbose = FALSE)
+                lambda1 = lambda1, 
+                lambda2 = lambda2, 
+                eps = 1e-2, maxiter = 500, 
+                verbose = FALSE,
+                n_cores = 1)
 
-print(cvn)
+print(fit)
+```
 
-best.aic <- cvn$results[which.min(cvn$results$aic), "id"]
-best.bic <- cvn$results[which.min(cvn$results$bic), "id"]
+It is also possible to change the $\gamma$-value for the eBIC. The default is $\gamma = 0.5$.
+
+```{r ebic}
+(dic <- determine_information_criterion_cvn(fit, gamma = 0.9))
+
+which.min(fit$res$aic)  # minimal AIC
+which.min(fit$res$bic)  # minimal BIC
+which.min(fit$res$ebic) # minimal eBIC with gamma = 0.5
+which.min(dic[3,])      # minimal eBIC with gamma = 0.9
+```
+Based on all information criteria, the final model is preferred over the others. Additionally, it exhibits the sparsest network when averaged across all 9 graphs. However, our simulation study revealed that information criteria tend to perform poorly in practice.
+
+
+# Print and Plots
+The print function in our package uses the `visnet`package.
+
+```{r pp, eval=FALSE}
+# I only want to print the 6th CVN
+fit6 <- extract_cvn(fit, 6)
+plot_cvn <- visnetwork_cvn(fit6, verbose = FALSE)
+
+## DER CORE GRAPH WIRD FALSCH GEFÄRBT
+
+
+# igraph
+#plot_graph(fit)
+
+core_graph <- find_core_graph(fit6)
 
 ```
 
 
-# Print and Plots
-```{r pp, eval=FALSE}
 
-plot_cvn <- visnetwork_cvn(cvn)
-
-
+```{r hamming, eval=FALSE}
 hamming_distance_adj_matrices(cvn$adj_matrices[[best.aic]]) 
 hamming_distance_adj_matrices(cvn$adj_matrices[[best.bic]]) 
 
