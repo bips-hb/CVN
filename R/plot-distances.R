@@ -36,20 +36,21 @@ plot_hamming_distances <- function(distance_matrix,
       legend_label <- "Relative Hamming Distance" 
     }
   }
-  
+
   m <- nrow(distance_matrix)
   distance_matrix <- t(apply(distance_matrix, 2, rev)) # rotate matrix
   
   colnames(distance_matrix) <- sapply(1:m, function(i) as.character(i))
   rownames(distance_matrix) <- sapply(1:m, function(i) as.character(i))
   
-  data$Var1 <- m - data$Var1 + 1
+  hddata <- reshape2::melt(distance_matrix)
+  hddata$Var1 <- m - hddata$Var1 + 1
   
 
   # needed for package building: visible binding for global variables Var1,...
   Var1 <- Var2 <- value <- geom_tile <- NULL
   
-  p <- ggplot(data = data, aes(x = Var1, y = Var2, fill = value)) + 
+  p <- ggplot(data = hddata, aes(x = Var1, y = Var2, fill = value)) + 
         geom_tile() +
         ggtitle(title) + 
         xlab("") + 
@@ -137,7 +138,6 @@ plot_hamming_distances_cvn <- function(cvn,
   } else { 
     limits <- c(NA,NA) 
   }
-  
   
   plots <- lapply(1:cvn$n_lambda_values, function(i) { 
     p <- plot_hamming_distances(hamming$distances[[i]], 

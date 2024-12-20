@@ -8,7 +8,7 @@ create_weight_matrix(
   type = c("full", "glasso", "grid", "uniform-random"),
   k,
   l,
-  plot = TRUE
+  plot = FALSE
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ create_weight_matrix(
 
 \item{l}{Number of categories in the second external covariate}
 
-\item{plot}{If TRUE, the weight matrix is plotted (default: TRUE)}
+\item{plot}{If TRUE, the weight matrix is plotted (default: FALSE)}
 }
 \value{
 Weight matrix

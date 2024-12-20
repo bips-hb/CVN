@@ -31,6 +31,6 @@ plot_weight_matrix <- function(W, k, l){
                                            weighted = TRUE, diag = FALSE)
   plot(g, layout = igraph::layout_on_grid(g, width = k, height = l), 
           vertex.size = 20, vertex.label.cex = 1,
-          edge.width = E(g)$weight * 5,
+          edge.width = igraph::E(g)$weight * 5,
           vertex.color = "skyblue") 
 }}

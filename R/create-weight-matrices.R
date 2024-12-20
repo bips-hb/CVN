@@ -14,7 +14,7 @@
 #' @param type The type of weight matrix
 #' @param k Number of categories in the first external covariate
 #' @param l Number of categories in the second external covariate
-#' @param plot If TRUE, the weight matrix is plotted (default: TRUE)
+#' @param plot If TRUE, the weight matrix is plotted (default: FALSE)
 #' 
 #' @importFrom stats runif
 #' 
@@ -25,7 +25,7 @@
 #' 
 #' @export
 create_weight_matrix <- function(type = c("full", "glasso", "grid", "uniform-random"), 
-                                 k, l, plot = TRUE) { 
+                                 k, l, plot = FALSE) { 
   
   if(k %% 1 != 0 | k < 1) stop("k must be a positive integer")
   if(l %% 1 != 0 | l < 1) stop("l must be a positive integer")

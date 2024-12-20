@@ -6,8 +6,12 @@
 \usage{
 determine_information_criterion_cvn(cvn, gamma = 0.5)
 }
+\arguments{
+\item{cvn}{A CVN object, see \code{\link{CVN}}}
+
+\item{gamma}{The gamma value for the eBIC (default: 0.5)}
+}
 \description{
 Determines a given information criteria for a \code{cvn} object, 
 see \code{\link{CVN}}.
 }
-\keyword{internal}

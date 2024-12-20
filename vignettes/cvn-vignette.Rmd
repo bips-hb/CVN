@@ -3,7 +3,7 @@ title: "Covariate-varying Networks"
 author: "Louis Dijkstra, Arne Godt, Ronja Foraita"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{my-vignette}
+  %\VignetteIndexEntry{Covariate-varying Networks}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -11,7 +11,9 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 8,   # Adjust this to match the text width
+  fig.height = 5  # Maintain a good aspect ratio
 )
 ```
 
@@ -118,12 +120,12 @@ the structure between two graphs. Weights must be chosen between 0 and 1.
 In case of two external covariates, the weight matrix 
 can be generated using a simple function. 
 
-```{r W, eval=FALSE}
+```{r W}
 W_full <- create_weight_matrix("full", k = 3, l = 2)  
-W_grid <- create_weight_matrix("grid", k = 3, l = 3)
-# plots can be turned off by setting plot = FALSE
-W_gl   <- create_weight_matrix("glasso", k = 3, l = 2, plot = FALSE)
-W_random <- round(create_weight_matrix("uniform-random", k = 4, l = 3, plot = FALSE), 2)
+# plots can be turned on by setting plot = TRUE. You need the igraph package for this
+W_grid <- create_weight_matrix("grid", k = 3, l = 3, plot = TRUE)
+W_gl   <- create_weight_matrix("glasso", k = 3, l = 2)
+W_random <- round(create_weight_matrix("uniform-random", k = 4, l = 3), 2)
 ```
 
 Weight matrices can be plotted as a grid graph or as a heatmap:
@@ -148,7 +150,7 @@ are getting more and more similar the larger $\lambda_2$ is selected.
 ```{r tp}
 # Lets choose a regularization path for each tuning parameter
 lambda1 = seq(0.5, 2, length = 3)  # sparsity
-lambda2 = c(0.5, 1)                # smoothing
+lambda2 = c(1, 1.5)                # smoothing
 ```
 
 
@@ -157,7 +159,7 @@ lambda2 = c(0.5, 1)                # smoothing
 The CVN is simply estimated by the following. It will parallelize by default if there are
 more than one $\lambda_1$ or $\lambda_2$ values.  
 
-```{r cvn, eval=FALSE}
+```{r cvn}
 fit <- CVN::CVN(data = grid, 
                 W = W_grid, 
                 lambda1 = lambda1, 
@@ -174,40 +176,79 @@ It is also possible to change the $\gamma$-value for the eBIC. The default is $\
 ```{r ebic}
 (dic <- determine_information_criterion_cvn(fit, gamma = 0.9))
 
-which.min(fit$res$aic)  # minimal AIC
-which.min(fit$res$bic)  # minimal BIC
-which.min(fit$res$ebic) # minimal eBIC with gamma = 0.5
-which.min(dic[3,])      # minimal eBIC with gamma = 0.9
+cat("minimal AIC: ", which.min(fit$res$aic))  
+cat("\nminimal BIC: ", which.min(fit$res$bic))  
+cat("\nminimal eBIC with gamma = 0.5: ", which.min(fit$res$ebic))
+cat("\nminimal eBIC with gamma = 0.9: ", which.min(dic[3,]))  
 ```
-Based on all information criteria, the final model is preferred over the others. Additionally, it exhibits the sparsest network when averaged across all 9 graphs. However, our simulation study revealed that information criteria tend to perform poorly in practice.
+Based on the information criteria, it is unclear which graph to choose. The AIC 
+selects slightly denser models than the BIC. Our simulation study showed that 
+AIC tends to perform better than BIC in general, 
+but all perform rather poorly in practice.
+
+The package also includes a plot function to check if the regularization path is too small.
+The yellow dot shows the tuning parameter constellation that minimizes the BIC. 
+If this point is on the limit, you should think about to choose different tuning parameters.
+
+```{r plotIC}
+plot_information_criterion(fit, use_gammas = FALSE, criterion = "bic")
+```
 
 
-# Print and Plots
-The print function in our package uses the `visnet`package.
+In the following, however, we want to investigate the CVN with id = 6. 
+It is easier to extract that CVN into a new object.
+
+```{r extract}
+fit3 <- extract_cvn(fit, 3)
+```
+
+
+# Plot a CVN model
+The graphs can be plotted with a print function that relies on the `visnet`package.
 
 ```{r pp, eval=FALSE}
-# I only want to print the 6th CVN
-fit6 <- extract_cvn(fit, 6)
+
 plot_cvn <- visnetwork_cvn(fit6, verbose = FALSE)
 
 ## DER CORE GRAPH WIRD FALSCH GEFÄRBT
 
-
-# igraph
-#plot_graph(fit)
-
-core_graph <- find_core_graph(fit6)
-
 ```
 
+Differences between the graphs can be investigated looking at the number of edges in each
+CVN subgraph and by investigating the Hamming distances between the subgraphs. 
 
 
 ```{r hamming, eval=FALSE}
-hamming_distance_adj_matrices(cvn$adj_matrices[[best.aic]]) 
-hamming_distance_adj_matrices(cvn$adj_matrices[[best.bic]]) 
+# Shows the number of edges in each subgraph, the number of edges that are shared by 
+# all graphs (core) and the number of edges that are unique for each subgraph
+cvn_edge_summary(fit)
 
-plot_hamming_distances_cvn(cvn)
+# Hamming distance matrix and plot
+hd_matrix <- hamming_distance_adj_matrices(fit3$adj_matrices[[1]]) 
+plot_hamming_distances(hd_matrix)
+
+# or directly
+# plot_hamming_distances_cvn(fit3)
 
 ```
 
-# Interpolate
+# Interpolate graph based an previously fitted CVN model
+
+Suppose we have graphs for 3 time points and we want to interpolate the graph for
+the 4th time point based on a previously fitted model. We can do this as follows.
+
+
+```{r interpolate}
+set.seed(86)
+time_data <- lapply(1:3, function(x) matrix(rnorm(500), ncol = 5))
+W <- create_weight_matrix("grid", 3, 1)
+timefit <- CVN(time_data, W, maxiter = 1000,
+               lambda1 = 6, lambda2 = .5, verbose = FALSE)
+
+timefit$adj_matrices
+timefit4 <- interpolate(timefit, c(0,0.25,1), truncate = 1e-02)
+timefit4$adj_matrices
+```
+The function is still work in progress and applying it to real data requires more experience. 
+We also did not investigate its performance in simulation study. 
+It should therefore be used with caution.  

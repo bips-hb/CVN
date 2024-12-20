@@ -96,6 +96,9 @@ hits_end_lambda_intervals <- function(results) {
         hits_border_aic <- TRUE
       }
     }
+  } else {
+    hits_border_aic = "NA"
+    hits_border_bic = 'NA'
   }
 
   return(

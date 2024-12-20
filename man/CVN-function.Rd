@@ -156,19 +156,15 @@ for other \eqn{\lambda_1} and \eqn{\lambda_2} values closest to them.
 
 \examples{
 data(grid)
-m <- 9 # must be 9 for this example
 
-#' Choice of the weight matrix W.
+#' Choice of the weight matrix W. Each of 2 covariates has 3 categories
 #' (uniform random)
-W <- matrix(runif(m*m), ncol = m)
-W <- W \%*\% t(W)
-W <- W / max(W)
-diag(W) <- 0
+W <- create_weight_matrix("uniform-random" k = 3, l = 3)
 
 # lambdas:
 lambda1 = 1  # can also be lambda1 = 1:2 
 lambda2 = 1
 
-(cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, 
-                 eps = 1e-3, maxiter = 1000, verbose = TRUE))
+(fit <- CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, 
+            eps = 1e-3, maxiter = 1000, verbose = TRUE))
 }

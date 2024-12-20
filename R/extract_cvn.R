@@ -3,7 +3,7 @@
 #' Function that extracts one CVN if the CVN object contains more than one. 
 #' Its helpful when just one tuning parameter constellation wants to be, e.g., plotted.
 #'
-#' @param cvn A CVN object
+#' @param cvn A CVN object, see \code{\link{CVN}}
 #' @param nr  Integer; Which id from the CVN object should be extracted
 #'
 #' @return A CVN object
@@ -29,10 +29,6 @@ extract_cvn <- function(cvn, nr){
   }
   if(!(nr %in% cvn$results$id)){
      stop("nr must be a number within cvn$results$id")
-  }
-  
-  if ('Theta' %in% names(cvn)) {
-    cvn <- within(cvn, rm(Theta))
   }
   
   # Subset the class objects

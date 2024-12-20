@@ -42,7 +42,10 @@ determine_information_criterion <- function (Theta, adj_matrices, Sigma, n_obs, 
 #' Determines a given information criteria for a \code{cvn} object, 
 #' see \code{\link{CVN}}. 
 #' 
-#' @keywords internal
+#' @param cvn A CVN object, see \code{\link{CVN}}
+#' @param gamma The gamma value for the eBIC (default: 0.5)
+#'
+#' @export
 determine_information_criterion_cvn <- function (cvn, gamma = 0.5) 
 {
   if (!("cvn" %in% class(cvn))) {
