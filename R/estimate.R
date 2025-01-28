@@ -69,7 +69,7 @@ estimate <- function(m, p, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs,
   
   adj_matrices <- lapply(Z, function(X) { 
     diag(X) <- 0 
-    Matrix::Matrix( as.numeric( abs(X) >= 2*.Machine$double.eps), ncol = ncol(X) , sparse = TRUE)
+    Matrix( as.numeric( abs(X) >= 2*.Machine$double.eps), ncol = ncol(X) , sparse = TRUE)
   })
   
   list(

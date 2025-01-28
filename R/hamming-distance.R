@@ -35,15 +35,14 @@ hamming_distance_adj_matrices <- function(adj_matrices) {
 #' 
 #' Returns the structural Hamming distances
 #' 
-#' @param cvn A \code{cvn} or \code{cvn:glasso} object 
-#'            created by either the \code{\link[CVN]{CVN}} or the 
-#'            \code{\link[CVN]{glasso}} function
+#' @param cvn A \code{cvn} object 
+#'            created by the \code{\link[CVN]{CVN}} function
 #' @param verbose If \code{TRUE}, shows a progress bar
 #' 
 #' @return A list of symmetric matrices. Each matrix contains the structural 
 #'         Hamming distances between the different graphs. Each item in the 
 #'         list corresponds to one \eqn{(\lambda_1, \lambda_2)} pair
-#' @seealso \code{\link[CVN]{CVN}}, \code{\link[CVN]{glasso}}
+#' @seealso \code{\link[CVN]{CVN}}
 #' @export
 hamming_distance <- function(cvn, verbose = TRUE) { 
   

@@ -1,8 +1,8 @@
-#' Plot Weight Matrix
+#' Heat Map Plot of the Weight Matrix
 #' 
-#' Returns a heat map of a weight matrix
+#' Returns a heat map of the weight matrix
 #'
-#' @param W Symmetric weight matrix 
+#' @param W Weight matrix 
 #' @param title Title plot (Default is none)
 #' @param legend_label Title of the legend (Default: "weight")
 #' @param add_counts_to_cells If \code{TRUE}, counts from the matrix are 
@@ -14,10 +14,18 @@
 #' 
 #' @importFrom Matrix Matrix
 #' @import ggplot2 
+#' 
+#' @seealso \code{\link{plot_weight_matrix}}
 #'
-#' @return A heatmap plot                   
+#' @return A heatmap plot       
+#' 
+#' @examples
+#' W_uniform <- create_weight_matrix(type="uniform-random", 3,3)
+#' W_uniform <- round(W_uniform, 2)
+#' hd_weight_matrix(W_uniform)
+#'             
 #' @export
-plot_weight_matrix <- function(W,
+hd_weight_matrix <- function(W,
                                title = "",
                                legend_label = "weight",
                                add_counts_to_cells = TRUE,
@@ -32,7 +40,7 @@ plot_weight_matrix <- function(W,
   colnames(W) <- sapply(1:m, function(i) as.character(i))
   rownames(W) <- sapply(1:m, function(i) as.character(i))
   
-  data <- reshape2::melt(W)
+  data <- melt(W)
   data$Var1 <- m - data$Var1 + 1
   
   # needed for package building: visible binding for global variables Var1,...

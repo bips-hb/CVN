@@ -16,8 +16,7 @@ visnetwork_cvn(
 )
 }
 \arguments{
-\item{cvn}{A \code{cvn} object, see \code{\link{CVN}}
-or \code{\link[CVN]{glasso}}}
+\item{cvn}{A \code{cvn} object, see \code{\link{CVN}}}
 
 \item{node_titles}{Vector with title of the nodes (Default: \code{1:p})}
 
@@ -38,5 +37,5 @@ Creates all \code{visNetwork} plots, see \code{\link{visnetwork}},
 for all graphs in a \code{cvn} object
 }
 \seealso{
-\code{\link{CVN}}, \code{\link[CVN]{glasso}}, \code{\link{visnetwork}}
+\code{\link{CVN}}, \code{\link{visnetwork}}
 }

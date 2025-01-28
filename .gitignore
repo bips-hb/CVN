@@ -5,3 +5,5 @@
 *.Rproj
 docs
 scripts
+/doc/
+/Meta/

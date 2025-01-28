@@ -9,7 +9,7 @@
 See the vignette for more information.
 
 ```R
-?CVN::CVN
+?CVN
 ```
 
 ### Installation 

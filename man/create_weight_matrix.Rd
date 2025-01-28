@@ -6,26 +6,36 @@
 \usage{
 create_weight_matrix(
   type = c("full", "glasso", "grid", "uniform-random"),
-  m = 9
+  k,
+  l,
+  plot = FALSE
 )
 }
 \arguments{
 \item{type}{The type of weight matrix}
 
-\item{m}{Number of graphs (works currently only for m = 9)}
+\item{k}{Number of categories in the first external covariate}
+
+\item{l}{Number of categories in the second external covariate}
+
+\item{plot}{If TRUE, the weight matrix is plotted (default: FALSE)}
 }
 \value{
 Weight matrix
 }
 \description{
-This function generates different weight matrices, \eqn{W}. 
+This function generates different weight matrices for two external covariates, \eqn{W}. 
 There are several types: 
 \describe{
 \item{\code{full} }{All graphs are fully connected with weight 1}
 \item{\code{glasso} }{All graphs are disconnected with weight 0. This 
              mimicks the GLASSO, where each graph is estimated independently}
-\item{\code{grid} }{A weight matrix for a \eqn{3 \times 3} grid}
+\item{\code{grid} }{A weight matrix for a \eqn{k \times l} grid}
 \item{\code{uniform-random} }{Fully-connected, but the entries are drawn 
                    from a uniform distribution}
 }
+}
+\examples{
+W <- create_weight_matrix(type="grid", k=3, l=2)
+
 }

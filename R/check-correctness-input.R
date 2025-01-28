@@ -38,7 +38,7 @@ check_correctness_input <- function(raw_data, W,
   
   ncols_per_dataset <- sapply(raw_data, function(X) ncol(X))
   
-  if (m > 1 && stats::var(ncols_per_dataset) != 0) { 
+  if (m > 1 && var(ncols_per_dataset) != 0) { 
     stop("The number of columns (variables) should 
               be the same for all datasets in raw_data") 
   }

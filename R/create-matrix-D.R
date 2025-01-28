@@ -15,6 +15,7 @@
 #' @return A \eqn{((m \cdot (m+1)/2) \times m)}-dimensional matrix 
 #' 
 #' @importFrom utils combn
+#' @noRd
 #'         
 #' @references Tibshirani, R. J., & Taylor, J. (2011). 
 #'             The solution path of the generalized lasso. 
@@ -29,9 +30,8 @@
 #' lambda2 <- .4
 #' rho <- 1
 #' 
-#' CVN:::create_matrix_D(W, lambda1, lambda2, rho) 
-#' @noRD
-#' @keywords internal
+#' create_matrix_D(W, lambda1, lambda2, rho) 
+#' 
 create_matrix_D <- function(W, lambda1, lambda2, rho = 1, remove_zero_row = TRUE) { 
   
   eta1 <- lambda1 / rho 
