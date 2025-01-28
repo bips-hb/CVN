@@ -64,7 +64,6 @@ genlassoRcpp <- function(Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate) {
 #'
 #' @return The estimated vector \eqn{\hat{\beta}}
 #'
-#' @seealso \code{\link{updateZ_wrapper}}
 updateZRcpp <- function(m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate) {
     .Call('_CVN_updateZRcpp', PACKAGE = 'CVN', m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
 }

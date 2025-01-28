@@ -6,7 +6,6 @@
 #'
 #' @param m Number of graphs
 #' @param p Number of variables
-#' @param Theta A list with matrices with the current values of \eqn{\Theta}
 #' @param Y A list with matrices with the current values of \eqn{Y} 
 #' @param W Weight matrix 
 #' @param eta1  lambda1 / rho, with \eqn{\rho} is penalty parameter for the global ADMM algorithm (Default: \code{1})
@@ -20,8 +19,7 @@
 #'                 \code{truncate_genlasso} will be set to \code{0}.
 #'
 #' @return A list with matrices with the new values of \eqn{Z}
-#'
-#' @seealso \code{\link{create_matrix_D}} 
+#' @noRd
 #' 
 #' @keywords internal
 updateZ_wrapper <- function(m, p,  

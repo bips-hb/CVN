@@ -56,7 +56,7 @@ data(grid)
 m <- 9
 
 W <- create_weight_matrix(type="grid", 3, 3, plot=FALSE)
-(cvn <- CVN::CVN(grid, W, lambda1 = 2, lambda2 = .5))
+(cvn <- CVN(grid, W, lambda1 = 2, lambda2 = .5))
 
 plot_information_criterion(cvn, criterion = "aic")
 plot_information_criterion(cvn, criterion = "bic")

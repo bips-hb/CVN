@@ -73,6 +73,7 @@ return(W)
 #'
 #' @return A matrix
 #' @keywords internal
+#' @noRd
 #'
 #' @examples
 #' create_grid_adjacency(k = 2, l = 3)

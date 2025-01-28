@@ -238,7 +238,6 @@ using namespace Rcpp;
 //'
 //' @return The estimated vector \eqn{\hat{\beta}}
 //'
-//' @seealso \code{\link{updateZ_wrapper}}
 // [[Rcpp::export]]
     Rcpp::ListMatrix updateZRcpp(const int m,
                                  const int p,

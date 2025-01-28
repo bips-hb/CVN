@@ -37,7 +37,7 @@ In order to highlight edges, you can use
 \code{\link{set_attributes_to_edges_visnetwork}}.
 }
 \examples{
-nodes <- CVN::create_nodes_visnetwork(n_nodes = 5, labels = LETTERS[1:5])
+nodes <- create_nodes_visnetwork(n_nodes = 5, labels = LETTERS[1:5])
 
 adj_matrix <- matrix(c(0, 1, 0, 1, 0,
                        1, 0, 1, 0, 0,
@@ -45,14 +45,16 @@ adj_matrix <- matrix(c(0, 1, 0, 1, 0,
                        1, 0, 0, 0, 1,
                        0, 0, 0, 1, 0), ncol = 5)
 
-edges <- CVN::create_edges_visnetwork(adj_matrix)
+edges <- create_edges_visnetwork(adj_matrix)
+
+shared_edges <- data.frame(from = c(1,2), to = c(4, 3))
 
 edges <- set_attributes_to_edges_visnetwork(edges,
-                                            subset_edges = list(from = c(1, 2), to = c(4, 3)),
+                                            subset_edges = shared_edges,
                                             width = c(3, .5),
                                             color = c("red", "blue"))
 
-CVN::visnetwork(nodes, edges)
+visnetwork(nodes, edges)
 }
 \seealso{
 \code{CVN}, \code{\link{create_nodes_visnetwork}}

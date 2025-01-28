@@ -48,6 +48,3 @@ A \code{C} implementation of the \eqn{Z}-update step. We
 solve a generalized LASSO problem repeatedly for each of the
 individual edges
 }
-\seealso{
-\code{\link{updateZ_wrapper}}
-}

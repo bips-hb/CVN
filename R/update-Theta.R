@@ -11,6 +11,7 @@
 #' @param rho The \eqn{\rho} ADMM's penalty parameter (Default: 1) 
 #' 
 #' @return A list with matrices with the new values of \eqn{\Theta}
+#' @noRd
 #'        
 #' @keywords internal
 updateTheta <- function(m, Z, Y, Sigma, n_obs, rho = 1) { 

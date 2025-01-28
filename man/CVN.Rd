@@ -19,7 +19,7 @@ CVN(
   eps_genlasso = 1e-10,
   maxiter_genlasso = 100,
   truncate_genlasso = 1e-04,
-  n_cores = min(length(lambda1) * length(lambda2), parallel::detectCores() - 1),
+  n_cores = min(length(lambda1) * length(lambda2), detectCores() - 1),
   normalized = FALSE,
   warmstart = TRUE,
   minimal = FALSE,

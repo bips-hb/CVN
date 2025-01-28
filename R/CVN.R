@@ -249,7 +249,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     if (warmstart) {
       # We use the lambda1 value
       Theta <- lapply(Sigma, function(S) {
-        est <- glasso(s = S, rho = res$lambda1[i])
+        est <- glasso::glasso(s = S, rho = res$lambda1[i])
         est$w
       })
     }  else {

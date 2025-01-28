@@ -14,7 +14,6 @@
 #' 
 #' @return A \eqn{((m \cdot (m+1)/2) \times m)}-dimensional matrix 
 #' 
-#' @importFrom utils combn
 #' @noRd
 #'         
 #' @references Tibshirani, R. J., & Taylor, J. (2011). 

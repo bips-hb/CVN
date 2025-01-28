@@ -13,9 +13,10 @@
 #' @importFrom dplyr %>%  
 #' @importFrom dplyr arrange
 #' @importFrom dplyr filter  
+#' @importFrom dplyr join_by
 #' @importFrom dplyr rename
 #' @importFrom dplyr select 
-#' @importFrom semi_join
+#' @importFrom dplyr semi_join
 #' @importFrom dplyr slice  
 #' @importFrom glasso glasso
 #' @importFrom Matrix Matrix 

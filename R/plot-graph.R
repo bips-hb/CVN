@@ -191,7 +191,7 @@ visnetwork <- function(nodes,
 #' 
 #' @return List 
 #' @export
-#' @example 
+#' @examples 
 #' path <- system.file("cvnfit.RData", package = "CVN")
 #' load(path)
 
