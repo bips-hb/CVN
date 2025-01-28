@@ -43,6 +43,7 @@ plot_hamming_distances <- function(distance_matrix,
   colnames(distance_matrix) <- sapply(1:m, function(i) as.character(i))
   rownames(distance_matrix) <- sapply(1:m, function(i) as.character(i))
   
+  data <- reshape2::melt(distance_matrix)
   data$Var1 <- m - data$Var1 + 1
   
 

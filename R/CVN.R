@@ -46,7 +46,7 @@
 #'                the total number penalty term pairs if that is less)
 #' @param normalized Data is normalized if \code{TRUE}. Otherwise the data is only
 #'                   centered (Default: \code{FALSE})
-#' @param warmstart If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
+#' @param warmstart If \code{TRUE}, use the \code{\link[glasso]{glasso}} function from the 'glasso' package for estimating
 #'                  the individual graphs first (Default: \code{TRUE})
 #' @param minimal If \code{TRUE}, the returned \code{cvn} is minimal in terms of
 #'                  memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not
@@ -98,7 +98,6 @@
 #'   \item{\code{hits_border_aic}}{If \code{TRUE}, the optimal model based on the AIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 #'   \item{\code{hits_border_bic}}{If \code{TRUE}, the optimal model based on the BIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 #'   
-#' @name CVN function
 #' @aliases CVN
 #' @examples 
 #' data(grid)

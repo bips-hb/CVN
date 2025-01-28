@@ -48,7 +48,7 @@ utils::globalVariables(c(
 #' @author Louis Dijkstra\cr Maintainer and contributors:
 #' Lukas Burk, Ronja Foraita <foraita@@leibniz-bips.de>
 #' @references Dijkstra L, Godt A, Foraita R 
-#' \emph{xxx (2024), Arxiv},
+#' \emph{Inferring High-Dimensional Dynamic Networks Changing with Multiple Covariates (2024), Arxiv},
 #' \url{https://arxiv.org/abs/2407.19978}.
 #' @keywords graphical models 
 #' @rdname CVN-package

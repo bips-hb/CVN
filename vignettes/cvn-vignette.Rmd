@@ -3,7 +3,7 @@ title: "Covariate-varying Networks"
 author: "Louis Dijkstra, Arne Godt, Ronja Foraita"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{my-vignette}
+  %\VignetteIndexEntry{Covariate-varying Networks}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,75 +15,257 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, warning=FALSE}
-library(CVN)
-```
-
 <!-- devtools::build_rmd("vignettes/cvn-vignette.Rmd") -->
 
+# Introduction
 
-TEXT: What are CVN?
+CVN is a package that provides an efficient algorithm for estimating covariate-varying networks by 
+[https://arxiv.org/abs/2407.19978](Dijkstra, Godt and Foraita (2024)).
+This vignette describes the basic use of CVN in R. 
 
-# Basics
+
+Graphical models are powerful tools for exploring complex dependency structures in high-throughput biomedical datasets, such as genomics, epigenomics, and proteomics. They allow for the investigation of biologically meaningful patterns that aid in understanding biological processes and generating new hypotheses. Despite the widespread application of Gaussian graphical models, there was an urgent need connecting graph structures to external covariates. 
+
+CVN are graphical models for high-dimensional data
+that can change by multiple external **discrete** covariates.
+For each combination of the categories between the covariates, a graph is estimated. 
+This is not done individually, since we allow for similarities between different graphs 
+related to various covariates. The smoothness between the graphs in the CVN model is 
+introduced by a meta-graph $W$. In this meta-graph, each node corresponds 
+to a graph in the CVN model. 
+
+
+
+<!-- ![*Meta-graph representing a grid.*](mg-grid-715_570.png){width=50%} -->
+
+
+<!-- ![*Another meta-graph*](mg-2-715_570.png){width=50%} -->
+
+
+<!-- ![*A glasso-type meta-graph that excludes smoothing*](mg-glasso-715_570.png){width=50%} -->
+
+<!-- ![*A full meta-graph of dimension $3 \times 2$*](mg-full.png){width=50%} -->
+
+
+<div style="display: flex;">
+  <img src="mg-grid-715_570.png" width="50%" style="margin-right: 10px; vertical-align: top;">
+  <span>*Meta-graph of dimension $3 \times 3$ representing a grid*</span>
+</div>
+
+
+<div style="display: flex;">
+  <img src="mg-2-715_570.png" width="50%" style="margin-right: 10px; vertical-align: top;">
+  <span>*Another meta-graph*</span>
+</div>
+
+
+<div style="display: flex;">
+  <img src="mg-glasso-715_570.png" width="50%" style="margin-right: 10px; vertical-align: top;">
+  <span>*A glasso-type meta-graph that excludes smoothing*</span>
+</div>
+
+
+
+<div style="display: flex;">
+  <img src="mg-full.png" width="50%" style="margin-right: 10px; vertical-align: top;">
+  <span>*A full meta-graph of dimension $3 \times 2$*</span>
+</div>
+
+
 
 
 ## Data
+
 The input of a CVN is a list of $m$ data sets. The number of variables $p$ must be 
 equal in each list element, the number of observations may differ.
 
+In this example we will use a simulated data set where the variables can be thought of
+to be z-score values of various biomarkers, each following a normal distribution. We 
+are interested how the graphs differ by two external variables, as for example
+'survey' and 'income level'. Each external variable has three categories (*baseline*, 
+*first follow up*, *second follow up* for 'survey' and *low*, *middle* and *high* 'income levels').
+
+We used the `CVNSim` package
+([https://github.com/bips-hb/CVNSim](https://github.com/bips-hb/CVNSim))
+to simulate this data set. 
+
+The data to be included in the CVN must be provided as a list. Each element of the list 
+should be a matrix of the Gaussian data corresponding to each combination of the two 
+external variables categories. In this case, the list contains 9 elements 
+(*baseline - low income*, *baseline - middle income*, ...,
+*second follow up - high income*).
 
 
-```{r data}
+
+
+
+
+
+```{r data, warning=FALSE}
+library(CVN)
+
 # Load data: a list of 9 data sets with p variables an n_i observations.
 data(grid)
 m <- length(grid)
 ```
-## Weigth matrix
 
-The weight matrix is a $m \times m$ symmetric matrix. It reflects the *meta-graph*.
+
+
+## Weigth matrix
+As described above, a CVN graphical model introduces smoothness between the graphs 
+by a *meta-graph* $W$ that needs to be specified a priori.
+
+The meta-graph is a $m \times m$ symmetric weight matrix which reflects an 
+undirected graph.  In our example, it could look like this:
+
+
+![*Unweighted meta-graph showing a grid. B = baseline, FU1 = First follow up, FU2 = second follow up*](mg-ex-uw.png){width=50%}
+
+
+The figure shows an unweighted grid of a $3 \times 3$ meta-graph.
+We have also the possibility to weight the grid, for example like this:
+
+![*Weighted grid meta-graph.*](mg-ex-w.png){width=50%}
+
+
+
+
+
+The function `create_weight_matrix` can create an unweighted matrix reflecting a
+meta-graph for two covariates, each having 3 categories. 
+
+** picture of the three meta-graphs **
 
 ```{r W}
-W_full <- create_weight_matrix("full", m = m)  
+# for 3x3 weight matrices
 W_grid <- create_weight_matrix("grid", m = m)
+
+# you can also create a full or glasso-type grid
+W_full <- create_weight_matrix("full", m = m)  
 W_gl   <- create_weight_matrix("glasso", m = m)
 ```
 
+
+
 ## Tuning parameter space
+As know from the LASSO, we also have to choose a tuning parameter from the 
+regularization path. The choice of the tuning parameters affects how dense the graphs are and how much the edges between the graphs have been smoothed. 
+CVN model can fit all combinations of a given 
+selection of $\lambda_1$ values for controlling sparsity and $\lambda_2$ values
+for controlling smoothness between the covariates categories accordingly to the 
+defined meta-graph.
 
 ```{r tp}
+# Creating a regularization path 
 lambda1 = seq(0.5, 2, length = 3)  # sparsity
 lambda2 = c(0.5, 1)                # smoothing
 ```
 
 
 ## Estimate a CVN
+The CVN graphical model is fitted by an alternating direction method of 
+multipliers (ADMM). The default is to perform parallel computing, but it can be switched off by setting `ncores = 1`.
 
-```{r cvn, eval=FALSE}
+
+```{r cvn, eval=TRUE}
 cvn <- CVN::CVN(data = grid, 
                 W = W_grid, 
                 lambda1 = lambda1, lambda2 = lambda2, 
                 eps = 1e-3, maxiter = 1000, 
+                n_cores = 6,
+                warmstart = TRUE,   
                 verbose = FALSE)
 
+# Print results
 print(cvn)
+```
 
+## Selecting tuning parameters
+
+After fitting the CVN model, the next step involves selecting suitable values for the 
+tuning parameters $\lambda_1$ and $\lambda_2$. The first governs the sparsity of the graphs, 
+and the second is responsible for regulating the smoothness or similarity between the graphs.
+
+The CVN package derives the Akaike Information Criteria (AIC) and the Bayesian Information
+Criteria (BIC). Our simulations showed better results in detecting the true underlying
+graph for AIC than for BIC. Both information criteria are returned in the CVN result table.
+
+
+
+```{r aicbic, eval=TRUE}
 best.aic <- cvn$results[which.min(cvn$results$aic), "id"]
-best.bic <- cvn$results[which.min(cvn$results$bic), "id"]
+cvn$results[best.aic,]
+```
+
+The package contains also an option of plotting the results of the information
+criteria. The plot is a map of all IC values for every tuning parameter combination
+fitted by CVN. 
+
+The smaller the IC value, the better the fit. 
+The yellow dot denotes the tuning parameter combination 
+which shows the smallest IC value.
+
+
+```{r icplot, eval=TRUE, fig.width=10, out.width='100%'}
+plot_information_criterion(cvn, criterion = "aic", use_gammas = FALSE)
+```
+
+
+## Network plots
+
+The $m$ fitted graphs can be plotted by the plot function.
+If you only want to return the plot of one tuning parameter 
+combination, you can do it as shown below. 
+
+```{r pp, eval=TRUE}
+plot_cvn <- plot(cvn)
+
+# return plots for the best AIC value
+plot_cvn$plots[[best.aic]][[1]]
+```
+
+To investigate the differences between the graphs, it is advisable to look at the 
+Hamming distance between the $m$ fitted graphs. 
+You have the option to get the result as a matrix or as a heatmap.
+The numbers in each cell reflect the number of different edges between two graphs. 
+
+```{r hamming, eval=TRUE, out.width='100%', fig.width=10}
+(hd <- hamming_distance_adj_matrices(cvn$adj_matrices[[best.aic]]))
+
+
+# All Hamming distances
+plot_hamming_distances(hd)
 
 ```
 
 
-# Print and Plots
-```{r pp, eval=FALSE}
+## An alternative tuning parameterization
+In our manuscript, we also introduced an alternative tuning parameterization. 
+Due to the algorithm's computational complexity, performing an exhaustive naive search across a broad range of potential values is usually not feasible. We realized that introducing a different external covariate, thereby altering the number of graphs $m$, or considering different variables, which changes $p$, impacts the interpretation and meaning of the tuning parameters $\lambda_1$ and $\lambda_2$. In other words, if one selects optimal values for $\lambda_1$ and $\lambda_2$ and then slightly alters the dataset, these values may no longer be informative for the new dataset.
 
-plot_cvn <- visnetwork_cvn(cvn)
+To address this issue, we propose a new parameterization, denoted as $\gamma_1$ and $\gamma_2$, replacing $\lambda_1$ and $\lambda_2$. Unlike the previous tuning parameters that penalize the entire precision matrix and differences between precision matrices, $\gamma_1$ and $\gamma_2$ are used to penalize individual edges and edge pairs. 
 
+This alternative tuning parameterization remains robust when changing the number of variables or graphs in the CVN model. This new parameterization could be beneficial for other applications as well.
 
-hamming_distance_adj_matrices(cvn$adj_matrices[[best.aic]]) 
-hamming_distance_adj_matrices(cvn$adj_matrices[[best.bic]]) 
+The results table of the CVN model includes the gamma tuning parameters by default. 
 
-plot_hamming_distances_cvn(cvn)
-
+```{r gamma, echo=FALSE, eval=TRUE}
+cvn
 ```
 
-# Interpolate
+
+
+
+## Interpolation
+We have also proposed a method to interpolate a graph for which we do not have collected data. This can be done using an estimated CVN model based on $m$ graphs. Let $G_{m+1}$
+represent the graph we want to interpolate.
+
+We need to set a vector of smoothing coefficients that determine the amount of smoothing between the new graph and the $m$ older graphs. 
+
+
+```{r interpolate, eval=TRUE}
+cvn2 <- interpolate(cvn, c(0.1,0.5,1,0.1,0.1,0.5,0.1,0.1,0.1))
+cvn2$adj_matrices[[best.aic]]
+```
+
+Note that with this approach, it is difficult to control the level of sparsity and take different levels of similarity between the graphs into account.
