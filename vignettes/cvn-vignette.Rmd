@@ -1,9 +1,10 @@
 ---
-title: "Covariate-varying Networks"
+title:  "Covariate-Varying Networks"
 author: "Louis Dijkstra, Arne Godt, Ronja Foraita"
+date:   "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Covariate-varying Networks}
+  %\VignetteIndexEntry{Covariate-Varying Networks}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,66 +23,27 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-CVN is a package that provides an efficient algorithm for estimating covariate-varying networks by 
-[https://arxiv.org/abs/2407.19978](Dijkstra, Godt and Foraita (2024)).
-This vignette describes the basic use of CVN in R. 
-
-
-Graphical models are powerful tools for exploring complex dependency structures in high-throughput biomedical datasets, such as genomics, epigenomics, and proteomics. They allow for the investigation of biologically meaningful patterns that aid in understanding biological processes and generating new hypotheses. Despite the widespread application of Gaussian graphical models, there was an urgent need connecting graph structures to external covariates. 
-
-CVN are graphical models for high-dimensional data
-that can change by multiple external **discrete** covariates.
-For each combination of the categories between the covariates, a graph is estimated. 
-This is not done individually, since we allow for similarities between different graphs 
-related to various covariates. The smoothness between the graphs in the CVN model is 
-introduced by a meta-graph $W$. In this meta-graph, each node corresponds 
-to a graph in the CVN model. 
-
-
-
-<!-- ![*Meta-graph representing a grid.*](mg-grid-715_570.png){width=50%} -->
-
-
-<!-- ![*Another meta-graph*](mg-2-715_570.png){width=50%} -->
-
-
-<!-- ![*A glasso-type meta-graph that excludes smoothing*](mg-glasso-715_570.png){width=50%} -->
-
-<!-- ![*A full meta-graph of dimension $3 \times 2$*](mg-full.png){width=50%} -->
-
-
-<div style="display: flex;">
-  <img src="mg-grid-715_570.png" width="50%" style="margin-right: 10px; vertical-align: top;">
-  <span>*Meta-graph of dimension $3 \times 3$ representing a grid*</span>
-</div>
-
-
-<div style="display: flex;">
-  <img src="mg-2-715_570.png" width="50%" style="margin-right: 10px; vertical-align: top;">
-  <span>*Another meta-graph*</span>
-</div>
-
-
-<div style="display: flex;">
-  <img src="mg-glasso-715_570.png" width="50%" style="margin-right: 10px; vertical-align: top;">
-  <span>*A glasso-type meta-graph that excludes smoothing*</span>
-</div>
-
-
-
-<div style="display: flex;">
-  <img src="mg-full.png" width="50%" style="margin-right: 10px; vertical-align: top;">
-  <span>*A full meta-graph of dimension $3 \times 2$*</span>
-</div>
-
-
-Covariate-varying networks are high-dimensional dynamic graphical models that vary 
+Covariate-varying networks (CVNs) are high-dimensional dynamic graphical models that vary 
 with multiple external covariates. The methodology is explained in detail
 in the pre-print by [Dijkstra, Godt and Foraita (2024)](https://arxiv.org/abs/2407.19978).
 In this vignette we describe how to apply the method to data with the associated
 R package `CVN`.
 
-A CVN is represented as graphical model with the quintupel 
+
+## Covariate-Varying Networks
+
+A graphical model is a powerful tool for exploring complex dependency structures in high-throughput biomedical datasets, such as genomics, epigenomics, and proteomics. They allow for the investigation of biologically meaningful patterns that aid in understanding biological processes and generating new hypotheses. Despite the widespread application of Gaussian graphical models, there was an urgent need connecting graph structures to external covariates.
+
+A CVN are Gaussian graphical models for high-dimensional data
+that can change by multiple external **discrete** covariates.
+For each combination of the categories between the covariates, a graph is estimated. 
+This is not done individually, since we allow for similarities between different graphs 
+related to various covariates. The smoothness between the graphs in the CVN model is 
+introduced by a meta-graph $W$. In this meta-graph, each node corresponds 
+to a graph in the CVN model and an edge between two graphs enforces smoothing between
+these graphs. 
+
+More formally, a CVN is represented as graphical model with the quintupel 
 
 $$
 \text{CVN} = \{\mathbf{X}, \mathbf{U}, \mathcal{U}, f(\mathbf{X} \mid \mathbf{U}), 
@@ -89,8 +51,9 @@ $$
 $$
 where $\mathbf{X} = (X_1, X_2 \ldots, X_p)^\top$ is a $p$-dimensional random vector and 
 $\mathbf{U} = (U_1, U_2, \ldots, U_q)^\top$ is a random vector representing $q$ 
-external discrete covariates. The external covariates are not included in the graph. 
-These covariates have $(K_1,\ldots, K_q)^\top$ categories.
+external discrete covariates. The external discrete covariates are not included in the 
+graph, but they determine the smoothing between all possible combinations of the 
+covariates $(K_1,\ldots, K_q)^\top$ categories.
 
 The vector $\mathbf{U}$ lies in the discrete space $\mathcal{U}$ with cardinality 
 $m \leq \prod_{k=1}^q K_k$. The joint density function of $\mathbf{X}$ conditioned on 
@@ -113,8 +76,11 @@ X_i \not\!\perp\!\!\!\perp X_j \mid \mathbf{X}_{V \setminus \{i,j\}} \land U = u
 $$
 Hence, the (in)dependence structure of the CVN can be estimated by determining the zero entries of 
 the precision matrices.
-Our goal is to enable a CVN to handle high-dimensional data and identify structural similarities between graphs. Therefore, we define the CVN estimator of $\mathbf{ \Theta}_{\text{CVN}} = \{ \widehat{\mathbf{\Theta}}_i \}_{i = 1}^m$ 
-as follows
+Our goal is to enable a CVN to handle high-dimensional data and identify structural 
+similarities between graphs. We therefore introduce regularization and smoothness
+in the definition of the CVN estimator 
+$\mathbf{ \Theta}_{\text{CVN}} = \{ \widehat{\mathbf{\Theta}}_i \}_{i = 1}^m$
+as follows:
 
 $$ \mathbf{ \Theta}_{\text{CVN}} = \text{argmin}_{\{ \mathbf{\Theta}_{i}\}_{i = 1}^m} 
 	\Bigg[ \sum_{i = 1}^m \ell\left({\mathbf{\Theta}_i}\right) 
@@ -125,6 +91,51 @@ $$ \mathbf{ \Theta}_{\text{CVN}} = \text{argmin}_{\{ \mathbf{\Theta}_{i}\}_{i = 
 where $\mathbf{ \Theta}_i$ is the $i$-th precision matrix, $\ell\left({\mathbf{\Theta}_i}\right)$ the log-likelihood function for precision matrix $i$, $w_{ij}$ values of the symmetric
 weighted adjacency matrix of the meta-graph (see below) and $\lambda_1, \lambda_2$ are
 two tuning parameters. 
+
+```{r stop_building, echo=FALSE}
+knitr::knit_exit()
+```
+
+## Weight Matrix
+
+The CVN model might differ from other graphical model approaches
+especially through the concept of the *meta-graph*. 
+
+
+
+The weight matrix is a $m \times m$ symmetric matrix. It reflects the (undirected)
+*meta-graph* $W$, which encodes the smoothing structure between the graphs in a CVN. 
+It must be set _a priori_.
+A weight of 0 does not smooth the structure between two graphs. 
+Weights must be chosen between 0 and 1.  
+
+The meta-graph is a $m \times m$ symmetric weight matrix which reflects an 
+undirected graph.  
+
+
+Here are some examples how $W$ can look like: 
+
+<div style="display: flex;">
+  <img src="mg-grid-715_570.png" width="50%" style="margin-right: 10px; vertical-align: top;"><br>
+  <span>*A meta-graph for a CVN with 2 covariates, each having 3 categories. $W$ has dimension $3 \times 3$ and represents a grid*</span>
+</div>
+
+
+<div style="display: flex;">
+  <img src="mg-2-715_570.png" width="50%" style="margin-right: 10px; vertical-align: top;"><br>
+  <span>*Another meta-graph*</span>
+</div>
+
+
+<div style="display: flex;">
+  <img src="mg-glasso-715_570.png" width="50%" style="margin-right: 10px; vertical-align: top;"><br>
+  <span>*A glasso-type meta-graph without smoothing*</span>
+</div>
+
+<div style="display: flex;">
+  <img src="mg-full.png" width="50%" style="margin-right: 10px; vertical-align: top;"><br>
+  <span>*A full meta-graph of dimension $3 \times 2$*</span>
+</div>
 
 
 
@@ -192,13 +203,9 @@ names(data_list) <- apply(expand.grid(dosis = 1:3, bmi = c("normal", "overweight
 
 
 ## Weigth matrix
-As described above, a CVN graphical model introduces smoothness between the graphs 
-by a *meta-graph* $W$ that needs to be specified a priori.
-
-The meta-graph is a $m \times m$ symmetric weight matrix which reflects an 
-undirected graph.  In our example, it could look like this:
 
 
+In our example, it could look like this:
 ![*Unweighted meta-graph showing a grid. B = baseline, FU1 = First follow up, FU2 = second follow up*](mg-ex-uw.png){width=50%}
 
 
@@ -216,9 +223,7 @@ meta-graph for two covariates, each having 3 categories.
 
 ** picture of the three meta-graphs **
 
-The weight matrix is a $m \times m$ symmetric matrix. It reflects the *meta-graph* which
-encodes the smoothing structure between the graphs. A weight of 0 does not smooth 
-the structure between two graphs. Weights must be chosen between 0 and 1.  
+
 
 In case of two external covariates, the weight matrix 
 can be generated using a simple function. 
@@ -396,7 +401,7 @@ fit6 <- extract_cvn(cvn, 6)
 # Plot a CVN model
 The graphs can be plotted with a print function that relies on the `visnet`package.
 
-```{r pp2, eval=FALSE}
+```{r pp2}
 
 plot_cvn <- visnetwork_cvn(fit6, verbose = FALSE)
 ## DER CORE GRAPH WIRD FALSCH GEFÄRBT
