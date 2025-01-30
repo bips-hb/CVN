@@ -92,9 +92,6 @@ where $\mathbf{ \Theta}_i$ is the $i$-th precision matrix, $\ell\left({\mathbf{\
 weighted adjacency matrix of the meta-graph (see below) and $\lambda_1, \lambda_2$ are
 two tuning parameters. 
 
-```{r stop_building, echo=FALSE}
-knitr::knit_exit()
-```
 
 ## Weight Matrix
 
@@ -140,41 +137,40 @@ Here are some examples how $W$ can look like:
 
 
 
-## Data
+## Example data
 
-The input of a CVN is a list of $m$ data sets. The number of variables $p$ must be 
-equal in each list element, the number of observations may differ.
-
-Suppose you have two external variables $U_1$ and $U_2$, each having $K = L = 3$ categories. 
-The input of a CVN is then a list of $K \cdot L = m$ data sets. 
-The number of variables $p$ must be equal in each list element, the number of observations may differ.
-
-
-In this example we will use a simulated data set where the variables can be thought of
+For this example, we will use a simulated data set where the variables can be thought of
 to be z-score values of various biomarkers, each following a normal distribution. We 
-are interested how the graphs differ by two external variables, as for example
-'survey' and 'income level'. Each external variable has three categories (*baseline*, 
-*first follow up*, *second follow up* for 'survey' and *low*, *middle* and *high* 'income levels').
+are interested how the graphs differ by two external variables $U_1$ and $U_2$, 
+each of them having $K = L = 3$ categories.
 
-We used the `CVNSim` package
-([https://github.com/bips-hb/CVNSim](https://github.com/bips-hb/CVNSim))
-to simulate this data set. 
+The `CVN` function requires as input data: 
 
-The data to be included in the CVN must be provided as a list. Each element of the list 
-should be a matrix of the Gaussian data corresponding to each combination of the two 
-external variables categories. In this case, the list contains 9 elements 
-(*baseline - low income*, *baseline - middle income*, ...,
-*second follow up - high income*).
+- A list with $K \cdot L = m$ data sets
 
+- Each list element needs to be a matrix or data object 
+  of Gaussian data corresponding to 
+  each combination of the two external variables categories. 
+  
+- The number of variables $p$ must be equal in each list element, 
+  the number of observations may differ.
+
+Let us assume that in the example the external variables reflect 
+_survey_ and _income level_ with
+the three categories *baseline*, *first follow up*, *second follow up* for 'survey' 
+and *low*, *middle* and *high* for 'income levels', respectively.
+
+The input data is then a list of $3 \times 3 = 9$ list elements that
+corresponding to the combinations 
+*baseline - low income*, *baseline - middle income*, ...,
+*second follow up - high income*. 
+
+**BEISPIEL ZU DATEN ANPASSEN**
 
 ```{r data, warning=FALSE}
 # Load required library
 library(CVN)
 library(dplyr)
-
-# Load data: a list of 9 data sets with p variables an n_i observations.
-# data(grid)
-# m <- length(grid)
 
 # Simulate the dataset
 set.seed(2024)  
@@ -194,12 +190,18 @@ data_list <- data %>%
   group_split() %>%
   lapply(function(df) df %>% select(-dosis, -bmi))
 
-names(data_list) <- apply(expand.grid(dosis = 1:3, bmi = c("normal", "overweight")), 1, 
-                               function(x) paste0("dosis_", x[1], "_", x[2]))
+names(data_list) <- 
+  apply(expand.grid(dosis = 1:3, 
+                    bmi = c("normal", "overweight")), 
+        1,
+        function(x) paste0("dosis_", x[1], "_", x[2]))
 
 ```
 
 
+```{r stop_building, echo=FALSE}
+knitr::knit_exit()
+```
 
 
 ## Weigth matrix
