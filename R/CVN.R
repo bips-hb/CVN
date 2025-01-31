@@ -69,7 +69,8 @@
 #'    \item{\code{aic}}{Aikake information criterion}
 #'    \item{\code{bic}}{Bayesian information criterion}
 #'    \item{\code{ebic}}{Extended Bayesian information criterion}
-#'    \item{\code{sparsity}}{Median sparsity of the m estimated graphs}
+#'    \item{\code{edges_median}}{Median number of edges across the m estimated graphs}
+#'    \item{\code{edges_iqr}}{Interquartile range of edges across the m estimated graphs}    
 #'    The estimates of the precision matrices and the corresponding adjacency matrices
 #'    for the different values of \eqn{(\lambda_1, \lambda_2)} can be found
 #'    \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m},
@@ -310,8 +311,8 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     res$ebic[i] <- ic$ebic
     
     # Median sparsity
-    res$sparsity[i] <- median(mapply(sum, est[[i]]$adj_matrices) / 2)
-    res$sparsity_iqr[i] <- IQR(mapply(sum, est[[i]]$adj_matrices) / 2)
+    res$edges_median[i] <- median(mapply(sum, est[[i]]$adj_matrices) / 2)
+    res$edges_iqr[i] <- IQR(mapply(sum, est[[i]]$adj_matrices) / 2)
 
   }
 

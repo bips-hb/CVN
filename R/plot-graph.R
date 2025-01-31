@@ -224,7 +224,7 @@ visnetwork_cvn <- function(cvn,
   )
 
   nodes <- create_nodes_visnetwork(n_nodes = cvn$p, labels = node_titles)
-
+browser()
   # the edges that are constant in the different graphs are
   # displayed differently
   if (show_core_graph) {
