@@ -2,8 +2,7 @@
 #' 
 #' A function for estimating a CVN for a single \eqn{(\lambda_1, \lambda_2)}-value. 
 #' See for more details \code{\link{CVN}}
-#' 
-#' @export 
+#' @keywords internal
 estimate <- function(m, p, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs, 
                      rho, rho_genlasso, eps, eps_genlasso,
                      maxiter, maxiter_genlasso, truncate, 
@@ -33,15 +32,15 @@ estimate <- function(m, p, W, Theta0, Z0, Y0, a, eta1, eta2, Sigma, n_obs,
     Z <- as.list(Z[,1])
     
     # Update Y -------------------------------------
-    Y <- CVN::updateY(Theta, Z, Y) 
+    Y <- updateY(Theta, Z, Y) 
     
     # Update Theta ---------------------------------
-    Temp <- CVN::updateTheta(m, Z, Y, Sigma, n_obs, rho)
+    Temp <- updateTheta(m, Z, Y, Sigma, n_obs, rho)
     Theta_previous <- Theta 
     Theta <- Temp
     
     # Check whether the algorithm is ready ----------
-    difference <- CVN::relative_difference_precision_matrices(Theta, Theta_previous)
+    difference <- relative_difference_precision_matrices(Theta, Theta_previous)
     
     if (verbose) { 
       if (((iter - 1) %% 10) == 0) { 

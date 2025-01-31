@@ -15,6 +15,8 @@
 #' @param t Distance between tick labels and x-axis (Default: -6)
 #' @param r Distance between tick labels and y-axis (Default: -8)
 #' 
+#' @import ggplot2
+#' 
 #' @return A heatmap plot                   
 #' @export 
 plot_hamming_distances <- function(distance_matrix, 
@@ -26,7 +28,7 @@ plot_hamming_distances <- function(distance_matrix,
                                    add_ticks_labels = TRUE, 
                                    t = -6, 
                                    r = -8) { 
-   
+
   if (!absolute) { 
     distance_matrix <- distance_matrix / max(distance_matrix) 
     
@@ -34,23 +36,26 @@ plot_hamming_distances <- function(distance_matrix,
       legend_label <- "Relative Hamming Distance" 
     }
   }
-  
+
   m <- nrow(distance_matrix)
   distance_matrix <- t(apply(distance_matrix, 2, rev)) # rotate matrix
   
   colnames(distance_matrix) <- sapply(1:m, function(i) as.character(i))
   rownames(distance_matrix) <- sapply(1:m, function(i) as.character(i))
   
-  data <- reshape2::melt(distance_matrix)
-  data$Var1 <- m - data$Var1 + 1
+  hddata <- melt(distance_matrix)
+  hddata$Var1 <- m - hddata$Var1 + 1
+
+  # needed for package building: visible binding for global variables Var1,...
+  Var1 <- Var2 <- value <- geom_tile <- NULL
   
-  p <- ggplot(data = data, aes(x = Var1, y = Var2, fill = value)) + 
-    geom_tile() +
-    ggtitle(title) + 
-    xlab("") + 
-    ylab("") + 
-    theme(axis.ticks.x = element_blank(),
-          axis.ticks.y = element_blank()) 
+  p <- ggplot(data = hddata, aes(x = Var1, y = Var2, fill = value)) + 
+        geom_tile() +
+        ggtitle(title) + 
+        xlab("") + 
+        ylab("") + 
+        theme(axis.ticks.x = element_blank(),
+              axis.ticks.y = element_blank()) 
     
   if (is.na(limits[1])) { 
     p <- p + scale_fill_continuous(name = legend_label)  
@@ -97,6 +102,8 @@ plot_hamming_distances <- function(distance_matrix,
 #' @param r Distance between tick labels and y-axis (Default: -8)
 #' @param verbose If \code{TRUE}, shows progress bar (Default: \code{TRUE})
 #' 
+#' @import ggplot2
+#' 
 #' @return List of plots 
 #' @export
 plot_hamming_distances_cvn <- function(cvn,
@@ -114,7 +121,7 @@ plot_hamming_distances_cvn <- function(cvn,
     stop("input must be a 'cvn' object") 
   }  
   
-  hamming <- CVN::hamming_distance(cvn, verbose = verbose)
+  hamming <- hamming_distance(cvn, verbose = verbose)
   
   if (verbose) { 
     # progress bar for setting up the edges for the individual graphs
@@ -131,9 +138,8 @@ plot_hamming_distances_cvn <- function(cvn,
     limits <- c(NA,NA) 
   }
   
-  
   plots <- lapply(1:cvn$n_lambda_values, function(i) { 
-    p <- CVN::plot_hamming_distances(hamming$distances[[i]], 
+    p <- plot_hamming_distances(hamming$distances[[i]], 
                                 absolute = absolute, 
                                 limits = limits,
                                 title = titles[i],

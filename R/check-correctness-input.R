@@ -15,9 +15,11 @@
 #' @param gamma2 A vector of \eqn{\gamma_2}'s global smoothing parameters. Note 
 #'               that \eqn{\gamma_2 = \frac{4 \lambda_2}{m(m-1)p(p-1)}}
 #' @param rho The \eqn{\rho} ADMM's penalty parameter 
+#' 
+#' @importFrom stats var
 #'        
 #' @seealso \code{\link{CVN}}
-#' @export
+#' @keywords internal
 check_correctness_input <- function(raw_data, W, 
                                     lambda1, lambda2, 
                                     gamma1, gamma2, 

@@ -22,6 +22,11 @@
 #'   \code{results}. It consists of two columns:
 #'   \item{\code{lambda1}}{\eqn{\lambda_1} value}
 #'   \item{\code{lambda2}}{\eqn{\lambda_2} value}
+#'   
+#' @importFrom dplyr %>% 
+#' @importFrom Matrix Matrix    
+#' @importFrom utils combn    
+#' 
 #' @export
 interpolate <- function(cvn, weights, truncate = NULL) { 
   
@@ -35,14 +40,14 @@ interpolate <- function(cvn, weights, truncate = NULL) {
     stop("The estimated Theta matrices are missing. Did you use the option minimal while fitting?")  
   }
   
-  if (!is.vector(weights)) { 
-    stop("weights should be a vector")
+  if (!is.vector(weights) || !is.numeric(weights)) { 
+    stop("weights should be a numeric vector")
   }
   
   if (length(weights) != cvn$m) { 
     stop("weights should be a vector of length m")
   }
-  
+
   # If truncate value is not specified, same is used as for the CVN fit
   if (is.null(truncate)) { 
     truncate <- cvn$truncate  
@@ -52,7 +57,7 @@ interpolate <- function(cvn, weights, truncate = NULL) {
   inter <- function(x, y, w, lambda1, lambda2) { 
     lambda1 * abs(x) + lambda2 * sum(abs(w*y - x)) 
   }
-  
+
   # Go over all lambda1 and lambda2 pairs --------------------------------------
   adj_matrices <- lapply(1:cvn$n_lambda_values, function(i) {
     lambda1 <- cvn$results$lambda1[i]
@@ -65,6 +70,11 @@ interpolate <- function(cvn, weights, truncate = NULL) {
     combn(cvn$p, 2, function(pair) {
       y <- sapply(cvn$Theta[[i]], function(Theta_i) Theta_i[pair[1],pair[2]])
       
+      # Check if y is numeric
+      if (!is.numeric(y)) {
+        stop("y must be a numeric vector")
+      }      
+      
       fit <- optim(
         par = 0,
         fn = inter,
@@ -76,8 +86,8 @@ interpolate <- function(cvn, weights, truncate = NULL) {
         lower = min(weights * y) - 1,
         upper = max(weights * y) + 1
       )
-      
-      edge_exists <- abs(fit$par) >= truncate
+
+      edge_exists <- abs(fit$value) >= truncate
       adj_matrix[pair[1], pair[2]] <<- as.numeric(edge_exists)
       adj_matrix[pair[2], pair[1]] <<- as.numeric(edge_exists)
     })
@@ -92,7 +102,7 @@ interpolate <- function(cvn, weights, truncate = NULL) {
     weights = weights, 
     truncate = truncate, 
     n_lambda_values = cvn$n_lambda_values, 
-    results = cvn$results %>% dplyr::select(lambda1,lambda2)
+    results = cvn$results %>% select(lambda1,lambda2)
   )
 }
   

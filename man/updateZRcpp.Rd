@@ -2,7 +2,10 @@
 % Please edit documentation in R/RcppExports.R
 \name{updateZRcpp}
 \alias{updateZRcpp}
-\title{The \eqn{Z}-update Step}
+\title{The \eqn{Z}-update Step
+A \code{C} implementation of the \eqn{Z}-update step. We
+solve a generalized LASSO problem repeatedly for each of the
+individual edges}
 \usage{
 updateZRcpp(m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
@@ -14,6 +17,8 @@ updateZRcpp(m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
 \item{Theta}{A list of matrices with the \eqn{\Theta}-matrices}
 
 \item{Y}{A list of matrices with the \eqn{Y}-matrices}
+
+\item{W}{The weight matrix \eqn{W} of dimensions \eqn{m x m}}
 
 \item{eta1}{Equals \eqn{\lambda_1 / rho}}
 
@@ -38,10 +43,8 @@ set to \code{0}}
 The estimated vector \eqn{\hat{\beta}}
 }
 \description{
+The \eqn{Z}-update Step
 A \code{C} implementation of the \eqn{Z}-update step. We
 solve a generalized LASSO problem repeatedly for each of the
 individual edges
-}
-\seealso{
-\code{\link{updateZ_wrapper}}
 }

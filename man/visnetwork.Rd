@@ -12,19 +12,32 @@ visnetwork(
   igraph_layout = "layout_in_circle"
 )
 }
+\arguments{
+\item{nodes}{A data frame with rows equal to the number of nodes with columns "id" and "title". 
+Can be created with \code{\link{create_nodes_visnetwork}}.}
+
+\item{edges}{A data frame with columns "from" and "to. Each row represents an edge between two nodes (integer)}
+
+\item{node_titles}{Vector with title of the nodes (Default: \code{1:p})}
+
+\item{title}{A list with \code{n_lambda_values} vectors. Each vector is of the 
+lenght \code{m}. Regulates the titles of the graphs (Default: no title)}
+
+\item{igraph_layout}{igraph layout (default: layout_in_circle)}
+}
 \value{
 A \code{visNetwork} plot
 }
 \description{
-Creates a \code{visNetwork} plot given a list of
-nodes and edges. The nodes data frame can be
-created with \code{\link{create_nodes_visnetwork}};
-the edges with \code{create_edges_visnetwork}.
-In order to highlight edges, you can use
+Creates a \code{visNetwork} plot given a list of 
+nodes and edges. The nodes data frame can be 
+created with \code{\link{create_nodes_visnetwork}}; 
+the edges with \code{create_edges_visnetwork}.  
+In order to highlight edges, you can use 
 \code{\link{set_attributes_to_edges_visnetwork}}.
 }
 \examples{
-nodes <- CVN::create_nodes_visnetwork(n_nodes = 5, labels = LETTERS[1:5])
+nodes <- create_nodes_visnetwork(n_nodes = 5, labels = LETTERS[1:5])
 
 adj_matrix <- matrix(c(0, 1, 0, 1, 0,
                        1, 0, 1, 0, 0,
@@ -32,12 +45,17 @@ adj_matrix <- matrix(c(0, 1, 0, 1, 0,
                        1, 0, 0, 0, 1,
                        0, 0, 0, 1, 0), ncol = 5)
 
-edges <- CVN::create_edges_visnetwork(adj_matrix)
+edges <- create_edges_visnetwork(adj_matrix)
+
+shared_edges <- data.frame(from = c(1,2), to = c(4, 3))
 
 edges <- set_attributes_to_edges_visnetwork(edges,
-                                            subset_edges = list(from = c(1, 2), to = c(4, 3)),
+                                            subset_edges = shared_edges,
                                             width = c(3, .5),
                                             color = c("red", "blue"))
 
-CVN::visnetwork(nodes, edges)
+visnetwork(nodes, edges)
+}
+\seealso{
+\code{CVN}, \code{\link{create_nodes_visnetwork}}
 }

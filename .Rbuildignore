@@ -9,3 +9,8 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^doc$
+^Meta$
+^scripts$
+^render\.R$
+^test\.R$

@@ -10,8 +10,9 @@
 #' @return List with two values:
 #'    \item{\code{hits_border_aic}}{If \code{TRUE}, hits the border for the AIC}
 #'    \item{\code{hits_border_bic}}{If \code{TRUE}, hits the border for the BIC}
-#' @export
-hits_end_lambda_intervals <- function(results) {
+#'    
+#' @keywords internal
+hits_end_lambda_intervals <- function(results) { 
 
   hits_border_aic <- FALSE
   hits_border_bic <- FALSE
@@ -37,7 +38,7 @@ hits_end_lambda_intervals <- function(results) {
     }
 
     # For the BIC score ----------------------------------------------------------
-    temp <- results %>% dplyr::filter(bic == max(bic))
+    temp <- results %>% filter(bic == max(bic))
 
     # check whether it has a unique maximum
     if (nrow(temp) == 1) {
@@ -67,7 +68,7 @@ hits_end_lambda_intervals <- function(results) {
     }
 
     # For the AIC score ----------------------------------------------------------
-    temp <- results %>% dplyr::filter(aic == max(aic))
+    temp <- results %>% filter(aic == max(aic))
 
     # check whether it has a unique maximum
     if (nrow(temp) == 1) {
@@ -95,6 +96,9 @@ hits_end_lambda_intervals <- function(results) {
         hits_border_aic <- TRUE
       }
     }
+  } else {
+    hits_border_aic = "NA"
+    hits_border_bic = 'NA'
   }
 
   return(

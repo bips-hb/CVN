@@ -3,16 +3,55 @@
 \docType{package}
 \name{CVN-package}
 \alias{CVN-package}
+\alias{CVN-package
+_PACKAGE}
 \title{CVN: Covariate-varying Networks}
 \description{
-A package for inferring high-dimensional Gaussian graphical networks that change with multiple discrete covariates
+Inferring high-dimensional Gaussian graphical networks that change with multiple discrete covariates. Louis Dijkstra, Arne Godt, Ronja Foraita (2024) \href{https://arxiv.org/abs/2407.19978}{arXiv:2407.19978}.
+
+Inferring high-dimensional Gaussian graphical networks that 
+change with multiple discrete covariates.
+}
+\examples{
+
+data(grid)
+W <- create_weight_matrix(type = "grid", k=3, l=3, plot = FALSE)
+
+cvn <- CVN(grid, W, lambda1 = 1, lambda2 = 1:2, 
+           eps = 1e-3, maxiter = 1000, verbose = TRUE)
+}
+\references{
+Dijkstra L, Godt A, Foraita R 
+\emph{Inferring High-Dimensional Dynamic Networks Changing with Multiple Covariates (2024), Arxiv},
+\url{https://arxiv.org/abs/2407.19978}.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://github.com/bips-hb/CVN}
+  \item \url{https://arxiv.org/abs/2407.19978}
   \item Report bugs at \url{https://github.com/bips-hb/CVN/issues}
 }
 
 }
+\author{
+\strong{Maintainer}: Ronja Foraita \email{foraita@leibniz-bips.de}
+
+Authors:
+\itemize{
+  \item Louis Dijkstra
+}
+
+Other contributors:
+\itemize{
+  \item Lukas Burk [contributor]
+  \item  DFG [funder]
+}
+
+
+Louis Dijkstra\cr Maintainer and contributors:
+Lukas Burk, Ronja Foraita <foraita@leibniz-bips.de>
+}
+\keyword{graphical}
 \keyword{internal}
+\keyword{models}
