@@ -1,8 +1,18 @@
 # Render ----------------------------------------------------------------------------
 rmarkdown::render("vignettes/cvn-vignette.Rmd")
 
+# How to build the vignette ---------------------------------------------------------
+devtools::build_vignettes()
+
+# How to build the manual ---------------------------------------------------------
+devtools::build_manual()
 
 
+
+interpolate6 <- interpolate(fit6, c(0,0,0,0,0,0,0,0.5,1), truncate = .05)
+cvn2 <- combine_cvn_interpolated(fit6, interpolate6)
+plot10 <- visnetwork_cvn(cvn2)
+plot10$plots[[1]][10]
 
 
 # --- Adjacency matrices

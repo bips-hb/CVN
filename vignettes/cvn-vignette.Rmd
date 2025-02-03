@@ -14,11 +14,13 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 8,   # Adjust this to match the text width
-  fig.height = 5  # Maintain a good aspect ratio
+  fig.height = 5,  # Maintain a good aspect ratio
+  fig.path = "cvn-vignette_tmp_files/"
 )
 ```
 
 <!-- devtools::build_rmd("vignettes/cvn-vignette.Rmd") -->
+
 
 
 Covariate-varying networks (CVNs) are high-dimensional dynamic graphical models that vary 
@@ -109,15 +111,15 @@ with 2 covariates can look like:
 
 | Meta-graph for a CVN <br> with 2 covariates   | $W$                                          |
 |:--------------------------------------:|:---------------------------------------------:|
-| ![](mg-grid-715_570.png){width="60%"}  | ![](adj1.png){width="80%"} |
+| ![](pics/mg-grid-715_570.png){width="60%"}  | ![](pics/adj1.png){width="80%"} |
 | **Grid structure** | *Each covariate has 3 categories* |
-| ![](mg-2-715_570.png){width="60%"}     | ![](adj2.png){width="80%"} |
+| ![](pics/mg-2-715_570.png){width="60%"}     | ![](pics/adj2.png){width="80%"} |
 | **Arbitrary structure** | *Each covariate has 3 categories* |
-| ![](mg-glasso-715_570.png){width="60%"}   | ![](adj3.png){width="80%"} |
+| ![](pics/mg-glasso-715_570.png){width="60%"}   | ![](pics/adj3.png){width="80%"} |
 | **GLASSO-type structure** | **No smoothing** <br>  *Each covariate has 3 categories*|
-| ![](mg-full.png){width="60%"}   | ![](adj4.png){width="65%"} |
+| ![](pics/mg-full.png){width="60%"}   | ![](pics/adj4.png){width="65%"} |
 | **Full/saturated structure** | **Complete smoothing** <br> *Covariates with 2 and 3 categories*|
-| ![](mg-grid-w-715_570.png){width="60%"}  | ![](adj5.png){width="80%"} |
+| ![](pics/mg-grid-w-715_570.png){width="60%"}  | ![](pics/adj5.png){width="80%"} |
 | **Weighted grid structure** | *Each covariate has 3 categories* |
 
 <!-- <div style="display: flex;"> -->
@@ -216,7 +218,7 @@ names(data_list) <-
 ### Weigth Matrix and Meta-Graph
 
 We set the *meta-graph* $W$ in our example to the following:
-![*Unweighted meta-graph showing a grid. B = baseline, FU1 = First follow up, FU2 = second follow up*](mg-ex-uw.png){width=50%}
+![*Unweighted meta-graph showing a grid. B = baseline, FU1 = First follow up, FU2 = second follow up*](pics/mg-ex-uw.png){width=50%}
 
 In case of two external covariates, the function `create_weight_matrix` 
 might be used to generated simple weight matrices from type _full_ (equals saturated 
@@ -239,7 +241,7 @@ Weight matrices can be plotted as a *meta-graph* or as *heatmap*:
 ```{r W-heat, fig.height=3.5}
 par(mar = c(0, 0, 0, 0)) 
 
-plot_weight_matrix(W_full, k = 3, l = 2)
+plot_weight_matrix(W_full, k = 3, l = 2) 
 hd_weight_matrix(W_random)  # randomly chosen weights
 ```
 
@@ -283,6 +285,7 @@ lambda2 = c(1, 1.5)                # smoothing
 
 
 ## Estimate a CVN
+
 The CVN graphical model is fitted using an alternating direction method of 
 multipliers (ADMM). By default, the `CVN` function will parallelize when multiple values
 of $\lambda_1$ or $\lambda_2$ are provided. However, the number of cores used can be 
@@ -290,7 +293,7 @@ adjusted by setting, e.g,  `n_cores = 1`.
 
 The CVN is simply estimated by the following. 
 
-```{r cvn, eval=TRUE}
+```{r cvn}
 cvn <- CVN(data = data_list, 
               W = W_grid, 
         lambda1 = lambda1, 
@@ -308,6 +311,7 @@ print(cvn)
 
 
 ## An Alternative Tuning Parameterization
+
 In our manuscript, we also introduce an alternative tuning parameterization. 
 Due to the algorithm's computational complexity, performing an exhaustive naive search across a broad range of potential values is usually not feasible. We realized that introducing a different external covariate, thereby altering the number of graphs $m$, or considering different variables, which changes $p$, impacts the interpretation and meaning of the tuning parameters $\lambda_1$ and $\lambda_2$. In other words, if one selects optimal values for $\lambda_1$ and $\lambda_2$ and then slightly alters the dataset, these values may no longer be informative for the new dataset.
 
@@ -315,12 +319,18 @@ To address this issue, we propose a new parameterization, denoted as $\gamma_1$ 
 
 This alternative tuning parameterization remains robust when changing the number of variables or graphs in the CVN model. This might also be beneficial for other applications as well.
 
-The results table of the CVN model includes the gamma tuning parameters by default. 
+The results table of the CVN model includes the gamma tuning parameters by default, which  
+are much smaller than the lambda values.
+
+```{r, echo=FALSE}
+knitr::kable(cvn$results)
+
+```
 
 
 
 
-## Selecting tuning parameters
+## Selecting Tuning Parameters
 
 After fitting the CVN model, the next step involves selecting suitable values for the 
 tuning parameters $(\lambda_1, \lambda_2)$ or for $(\gamma_1, \gamma_2)$. 
@@ -383,25 +393,8 @@ selects slightly denser models than the BIC. Our simulation study showed that
 AIC tends to perform better than BIC in general, 
 but all perform rather poorly in practice.
 
-The package also includes a plot function to check if the regularization path is too small.
-The yellow dot shows the tuning parameter constellation that minimizes the BIC. 
-If this point is on the limit, you should think about to choose different tuning parameters.
-
-```{r plotIC}
-plot_information_criterion(cvn, use_gammas = FALSE, criterion = "bic")
-```
 
 
-
-BLUBBBLUBBLUBBLUBB
-
-In the following, however, we want to investigate the CVNs with ids 3 and 6.
-This is easier when we extract this CVN into new single objects.
-
-```{r extract}
-fit3 <- extract_cvn(cvn, 3)
-fit6 <- extract_cvn(cvn, 6)
-```
 
 
 
@@ -415,36 +408,48 @@ There are others approaches that can be used to find a suitable network structur
 like stability approaches. These, however, are based on resampling strategies
 which demand a lot of computational power. 
 
-Sometimes is also helpful to explore the graph structures which will be shown in the 
-next section. 
-
-
+Others prefer to assume the sparsity or density as the threshold value. 
+We output therefore also the median number of edges and the interquartile range (IQR) 
+across the $m$ estimated graphs of the CVN results output (see above). 
 
 
 
 ## Exploring a CVN
 
+Once a graph has been selected, there is usually an interest in further investigation
+of its structure etc.
 
 
+### Extract one CVN model
 
+In the following, we want to investigate the CVNs with the ids 3 and 6.
+This is easier if we extract these CVNs into new single objects.
 
-the number of edges within a graph as fixed. We output
-therefore also the median number of edges and the interquartile range (IQR) 
-across the $m$ estimated graphs of the CVN.
-
-
-```{r stop_building, echo=FALSE}
-knitr::knit_exit()
+```{r extract}
+fit6 <- extract_cvn(cvn, 6)
 ```
 
-# Plot a CVN model
-The function to plot the network structures of the CVN graphs requires the `visnet`package.
 
-```{r pp2}
 
-plot_cvn <- visnetwork_cvn(fit6, verbose = FALSE)
 
+### Plot a CVN model
+
+All subgraphs of a CVN model can be easily plotted. The function requires the
+`visnet`package to visualize the network structure of each CVN subgraphs.
+
+
+```{r make-cvn-plots}
+plot_cvn <- plot(fit6, verbose = FALSE)
 ```
+
+```{r plot-graphs, echo=FALSE}
+library(htmltools)
+browsable(tagList(
+  div(style = "display: grid; grid-template-columns: repeat(3, 1fr); 
+               column-gap: 1px; row-gap: -10px",
+      plot_cvn$plots[[1]])))
+```
+
 
 The plot shows edges with different color coding:
 
@@ -453,88 +458,96 @@ The plot shows edges with different color coding:
 - **Blue edges:** These edges are absent from at least one of $m$ subgraphs.
 
 
-To explore the differences between the graphs, you can investigate
-the number of edges in each CVN subgraph and analyze the Hamming distances 
-between the subgraphs. 
-
-
-```{r hamming2, eval=FALSE}
-# Shows the number of edges in each subgraph, the number of edges that are shared by 
-# all graphs (core) and the number of edges that are unique for each subgraph
-cvn_edge_summary(cvn)
-
-# Hamming distance matrix and plot
-hd_matrix <- hamming_distance_adj_matrices(fit3$adj_matrices[[1]]) 
-plot_hamming_distances(hd_matrix)
-
-# or directly
-# plot_hamming_distances_cvn(fit3)
-
-```
-
-## Network plots
-
-The $m$ fitted graphs can be plotted by the plot function.
+It is also possible to generate all plots for every tuning parameter
+constellation over all  $m$ fitted graphs in one function.
 If you only want to return the plot of one tuning parameter 
 combination, you can do it follows: 
 
-```{r pp, eval=FALSE, message=FALSE}
-plot_cvn <- plot(cvn, verbose = FALSE)
 
-# return plots for the best AIC value
-plot_cvn$plots[[best.aic]][[1]]
+
+
+
+
+### Differences between the CVN subgraph
+
+In order to examine the differences between the sub-graphs of a CVN model, 
+it is possible to determine the number of edges in each CVN sub-graph and to
+analyze the Hamming distances between the sub-graphs. 
+
+The **Hamming distance** between two graphs with the same set of nodes 
+is the number of edges that differ between them. 
+It is calculated by counting the edges that need to be added or removed to 
+transform one graph into the other.
+
+
+The following code shows the number of edges in each sub-graph _(E(g1), ..., E(g9))_, 
+the number of edges that are shared by 
+all graphs _(E(core))_ and 
+the number of edges that are unique for each sub-graph _(E(g1_u),..., E(g9_u))_.
+
+```{r edge-summary}
+cvn_edge_summary(cvn)
+```
+You can also print the summary for one extracted CVN, for example for CVN ID6.
+The ouptut shows than the number of edges in each sub-graph _(edges)_, 
+the number of core_graphs that are shared by all sub-graphs _(core_edges)_, 
+and the number of eaches that are unique for this particular sub-graph _(unique_edges)_.
+
+```{r edge-summary-6}
+cvn_edge_summary(fit6)
 ```
 
-To investigate the differences between the graphs, it is advisable to look at the 
-Hamming distance between the $m$ fitted graphs. 
-You have the option to get the result as a matrix or as a heatmap.
+
+
+You have the option to get the result as a matrix or as a heat map.
 The number in each cell reflects the number of different edges between two graphs. 
 
-```{r hamming, eval=TRUE, out.width='100%', fig.width=10}
-(hd <- hamming_distance_adj_matrices(cvn$adj_matrices[[best.aic]]))
+The Hamming distance can be output as matrix and as plot:
+```{r hamming-distance, eval=TRUE}
+# Calculate Hamming distance matrix and plot it as heat map
+# plot_hamming_distances_cvn(fit3)
 
-# All Hamming distances
-plot_hamming_distances(hd)
+hd_matrix <- hamming_distance_adj_matrices(fit6$adj_matrices[[1]]) 
+plot_hamming_distances(hd_matrix)
 ```
+<!-- ```{r stop_building, echo=FALSE} -->
+<!-- knitr::knit_exit() -->
+<!-- ``` -->
+
+
+
 
 ## Interpolation of subgraphs based an previously fitted CVN model
 
-We have also proposed a method to interpolate a graph for which we do not have 
+We have also proposed a method to interpolate a sub-graph for which we do not have 
 collected data. This can be done using an estimated CVN model based on $m$ graphs. Let $G_{m+1}$
 represent the graph we want to interpolate.
 
-We need to set a vector of smoothing coefficients that determine the amount of smoothing between the new graph and the $m$ older graphs. 
+We need to set a vector of smoothing coefficients that determine the amount of smoothing 
+between the new graph and the $m$ original graphs. 
 
+Suppose we want to interpolate another network smoothed by graphs 8 and 9, 
+where the structure is weighted by 0.5 each. 
 
 ```{r interpolate, eval=TRUE}
-cvn2 <- interpolate(cvn, c(0.1,0.5,1,0.1,0.1,0.5,0.1,0.1,0.1))
-cvn2$adj_matrices[[best.aic]]
+# interpolate generates objects of class 'cvn_interpolate'
+interpolate6 <- interpolate(fit6, c(0,0,0,0,0,0,0,0.25,0.5), truncate = 0.05)
+cvn6 <- combine_cvn_interpolated(fit6, interpolate6)
+plot10 <- visnetwork_cvn(cvn6)
 ```
 
-Note that with this approach, it is difficult to control the level of sparsity and take different levels of similarity between the graphs into account.
 
-
-
-
-Suppose we have graphs for 3 time points and we want to interpolate the graph for
-the 4th time point based on a previously fitted model. We can do this as follows.
-
-
-```{r interpolate2}
-set.seed(86)
-time_data <- lapply(1:3, function(x) matrix(rnorm(500), ncol = 5))
-W <- create_weight_matrix("grid", 3, 1)
-timefit <- CVN(time_data, W, maxiter = 1000,
-               lambda1 = 6, lambda2 = .5, verbose = FALSE)
-
-timefit$adj_matrices
-timefit4 <- interpolate(timefit, c(0,0.25,1), truncate = 1e-02)
-timefit4$adj_matrices
-
-### wenn man das plotten möchte, sollte hier noch was programmiert werden
-
+```{r plot-graphs-interpolated, echo=FALSE}
+library(htmltools)
+browsable(tagList(
+  div(style = "display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;",
+      plot10$plots[[1]][8:10])))
 ```
-The function is still work in progress and applying it to real data requires more experience. 
-We also did not investigate its performance in simulation study. 
-It should therefore be used with caution.  
 
+The function is still work in progress and we did not yet investigate 
+its performance in simulation study. It should therefore be used with caution.  
+
+
+```{r stop_building, echo=FALSE}
+knitr::knit_exit()
+```

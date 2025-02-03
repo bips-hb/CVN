@@ -2,6 +2,7 @@
 % Please edit documentation in R/plot.cvn.R
 \name{plot.cvn}
 \alias{plot.cvn}
+\alias{visnetwork_cvn}
 \title{Plot Function for CVN Object Class}
 \usage{
 \method{plot}{cvn}(x, ...)
@@ -9,7 +10,7 @@
 \arguments{
 \item{x}{\code{cvn} object}
 
-\item{...}{Additional arguments to pass to \code{\link{CVN}}}
+\item{...}{Additional arguments to pass to \code{\link{visnetwork_cvn}}}
 }
 \description{
 Custom plot method for CVN objects.

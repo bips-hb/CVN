@@ -9,15 +9,17 @@
 #'         value of (lambda1, lambda2)
 #' @export
 find_core_graph <- function(cvn) { 
-  if (!("cvn" %in% class(cvn))) { 
-    stop("cvn argument should be of the type cvn")  
-  }
+  # if (!("cvn" %in% class(cvn))) { 
+  #   stop("cvn argument should be of the type cvn")  
+  # }
+  if(!inherits(cvn, "cvn") & !inherits(cvn, "cvn_interpolated")) {
+    stop("The input object must be of class 'cvn' or 'cvn_interpolated'.")
+  }    
 
   # The real core graph
   lapply(cvn$adj_matrices, function(adj_matrices) {
     # Sum up all adjacency matrices
     summed_matrix <- Reduce('+', adj_matrices)
-
     # Create a binary matrix by comparing the summed matrix to obj$m
     binary_matrix <- ifelse(summed_matrix == cvn$m, 1, 0)
     # Ensure the result is a matrix
@@ -53,9 +55,13 @@ find_core_graph <- function(cvn) {
 #' find_unique_edges(fit)
 find_unique_edges <- function(cvn) {
   
-  if (!("cvn" %in% class(cvn))) { 
-    stop("cvn argument should be of the class 'cvn'")  
+  # if (!("cvn" %in% class(cvn))) { 
+  #   stop("cvn argument should be of the class 'cvn'")  
+  # }  
+  if(!inherits(cvn, "cvn") & !inherits(cvn, "cvn_interpolated")) {
+    stop("The input object must be of class 'cvn' or 'cvn_interpolated'.")
   }  
+  
 
   lapply(cvn$adj_matrices, function(adj_matrices, m = length(cvn$adj_matrices[[1]])) {
     

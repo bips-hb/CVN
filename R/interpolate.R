@@ -9,7 +9,7 @@
 #'                 considered 0. If \code{NULL}, the same truncation is 
 #'                 used as for the fitted CVN model (Default)
 #' 
-#' @return A list with 
+#' @return A 'cvn_interpolated' object, which is a list with 
 #'    \item{\code{adj_matrices}}{A list of adjacency matrix. One for each pair 
 #'                               of \eqn{(\lambda_1, \lambda_2)} values. 
 #'                               The entries are \code{1} if there is an edge, \code{0} otherwise. 
@@ -23,10 +23,6 @@
 #'   \item{\code{lambda1}}{\eqn{\lambda_1} value}
 #'   \item{\code{lambda2}}{\eqn{\lambda_2} value}
 #'   
-#' @importFrom dplyr %>% 
-#' @importFrom Matrix Matrix    
-#' @importFrom utils combn    
-#' 
 #' @export
 interpolate <- function(cvn, weights, truncate = NULL) { 
   
@@ -65,7 +61,7 @@ interpolate <- function(cvn, weights, truncate = NULL) {
     
     # initial the matrix
     adj_matrix <- Matrix(0, nrow = cvn$p, ncol = cvn$p, sparse = TRUE)
-    
+
     # go over all potential edges (s,t)
     combn(cvn$p, 2, function(pair) {
       y <- sapply(cvn$Theta[[i]], function(Theta_i) Theta_i[pair[1],pair[2]])
@@ -91,19 +87,25 @@ interpolate <- function(cvn, weights, truncate = NULL) {
       adj_matrix[pair[1], pair[2]] <<- as.numeric(edge_exists)
       adj_matrix[pair[2], pair[1]] <<- as.numeric(edge_exists)
     })
-    
     return(adj_matrix)
   })
-  
-  list(
-    adj_matrices = adj_matrices,
-    m = cvn$m, 
-    p = cvn$p, 
-    weights = weights, 
-    truncate = truncate, 
-    n_lambda_values = cvn$n_lambda_values, 
-    results = cvn$results %>% select(lambda1,lambda2)
+
+  cvn_interpolated <- 
+    list(
+         adj_matrices = adj_matrices,
+         m = cvn$m, 
+         p = cvn$p, 
+         W = cvn$W,
+         weights = weights, 
+         truncate = truncate, 
+         n_lambda_values = cvn$n_lambda_values, 
+         results = cvn$results %>% select(lambda1,lambda2)
   )
+  
+  # Set the class back to "irgendwas"
+  class(cvn_interpolated) <- "cvn_interpolated"
+  
+  return(cvn_interpolated)
 }
   
   

@@ -234,8 +234,8 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                                 aic = NA,
                                 bic = NA,
                                 ebic = NA,
-                                sparsity = NA,
-                                sparsity_iqr = NA))
+                                edges_median = NA,
+                                edges_iqr = NA))
   res$gamma1 <- 2*res$lambda1 / (m*p*(p-1))
   res$gamma2 <- 4*res$lambda2 / (m*(m-1)*p*(p-1))
   res$id <- 1:nrow(res)
@@ -310,7 +310,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     res$bic[i] <- ic$bic
     res$ebic[i] <- ic$ebic
     
-    # Median sparsity
+    # Median edges
     res$edges_median[i] <- median(mapply(sum, est[[i]]$adj_matrices) / 2)
     res$edges_iqr[i] <- IQR(mapply(sum, est[[i]]$adj_matrices) / 2)
 
