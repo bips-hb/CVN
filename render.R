@@ -9,11 +9,6 @@ devtools::build_manual()
 
 
 
-interpolate6 <- interpolate(fit6, c(0,0,0,0,0,0,0,0.5,1), truncate = .05)
-cvn2 <- combine_cvn_interpolated(fit6, interpolate6)
-plot10 <- visnetwork_cvn(cvn2)
-plot10$plots[[1]][10]
-
 
 # --- Adjacency matrices
 library(CVN)
@@ -41,3 +36,7 @@ write.csv2(m2, file = "vignettes/adj2.csv")
 write.csv2(m3, file = "vignettes/adj3.csv")
 write.csv2(m4, file = "vignettes/adj4.csv")
 # load into excel, save as pdf and make screenshots
+
+
+
+
