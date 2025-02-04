@@ -12,7 +12,7 @@ combine_cvn_interpolated(cvn, cvn_interpolated)
 \item{cvn_interpolated}{A interpolated CVN from a fitted CVN model with \eqn{m} graphs}
 }
 \value{
-A 'cvn_interpolated' object (see \link{\code{interpolate}}).
+A 'cvn_interpolated' object (see \code{\link{interpolate}}).
 }
 \description{
 Combine an interpolated CVN to an original CVN

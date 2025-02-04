@@ -151,17 +151,21 @@ with 2 covariates can look like:
 
 In this fictitious example, we are interested in how the independence structure
 of collected biomarkers differ by the 2 external variables 
-*BMI* and *income level*. The biomarker values were transformed to normally distributed
-z-score values. *BMI* has the three categories *underweight*, *normal weight*, 
-*overweight* and *income levels* are *low*, *middle* and *high*.
+*[Body mass index (BMI)](https://en.wikipedia.org/wiki/Body_mass_index)* and 
+*income level*. The biomarker values were transformed to normally distributed
+z-score values. *BMI* has the three categories 
+*underweight*, *normal weight*, *overweight*, and
+*income levels* has the categories  *low*, *middle* and *high*.
 
 
 
 ### Data 
 
-For this example, we will use a simulated data set where the variables in the graph
-are z-score values of various biomarkers, each following a normal distribution. We 
-are interested if the graphs differ by the two external variables *BMI* and *income level*, 
+For this example, we will use completely random 
+simulated data set where the variables in the graph
+are z-score values of various biomarkers, each following a normal distribution. 
+We are interested if the graphs differ by the two external 
+variables *Center* and *income level*, 
 each of them having $K = L = 3$ categories.
 
 The `CVN` function requires as input data: 
@@ -177,10 +181,9 @@ The `CVN` function requires as input data:
 
 The input data is then a list of $3 \times 3 = 9$ list elements that
 corresponding to the combinations 
-*baseline - low income*, *baseline - middle income*, ...,
-*second follow up - high income*. 
+*underweight - low income*, *underweight - middle income*, ...,
+*overweight - high income*. 
 
-**BEISPIEL ZU DATEN ANPASSEN**
 
 ```{r data, warning=FALSE, message=FALSE}
 # Load required library
@@ -197,7 +200,7 @@ colnames(data) <- paste0("X", 1:10)
 
 # Add two discrete external covariates
 data$income <- sample(c("low","middle", "high"), n, replace = TRUE)  
-data$bmi <- sample(c("underweight","normal", "overweight"), n, replace = TRUE)
+data$bmi <- sample(c("underweight","normal weight", "overweight"), n, replace = TRUE)
 
 # Split the dataset into subsets based on dosis and bmi
 data_list <- data %>%
@@ -207,7 +210,7 @@ data_list <- data %>%
 
 names(data_list) <- 
   apply(expand.grid(income = c("low","middle", "high"), 
-                    bmi = c("underweight", "normal", "overweight")), 
+                    bmi = c("underweight","normal weight", "overweight")), 
         1,
         function(x) paste0(x[1], "_", x[2]))
 
@@ -218,7 +221,7 @@ names(data_list) <-
 ### Weigth Matrix and Meta-Graph
 
 We set the *meta-graph* $W$ in our example to the following:
-![*Unweighted meta-graph showing a grid. B = baseline, FU1 = First follow up, FU2 = second follow up*](pics/mg-ex-uw.png){width=50%}
+![*Unweighted meta-graph showing a grid.*](pics/mg-ex-uw.png){width=50%}
 
 In case of two external covariates, the function `create_weight_matrix` 
 might be used to generated simple weight matrices from type _full_ (equals saturated 
@@ -226,23 +229,28 @@ graphs), _grid_, _glasso_ and random structures using _uniform-random_.
 
 
 ```{r W}
-par(mar = c(0, 0, 0, 0)) 
-
 # plots can be turned on by setting plot = TRUE. You need the igraph package for this
-W_grid <- create_weight_matrix("grid", k = 3, l = 3, plot = TRUE)
-
-# Without plots
-W_full <- create_weight_matrix("full", k = 3, l = 2)  
-W_gl   <- create_weight_matrix("glasso", k = 3, l = 2)
-W_random <- round(create_weight_matrix("uniform-random", k = 4, l = 3), 2)
+W_grid <- create_weight_matrix(type = "grid", k = 3, l = 3, plot = FALSE)
 ```
 
-Weight matrices can be plotted as a *meta-graph* or as *heatmap*:
-```{r W-heat, fig.height=3.5}
-par(mar = c(0, 0, 0, 0)) 
+Weight matrices can be plotted as a *meta-graph* or as *heatmap* plot:
+This can be done on different ways: 
 
-plot_weight_matrix(W_full, k = 3, l = 2) 
+1. A graph output can be generated when creating the weight matrix using the function
+   `create_weight_matrix` by setting the parameter `plot=TRUE` or
+
+2. by using the `plot_weight_matrix` function (see below).
+
+3. A heatmap plot is generated using the `hd_weight_matrix`. 
+
+The first two options require the `igraph` package.
+
+
+```{r W-heat, fig.height=3.5}
+W_random <- round(create_weight_matrix(type = "uniform-random", k = 3, l = 2), 2)
 hd_weight_matrix(W_random)  # randomly chosen weights
+# requires the igraph package
+# plot_weight_matrix(W_random, k = 3, l = 2) 
 ```
 
 
@@ -322,7 +330,7 @@ This alternative tuning parameterization remains robust when changing the number
 The results table of the CVN model includes the gamma tuning parameters by default, which  
 are much smaller than the lambda values.
 
-```{r, echo=FALSE}
+```{r results, echo=FALSE}
 knitr::kable(cvn$results)
 
 ```
@@ -422,8 +430,12 @@ of its structure etc.
 
 ### Extract one CVN model
 
-In the following, we want to investigate the CVNs with the ids 3 and 6.
-This is easier if we extract these CVNs into new single objects.
+The process becomes easier if the CVN model of interest is extracted as a 
+single object from the list of fitted CVNs for further investigation.
+
+In this example, we aim to examine the CVN with the lowest AIC value, 
+which corresponds to the model with ID 6.
+
 
 ```{r extract}
 fit6 <- extract_cvn(cvn, 6)
@@ -442,12 +454,18 @@ All subgraphs of a CVN model can be easily plotted. The function requires the
 plot_cvn <- plot(fit6, verbose = FALSE)
 ```
 
+
 ```{r plot-graphs, echo=FALSE}
-library(htmltools)
-browsable(tagList(
-  div(style = "display: grid; grid-template-columns: repeat(3, 1fr); 
-               column-gap: 1px; row-gap: -10px",
-      plot_cvn$plots[[1]])))
+if (requireNamespace("htmltools", quietly = TRUE)) {
+htmltools::browsable(
+  htmltools::tagList(
+    htmltools::div(style = "display: grid; grid-template-columns: repeat(3, 1fr); 
+                 column-gap: 1px; row-gap: 0px",
+        plot_cvn$plots[[1]])))
+} else {
+  message("htmltools package is required to display the graphs in grid layout.")
+  plot_cvn$plots[[1]]
+}
 ```
 
 
@@ -529,19 +547,26 @@ between the new graph and the $m$ original graphs.
 Suppose we want to interpolate another network smoothed by graphs 8 and 9, 
 where the structure is weighted by 0.5 each. 
 
-```{r interpolate, eval=TRUE}
+```{r interpolate, eval=TRUE, message=FALSE, warning=FALSE, }
 # interpolate generates objects of class 'cvn_interpolate'
 interpolate6 <- interpolate(fit6, c(0,0,0,0,0,0,0,0.25,0.5), truncate = 0.05)
 cvn6 <- combine_cvn_interpolated(fit6, interpolate6)
-plot10 <- visnetwork_cvn(cvn6)
+plot10 <- visnetwork_cvn(cvn6, verbose = FALSE)
 ```
 
 
 ```{r plot-graphs-interpolated, echo=FALSE}
-library(htmltools)
-browsable(tagList(
-  div(style = "display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;",
-      plot10$plots[[1]][8:10])))
+if (requireNamespace("htmltools", quietly = TRUE)) {
+htmltools::browsable(
+  htmltools::tagList(
+    htmltools::div(style = "display: grid; grid-template-columns: repeat(3, 1fr); 
+                 column-gap: 1px; row-gap: -10px",
+        plot10$plots[[1]][8:10])))
+} else {
+  message("htmltools package is required to display the graphs in grid layout.")
+  plot10$plots[[1]][8:10]
+}
+
 ```
 
 The function is still work in progress and we did not yet investigate 

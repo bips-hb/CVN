@@ -4,7 +4,7 @@
 #' 
 #' @param x \code{cvn} object
 #' @param ... Additional arguments to pass to \code{\link{visnetwork_cvn}}
-#' @aliases plot.cvn visnetwork_cvn
+#' @aliases plot.cvn 
 #' @method plot cvn 
 #' @seealso \code{CVN}
 #'

@@ -5,7 +5,7 @@
 #' @param cvn A CVN fit with \eqn{m} graphs
 #' @param cvn_interpolated A interpolated CVN from a fitted CVN model with \eqn{m} graphs
 #'
-#' @return A 'cvn_interpolated' object (see \link{\code{interpolate}}).
+#' @return A 'cvn_interpolated' object (see \code{\link{interpolate}}).
 #' @export
 #'
 combine_cvn_interpolated <- function(cvn, cvn_interpolated){

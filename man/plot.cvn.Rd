@@ -2,7 +2,6 @@
 % Please edit documentation in R/plot.cvn.R
 \name{plot.cvn}
 \alias{plot.cvn}
-\alias{visnetwork_cvn}
 \title{Plot Function for CVN Object Class}
 \usage{
 \method{plot}{cvn}(x, ...)

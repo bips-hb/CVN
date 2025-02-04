@@ -168,7 +168,8 @@ visnetwork <- function(nodes,
     stop("The igraph package is required for visNetwork, please install it first.")
   }
 
-  visNetwork(nodes, edges, width = "100%", main = list(text = title)) %>%
+  visNetwork(nodes, edges, width = "100%",
+             main = list(text = title)) %>%
     visIgraphLayout(layout = igraph_layout) %>%
     visOptions(highlightNearest = list(enabled = T, hover = T))
 }
@@ -293,15 +294,13 @@ visnetwork_cvn <- function(cvn,
     cat(sprintf("\nCreate plots given the determined edges...\n\n"))
   }
   
-  #return(all_edges)
-  
   res$plots <- lapply(1:cvn$n_lambda_values, function(i) {
     lapply(1:cvn$m, function(k) {
       if (verbose) {
         pb_plots$tick()
       }
       return(visnetwork(nodes, all_edges[[i]][[k]],
-                        title = titles[[i]][[k]], 
+                        title = titles[[i]][[k]],
                         igraph_layout = igraph_layout))
     })
   })
@@ -311,7 +310,6 @@ visnetwork_cvn <- function(cvn,
     pb_plots$terminate()
   }
   
-  # return(res)
-  res
-  
+  return(res)
+
 }
