@@ -14,7 +14,7 @@ Description: Inferring high-dimensional Gaussian graphical networks that
     change with multiple discrete covariates.  Louis Dijkstra, Arne Godt,
     Ronja Foraita (2024) <arXiv:2407.19978>.
 License: GPL (>= 3)
-URL: https://github.com/bips-hb/CVN, https://arxiv.org/abs/2407.19978
+URL: https://github.com/bips-hb/CVN, https://arxiv.org/abs/2407.19978, https://bips-hb.github.io/CVN/
 BugReports: https://github.com/bips-hb/CVN/issues
 Depends:
     R (>= 4.0.0)
