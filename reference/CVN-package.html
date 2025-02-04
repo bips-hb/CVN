@@ -57,6 +57,7 @@ change with multiple discrete covariates.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Useful links:</p><ul><li><p><a href="https://github.com/bips-hb/CVN" class="external-link">https://github.com/bips-hb/CVN</a></p></li>
 <li><p><a href="https://arxiv.org/abs/2407.19978" class="external-link">https://arxiv.org/abs/2407.19978</a></p></li>
+<li><p><a href="https://bips-hb.github.io/CVN/">https://bips-hb.github.io/CVN/</a></p></li>
 <li><p>Report bugs at <a href="https://github.com/bips-hb/CVN/issues" class="external-link">https://github.com/bips-hb/CVN/issues</a></p></li>
 </ul></div>
     </div>
@@ -66,6 +67,7 @@ change with multiple discrete covariates.</p>
 <p>Authors:</p><ul><li><p>Louis Dijkstra</p></li>
 </ul><p>Other contributors:</p><ul><li><p>Lukas Burk [contributor]</p></li>
 <li><p>DFG [funder]</p></li>
+<li><p>Leibniz Institute for Prevention Research and Epidemiology - BIPS <a href="mailto:R@leibniz-bips.de">R@leibniz-bips.de</a> (02c22vc57) [copyright holder]</p></li>
 </ul><p>Louis Dijkstra<br> Maintainer and contributors:
 Lukas Burk, Ronja Foraita &lt;foraita@leibniz-bips.de&gt;</p>
     </div>
@@ -77,12 +79,39 @@ Lukas Burk, Ronja Foraita &lt;foraita@leibniz-bips.de&gt;</p>
 <span class="r-in"><span><span class="va">W</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_weight_matrix.html">create_weight_matrix</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"grid"</span>, k<span class="op">=</span><span class="fl">3</span>, l<span class="op">=</span><span class="fl">3</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">cvn</span> <span class="op">&lt;-</span> <span class="fu"><a href="CVN.html">CVN</a></span><span class="op">(</span><span class="va">grid</span>, <span class="va">W</span>, lambda1 <span class="op">=</span> <span class="fl">1</span>, lambda2 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, </span></span>
-<span class="r-in"><span>           eps <span class="op">=</span> <span class="fl">1e-3</span>, maxiter <span class="op">=</span> <span class="fl">1000</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>           n_cores <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>           eps <span class="op">=</span> <span class="fl">1e-2</span>, maxiter <span class="op">=</span> <span class="fl">1000</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Estimating a CVN with 9 graphs...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of cores: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of cores: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Uses a warmstart...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 1  |  2.180956</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 2  |  0.115992</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 3  |  0.085702</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 4  |  0.030387</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 5  |  0.024326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 6  |  0.016685</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 7  |  0.013629</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 8  |  0.012361</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 9  |  0.011060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 10  |  0.009923</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 1  |  2.180956</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 2  |  0.115683</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 3  |  0.085927</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 4  |  0.029249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 5  |  0.022338</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 6  |  0.017805</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 7  |  0.017968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 8  |  0.015503</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 9  |  0.014200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 10  |  0.012371</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 11  |  0.011107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 12  |  0.010068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 13  |  0.009907</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

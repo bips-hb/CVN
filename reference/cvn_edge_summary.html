@@ -58,7 +58,7 @@ fitted CVN models.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data.frame.Shows the number of edges in each subgraph, the number of
+    <p>A data.frame showing the number of edges in each subgraph, the number of
 edges present in all graphs (core edges) and the number of edges that are unique
 for a subgraph</p>
     </div>
@@ -66,14 +66,13 @@ for a subgraph</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">grid</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">W</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_weight_matrix.html">create_weight_matrix</a></span><span class="op">(</span><span class="st">"grid"</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># lambdas:</span></span></span>
-<span class="r-in"><span><span class="va">lambda1</span> <span class="op">=</span> <span class="fl">1</span>  <span class="co"># can also be lambda1 = 1:2 </span></span></span>
+<span class="r-in"><span><span class="va">lambda1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">lambda2</span> <span class="op">=</span> <span class="fl">.2</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="CVN.html">CVN</a></span><span class="op">(</span><span class="va">grid</span>, <span class="va">W</span>, lambda1 <span class="op">=</span> <span class="va">lambda1</span>, lambda2 <span class="op">=</span> <span class="va">lambda2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="CVN.html">CVN</a></span><span class="op">(</span><span class="va">grid</span>, <span class="va">W</span>, lambda1 <span class="op">=</span> <span class="va">lambda1</span>, lambda2 <span class="op">=</span> <span class="va">lambda2</span>, n_cores <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Estimating a CVN with 9 graphs...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of cores: 1</span>
@@ -141,19 +140,94 @@ for a subgraph</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iteration 54  |  0.000102</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iteration 55  |  0.000101</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iteration 56  |  0.000093</span>
-<span class="r-in"><span>                 </span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 1  |  1.887193</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 2  |  0.135032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 3  |  0.091797</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 4  |  0.051830</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 5  |  0.029767</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 6  |  0.023468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 7  |  0.011319</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 8  |  0.007583</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 9  |  0.006705</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 10  |  0.004910</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 11  |  0.004122</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 12  |  0.003544</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 13  |  0.003412</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 14  |  0.002673</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 15  |  0.002175</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 16  |  0.001636</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 17  |  0.001523</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 18  |  0.001362</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 19  |  0.001236</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 20  |  0.001114</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 21  |  0.001057</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 22  |  0.001067</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 23  |  0.000890</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 24  |  0.000790</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 25  |  0.000728</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 26  |  0.000669</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 27  |  0.000636</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 28  |  0.000607</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 29  |  0.000556</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 30  |  0.000526</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 31  |  0.000482</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 32  |  0.000464</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 33  |  0.000436</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 34  |  0.000424</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 35  |  0.000383</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 36  |  0.000331</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 37  |  0.000316</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 38  |  0.000308</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 39  |  0.000319</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 40  |  0.000290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 41  |  0.000277</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 42  |  0.000259</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 43  |  0.000251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 44  |  0.000218</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 45  |  0.000194</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 46  |  0.000216</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 47  |  0.000192</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 48  |  0.000183</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 49  |  0.000177</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 50  |  0.000171</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 51  |  0.000165</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 52  |  0.000160</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 53  |  0.000151</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 54  |  0.000130</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 55  |  0.000115</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 56  |  0.000106</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 57  |  0.000103</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration 58  |  0.000100</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Edge summary for a list of CVN models</span></span></span>
 <span class="r-in"><span><span class="fu">cvn_edge_summary</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   E(g1) E(g2) E(g3) E(g4) E(g5) E(g6) E(g7) E(g8) E(g9) E(core) E(g1_u) E(g2_u)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    84    86    84    82    84    88    88    90    84      34       0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    86    84    86    82    80    82    86    90    82      32       0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   E(g3_u) E(g4_u) E(g5_u) E(g6_u) E(g7_u) E(g8_u) E(g9_u)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       0       0       0       0       0       0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       0       0       0       0       0       0       0</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Edge summary for a single CVN</span></span></span>
+<span class="r-in"><span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="extract_cvn.html">extract_cvn</a></span><span class="op">(</span><span class="va">fit</span>, id <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cvn_edge_summary</span><span class="op">(</span><span class="va">fit2</span><span class="op">)</span>                 </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   edges core_edges unique_edges</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    84         34            0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    86         34            0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    84         34            0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    82         34            0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    84         34            0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    88         34            0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    88         34            0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8    90         34            0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9    84         34            0</span>
-<span class="r-in"><span>                 </span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    86         32            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    84         32            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    86         32            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    82         32            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    80         32            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    82         32            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    86         32            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8    90         32            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9    82         32            0</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
