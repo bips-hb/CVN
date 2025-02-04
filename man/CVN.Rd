@@ -19,10 +19,11 @@ CVN(
   eps_genlasso = 1e-10,
   maxiter_genlasso = 100,
   truncate_genlasso = 1e-04,
-  n_cores = min(length(lambda1) * length(lambda2), parallel::detectCores() - 1),
+  n_cores = min(length(lambda1) * length(lambda2), detectCores() - 1),
   normalized = FALSE,
   warmstart = TRUE,
   minimal = FALSE,
+  gamma_ebic = 0.5,
   verbose = TRUE
 )
 }
@@ -34,10 +35,10 @@ Number of observations can differ}
 \item{W}{The \eqn{(m \times m)}-dimensional symmetric
 weight matrix \eqn{W}}
 
-\item{lambda1}{Vector with different \eqn{\lambda_1} LASSO penalty terms
+\item{lambda1}{Vector with different \eqn{\lambda_1}. LASSO penalty terms 
 (Default: \code{1:2})}
 
-\item{lambda2}{Vector with different \eqn{\lambda_2} global smoothing parameter values
+\item{lambda2}{Vector with different \eqn{\lambda_2}. The global smoothing parameter values 
 (Default: \code{1:2})}
 
 \item{gamma1}{A vector of \eqn{\gamma_1}'s LASSO penalty terms, where
@@ -80,12 +81,14 @@ the total number penalty term pairs if that is less)}
 \item{normalized}{Data is normalized if \code{TRUE}. Otherwise the data is only
 centered (Default: \code{FALSE})}
 
-\item{warmstart}{If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
+\item{warmstart}{If \code{TRUE}, use the \code{\link[glasso]{glasso}} package for estimating
 the individual graphs first (Default: \code{TRUE})}
 
 \item{minimal}{If \code{TRUE}, the returned \code{cvn} is minimal in terms of
 memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not
 returned (Default: \code{FALSE})}
+
+\item{gamma_ebic}{Gamma value for the eBIC (Default: 0.5)}
 
 \item{verbose}{Verbose (Default: \code{TRUE})}
 }
@@ -94,16 +97,19 @@ A \code{CVN} object containing the estimates for all the graphs
    for each different value of \eqn{(\lambda_1, \lambda_2)}. General results for
    the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data frame
    \code{results}. It consists of multiple columns, namely:
+   \item{\code{id}}{The id. This corresponds to the indices of the lists}
    \item{\code{lambda1}}{\eqn{\lambda_1} value}
    \item{\code{lambda2}}{\eqn{\lambda_2} value}
+   \item{\code{gamma1}}{\eqn{\gamma_1} value}
+   \item{\code{gamma2}}{\eqn{\gamma_2} value}    
    \item{\code{converged}}{whether algorithm converged or not}
    \item{\code{value}}{value of the negative log-likelihood function}
    \item{\code{n_iterations}}{number of iterations of the ADMM}
    \item{\code{aic}}{Aikake information criterion}
-   \item{\code{gamma1}}{\eqn{\gamma_1} value}
-   \item{\code{gamma2}}{\eqn{\gamma_2} value}
-   \item{\code{id}}{The id. This corresponds to the indices of the lists}
    \item{\code{bic}}{Bayesian information criterion}
+   \item{\code{ebic}}{Extended Bayesian information criterion}
+   \item{\code{edges_median}}{Median number of edges across the m estimated graphs}
+   \item{\code{edges_iqr}}{Interquartile range of edges across the m estimated graphs}    
    The estimates of the precision matrices and the corresponding adjacency matrices
    for the different values of \eqn{(\lambda_1, \lambda_2)} can be found
    \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m},
@@ -150,19 +156,15 @@ for other \eqn{\lambda_1} and \eqn{\lambda_2} values closest to them.
 
 \examples{
 data(grid)
-m <- 9 # must be 9 for this example
 
-#' Choice of the weight matrix W.
+#' Choice of the weight matrix W. Each of 2 covariates has 3 categories
 #' (uniform random)
-W <- matrix(runif(m*m), ncol = m)
-W <- W \%*\% t(W)
-W <- W / max(W)
-diag(W) <- 0
+W <- create_weight_matrix("uniform-random", k = 3, l = 3)
 
 # lambdas:
-lambda1 = 1:2
-lambda2 = 1:2
+lambda1 = 1  # can also be lambda1 = 1:2 
+lambda2 = 1
 
-(cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2,
-                 eps = 1e-3, maxiter = 1000, verbose = TRUE))
+(fit <- CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, 
+            eps = 1e-3, maxiter = 1000, verbose = TRUE))
 }

@@ -20,3 +20,4 @@ based on the AIC and BIC.
 This function checks and warns when the optimal value lies on the border of the
 values \eqn{(\lambda_1, \lambda_2)} takes.
 }
+\keyword{internal}

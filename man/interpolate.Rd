@@ -16,7 +16,7 @@ considered 0. If \code{NULL}, the same truncation is
 used as for the fitted CVN model (Default)}
 }
 \value{
-A list with 
+A 'cvn_interpolated' object, which is a list with 
    \item{\code{adj_matrices}}{A list of adjacency matrix. One for each pair 
                               of \eqn{(\lambda_1, \lambda_2)} values. 
                               The entries are \code{1} if there is an edge, \code{0} otherwise. 

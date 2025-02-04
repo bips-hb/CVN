@@ -2,7 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' Solving Generalized LASSO with fixed \eqn{\lambda = 1}
-#'
 #' Solves efficiently the generalized LASSO problem of the form
 #' \deqn{
 #'   \hat{\beta} = \text{argmin } \frac{1}{2} || y - \beta ||_2^2 + ||D\beta||_1
@@ -12,7 +11,7 @@
 #' We solve this optimization problem using an adaption of the ADMM
 #' algorithm presented in Zhu (2017).
 #'
-#' @param y The \eqn{y} vector of length \eqn{m}
+#' @param Y The \eqn{y} vector of length \eqn{m}
 #' @param W The weight matrix \eqn{W} of dimensions \eqn{m x m}
 #' @param m The number of graphs
 #' @param eta1 Equals \eqn{\lambda_1 / rho}
@@ -41,7 +40,6 @@ genlassoRcpp <- function(Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate) {
 }
 
 #' The \eqn{Z}-update Step
-#'
 #' A \code{C} implementation of the \eqn{Z}-update step. We
 #' solve a generalized LASSO problem repeatedly for each of the
 #' individual edges
@@ -50,6 +48,7 @@ genlassoRcpp <- function(Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate) {
 #' @param p The number of variables
 #' @param Theta A list of matrices with the \eqn{\Theta}-matrices
 #' @param Y A list of matrices with the \eqn{Y}-matrices
+#' @param W The weight matrix \eqn{W} of dimensions \eqn{m x m}
 #' @param eta1 Equals \eqn{\lambda_1 / rho}
 #' @param eta2 Equals \eqn{\lambda_2 / rho}
 #' @param a Value added to the diagonal of \eqn{-D'D} so that
@@ -65,7 +64,6 @@ genlassoRcpp <- function(Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate) {
 #'
 #' @return The estimated vector \eqn{\hat{\beta}}
 #'
-#' @seealso \code{\link{updateZ_wrapper}}
 updateZRcpp <- function(m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate) {
     .Call('_CVN_updateZRcpp', PACKAGE = 'CVN', m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
 }

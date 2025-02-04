@@ -6,13 +6,12 @@
 #'
 #' @param m Number of graphs
 #' @param p Number of variables
-#' @param nrow_D Number of rows of the \eqn{D}-matrix
-#' @param Theta A list with matrices with the current values of \eqn{\Theta}
-#' @param Y A list with matrices with the current values of \eqn{Y}
-#' @param W Weight matrix
-#' @param eta1 TODO
-#' @param rho_genlasso The \eqn{\rho} penalty parameter for the ADMM algorithm
-#' @param eps_genlasso If the relative difference between two update steps is
+#' @param Y A list with matrices with the current values of \eqn{Y} 
+#' @param W Weight matrix 
+#' @param eta1  lambda1 / rho, with \eqn{\rho} is penalty parameter for the global ADMM algorithm (Default: \code{1})
+#' @param eta2 
+#' @param rho_genlasso The \eqn{\rho} penalty parameter for the ADMM algorithm 
+#' @param eps_genlasso If the relative difference between two update steps is 
 #'                smaller than \eqn{\epsilon}, the algorithm stops
 #' @param maxiter_genlasso Maximum number of iterations for solving
 #'                the generalized LASSO problem
@@ -20,18 +19,17 @@
 #'                 \code{truncate_genlasso} will be set to \code{0}.
 #'
 #' @return A list with matrices with the new values of \eqn{Z}
-#'
-#' @seealso \code{\link{create_matrix_D}}
-#'
-#' @export
-updateZ_wrapper <- function(m, p, nrow_D,
-                            Theta, Y, W, eta1, eta2, a,
-                            rho_genlasso, maxiter_genlasso, eps_genlasso,
-                            truncate_genlasso) {
-
-  updateZRcpp(m, p, nrow_D,
-               Theta, Y, W, eta1, eta2, a,
-               rho_genlasso, maxiter_genlasso, eps_genlasso,
-               truncate_genlasso)
-
+#' @noRd
+#' 
+#' @keywords internal
+updateZ_wrapper <- function(m, p,  
+                            Theta, Y, W, eta1, eta2, a, 
+                            rho_genlasso, maxiter_genlasso, eps_genlasso, 
+                            truncate_genlasso=1e-4) { 
+  
+  updateZRcpp(m, p, 
+               Theta, Y, W, eta1, eta2, a, 
+               rho_genlasso, maxiter_genlasso, eps_genlasso, 
+               truncate_genlasso)  
+  
 }

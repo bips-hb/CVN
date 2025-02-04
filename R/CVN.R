@@ -14,9 +14,9 @@
 #'             Number of observations can differ
 #' @param W The \eqn{(m \times m)}-dimensional symmetric
 #'          weight matrix \eqn{W}
-#' @param lambda1 Vector with different \eqn{\lambda_1} LASSO penalty terms
+#' @param lambda1 Vector with different \eqn{\lambda_1}. LASSO penalty terms 
 #'                (Default: \code{1:2})
-#' @param lambda2 Vector with different \eqn{\lambda_2} global smoothing parameter values
+#' @param lambda2 Vector with different \eqn{\lambda_2}. The global smoothing parameter values 
 #'                (Default: \code{1:2})
 #' @param gamma1 A vector of \eqn{\gamma_1}'s LASSO penalty terms, where
 #'              \eqn{\gamma_1 = \frac{2 \lambda_1}{m p (1 - p)}}. If \code{gamma1}
@@ -46,27 +46,31 @@
 #'                the total number penalty term pairs if that is less)
 #' @param normalized Data is normalized if \code{TRUE}. Otherwise the data is only
 #'                   centered (Default: \code{FALSE})
-#' @param warmstart If \code{TRUE}, use the \code{\link[huge]{huge}} package for estimating
+#' @param warmstart If \code{TRUE}, use the \code{\link[glasso]{glasso}} package for estimating
 #'                  the individual graphs first (Default: \code{TRUE})
 #' @param minimal If \code{TRUE}, the returned \code{cvn} is minimal in terms of
 #'                  memory, i.e., \code{Theta}, \code{data} and \code{Sigma} are not
 #'                  returned (Default: \code{FALSE})
+#' @param gamma_ebic Gamma value for the eBIC (Default: 0.5)                  
 #' @param verbose Verbose (Default: \code{TRUE})
 #'
 #' @return A \code{CVN} object containing the estimates for all the graphs
 #'    for each different value of \eqn{(\lambda_1, \lambda_2)}. General results for
 #'    the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data frame
 #'    \code{results}. It consists of multiple columns, namely:
+#'    \item{\code{id}}{The id. This corresponds to the indices of the lists}
 #'    \item{\code{lambda1}}{\eqn{\lambda_1} value}
 #'    \item{\code{lambda2}}{\eqn{\lambda_2} value}
+#'    \item{\code{gamma1}}{\eqn{\gamma_1} value}
+#'    \item{\code{gamma2}}{\eqn{\gamma_2} value}    
 #'    \item{\code{converged}}{whether algorithm converged or not}
 #'    \item{\code{value}}{value of the negative log-likelihood function}
 #'    \item{\code{n_iterations}}{number of iterations of the ADMM}
 #'    \item{\code{aic}}{Aikake information criterion}
-#'    \item{\code{gamma1}}{\eqn{\gamma_1} value}
-#'    \item{\code{gamma2}}{\eqn{\gamma_2} value}
-#'    \item{\code{id}}{The id. This corresponds to the indices of the lists}
 #'    \item{\code{bic}}{Bayesian information criterion}
+#'    \item{\code{ebic}}{Extended Bayesian information criterion}
+#'    \item{\code{edges_median}}{Median number of edges across the m estimated graphs}
+#'    \item{\code{edges_iqr}}{Interquartile range of edges across the m estimated graphs}    
 #'    The estimates of the precision matrices and the corresponding adjacency matrices
 #'    for the different values of \eqn{(\lambda_1, \lambda_2)} can be found
 #'    \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m},
@@ -97,23 +101,21 @@
 #'   \item{\code{minimal}}{If \code{TRUE}, \code{data}, \code{Theta} and \code{Sigma} are not added}
 #'   \item{\code{hits_border_aic}}{If \code{TRUE}, the optimal model based on the AIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 #'   \item{\code{hits_border_bic}}{If \code{TRUE}, the optimal model based on the BIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
-#' @examples
+#'   
+#' @aliases CVN
+#' @examples 
 #' data(grid)
-#' m <- 9 # must be 9 for this example
 #'
-#' #' Choice of the weight matrix W.
+#' #' Choice of the weight matrix W. Each of 2 covariates has 3 categories
 #' #' (uniform random)
-#' W <- matrix(runif(m*m), ncol = m)
-#' W <- W %*% t(W)
-#' W <- W / max(W)
-#' diag(W) <- 0
+#' W <- create_weight_matrix("uniform-random", k = 3, l = 3)
 #'
 #' # lambdas:
-#' lambda1 = 1:2
-#' lambda2 = 1:2
-#'
-#' (cvn <- CVN::CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2,
-#'                  eps = 1e-3, maxiter = 1000, verbose = TRUE))
+#' lambda1 = 1  # can also be lambda1 = 1:2 
+#' lambda2 = 1
+#' 
+#' (fit <- CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, 
+#'             eps = 1e-3, maxiter = 1000, verbose = TRUE))
 #' @export
 CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 gamma1 = NULL, gamma2 = NULL,
@@ -125,10 +127,11 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 eps_genlasso = 1e-10,
                 maxiter_genlasso = 100,
                 truncate_genlasso = 1e-4,
-                n_cores = min(length(lambda1)*length(lambda2), parallel::detectCores() - 1),
+                n_cores = min(length(lambda1)*length(lambda2), detectCores() - 1),
                 normalized = FALSE,
                 warmstart = TRUE,
                 minimal = FALSE,
+                gamma_ebic = 0.5,
                 verbose = TRUE) {
 
   # Check correctness input -------------------------------
@@ -159,7 +162,11 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   # Set-up cluster ---------------------------
   if (n_cores > 1) {
     cl <- makeCluster(n_cores)
-    registerDoSNOW(cl)
+    registerDoParallel(cl)           # 16Dec
+    
+    # Export CVN library to workers  # 16Dec
+    clusterEvalQ(cl, library(CVN))
+    
     opts <- list(progress = function(i) {i}) # empty place holder for foreach
   }
 
@@ -180,7 +187,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
       pb$tick()
 
       progress <- function(i) pb$tick()
-      opts     <- list(progress = progress) # used by doSNOW
+      opts     <- list(progress = progress) 
     }
   }
 
@@ -189,6 +196,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
 
   # Compute the empirical covariance matrices --------------
   Sigma <- lapply(1:m, function(i) cov(data[[i]])*(n_obs[i] - 1) / n_obs[i])
+
 
   # initialize results list ------------
   global_res <- list(
@@ -215,15 +223,21 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   )
 
   # data frame with the results for each unique (lambda1,lambda2) pair
-  res <- data.frame(expand.grid(lambda1 = lambda1,
+  res <- data.frame(id = NA,
+                    expand.grid(lambda1 = lambda1,
                                 lambda2 = lambda2,
+                                gamma1 = NA,
+                                gamma2 = NA,
                                 converged = FALSE,
                                 value = NA,
                                 n_iterations = NA,
-                                aic = NA))
+                                aic = NA,
+                                bic = NA,
+                                ebic = NA,
+                                edges_median = NA,
+                                edges_iqr = NA))
   res$gamma1 <- 2*res$lambda1 / (m*p*(p-1))
   res$gamma2 <- 4*res$lambda2 / (m*(m-1)*p*(p-1))
-
   res$id <- 1:nrow(res)
 
   # estimate the graphs for the different values of (lambda1, lambda2) --------
@@ -248,13 +262,13 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
       a <- (res$lambda1[i] / rho)^2 + 1
     } else {
       # Determine the value of the diagonal matrix A such that A - D'D > 0 (positive definite)
-      a <- CVN::matrix_A_inner_ADMM(W, res$lambda1[i] / rho, res$lambda2[i] / rho) + 1
+      a <- matrix_A_inner_ADMM(W, res$lambda1[i] / rho, res$lambda2[i] / rho) + 1
     }
 
     # Estimate the graphs -------------------------------------
     eta1 <- res$lambda1[i] / rho
     eta2 <- res$lambda2[i] / rho
-    CVN::estimate(m, p, W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs,
+         estimate(m, p, W, Theta, Z, Y, a, eta1, eta2, Sigma, n_obs,
                   rho, rho_genlasso,
                   eps, eps_genlasso,
                   maxiter, maxiter_genlasso, truncate = truncate,
@@ -264,15 +278,18 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
 
   # go over each pair of penalty terms
   if (n_cores > 1) { # parallel
-    est <- foreach(i = 1:(length(lambda1) * length(lambda2)),
-                   .options.snow = opts) %dopar% {
-                     estimate_lambda_values(i)
-                   }
+    est <- foreach(i = 1:(length(lambda1)*length(lambda2)),
+            .multicombine = TRUE,
+            .export = c("estimate")) %dopar% {
+             estimate_lambda_values(i)
+            }
   } else { # sequential
     est <- lapply(1:(length(lambda1) * length(lambda2)), function(i) {
       estimate_lambda_values(i)
     })
   }
+
+  
 
   # Process results -----------------------------------------
   for (i in 1:(length(lambda1)*length(lambda2))) {
@@ -282,20 +299,21 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     res$converged[i]    <- est[[i]]$converged
     res$value[i]        <- est[[i]]$value
     res$n_iterations[i] <- est[[i]]$n_iterations
+    
 
-    # determine the AIC
-    res$aic[i] <- CVN::determine_information_criterion(Theta = est[[i]]$Z,
-                                                     adj_matrices = est[[i]]$adj_matrices,
-                                                     Sigma = Sigma,
-                                                     n_obs = n_obs,
-                                                     type = "AIC")
+    ic <- determine_information_criterion(Theta = est[[i]]$Z,
+                                          adj_matrices = est[[i]]$adj_matrices,
+                                          Sigma = Sigma,
+                                          n_obs = n_obs,
+                                          gamma = gamma_ebic)
+    res$aic[i] <- ic$aic
+    res$bic[i] <- ic$bic
+    res$ebic[i] <- ic$ebic
+    
+    # Median edges
+    res$edges_median[i] <- median(mapply(sum, est[[i]]$adj_matrices) / 2)
+    res$edges_iqr[i] <- IQR(mapply(sum, est[[i]]$adj_matrices) / 2)
 
-    # determine the BIC
-    res$bic[i] <- CVN::determine_information_criterion(Theta = est[[i]]$Z,
-                                                       adj_matrices = est[[i]]$adj_matrices,
-                                                       Sigma = Sigma,
-                                                       n_obs = n_obs,
-                                                       type = "BIC")
   }
 
   # stop the progress bar
@@ -310,7 +328,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
 
   # determine whether the optimal model based on the AIC or BIC hits the border
   # of lambda1 and/or lambda2
-  hit <- CVN::hits_end_lambda_intervals(res)
+  hit <- hits_end_lambda_intervals(res)
   global_res$hits_border_aic <- hit$hits_border_aic
   global_res$hits_border_bic <- hit$hits_border_bic
 
@@ -326,70 +344,4 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   return(global_res)
 }
 
-#' Print Function for the CVN Object Class
-#'
-#' @export
-print.cvn <- function(x, ...) {  # TODO
-  cat(sprintf("Covariate-varying Network (CVN)\n\n"))
 
-  if (all(x$results$converged)) {
-    cat(crayon::green(sprintf("\u2713 all converged\n\n")))
-  } else {
-    cat(crayon::red(sprintf("\u2717 did not converge (maxiter of %d not sufficient)\n\n", x$maxiter)))
-  }
-
-  # print following variables
-  cat(sprintf("Number of graphs (m)    : %d\n", x$m))
-  cat(sprintf("Number of variables (p) : %d\n", x$p))
-  cat(sprintf("Number of lambda pairs  : %d\n\n", x$n_lambda_values))
-
-  # If x is an object returned by CVN::glasso() it doesn't have a $W element and this errors
-  # Causes example in glasso.R to error during R CMD check
-  # TODO: Check if glasso() behaves correctly, possibly adjust print method for CVN:glasso subclass?
-  if (!is.null(x$W)) {
-    cat(sprintf("Weight matrix (W):\n"))
-    print(Matrix::Matrix(x$W, sparse = T))
-  }
-
-  cat(sprintf("\n"))
-  print(x$results)
-}
-
-#' Strip CVN
-#'
-#' Function that removes most of the items to make the CVN object
-#' more memory sufficient. This is especially important when the
-#' graphs are rather larger
-#'
-#' @param cvn \code{cvn} object
-#'
-#' @return Reduced cvn where \code{Theta}, \code{data} and \code{Sigma}
-#'         are removed
-#' @export
-strip_cvn <- function(cvn) {
-
-  if ('Theta' %in% names(cvn)) {
-    cvn <- within(cvn, rm(Theta))
-  }
-
-  if ('data' %in% names(cvn)) {
-    cvn <- within(cvn, rm(data))
-  }
-
-  if ('Sigma' %in% names(cvn)) {
-    cvn <- within(cvn, rm(Sigma))
-  }
-
-  # set the variable keeping track of whether the cvn is
-  # striped to TRUE
-  cvn$minimal <- TRUE
-
-  return(cvn)
-}
-
-#' Plot Function for CVN Object Class
-#'
-#' @export
-plot.cvn <- function(x, ...) {
-  CVN::visnetwork_cvn(x)
-}

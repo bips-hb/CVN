@@ -2,11 +2,21 @@
 % Please edit documentation in R/RcppExports.R
 \name{genlassoRcpp}
 \alias{genlassoRcpp}
-\title{Solving Generalized LASSO with fixed \eqn{\lambda = 1}}
+\title{Solving Generalized LASSO with fixed \eqn{\lambda = 1}
+Solves efficiently the generalized LASSO problem of the form
+\deqn{
+  \hat{\beta} = \text{argmin } \frac{1}{2} || y - \beta ||_2^2 + ||D\beta||_1
+}
+where \eqn{\beta} and \eqn{y} are \eqn{m}-dimensional vectors and
+\eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c \geq m}.
+We solve this optimization problem using an adaption of the ADMM
+algorithm presented in Zhu (2017).}
 \usage{
 genlassoRcpp(Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
 \arguments{
+\item{Y}{The \eqn{y} vector of length \eqn{m}}
+
 \item{W}{The weight matrix \eqn{W} of dimensions \eqn{m x m}}
 
 \item{m}{The number of graphs}
@@ -29,13 +39,12 @@ is halted}
 
 \item{truncate}{Values below \code{truncate} are
 set to \code{0}}
-
-\item{y}{The \eqn{y} vector of length \eqn{m}}
 }
 \value{
 The estimated vector \eqn{\hat{\beta}}
 }
 \description{
+Solving Generalized LASSO with fixed \eqn{\lambda = 1}
 Solves efficiently the generalized LASSO problem of the form
 \deqn{
   \hat{\beta} = \text{argmin } \frac{1}{2} || y - \beta ||_2^2 + ||D\beta||_1

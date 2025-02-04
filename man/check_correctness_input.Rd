@@ -33,3 +33,4 @@ halts when an issue has been detected.
 \seealso{
 \code{\link{CVN}}
 }
+\keyword{internal}

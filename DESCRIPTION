@@ -1,18 +1,26 @@
 Package: CVN
 Title: Covariate-varying Networks
 Version: 1.1
-Author: Louis Dijkstra [aut, cre]
-Maintainer: Louis Dijkstra <dijkstra@leibniz-bips.de>
-Description: A package for inferring high-dimensional Gaussian graphical
-    networks that change with multiple discrete covariates
+Authors@R: c(
+    person("Ronja", "Foraita", , "foraita@leibniz-bips.de", role = "cre"),
+    person("Louis", "Dijkstra", role = "aut"),
+    person("Lukas", "Burk", role = "ctb"),
+    person(, "DFG", role = "fnd")
+  )
+Author: Louis Dijkstra [aut], Lukas Burk [ctb], DFG [fnd], Ronja Foraita
+    [cre]
+Maintainer: Ronja Foraita <foraita@leibniz-bips.de>
+Description: Inferring high-dimensional Gaussian graphical networks that
+    change with multiple discrete covariates.  Louis Dijkstra, Arne Godt,
+    Ronja Foraita (2024) <arXiv:2407.19978>.
 License: GPL (>= 3)
-URL: https://github.com/bips-hb/CVN
+URL: https://github.com/bips-hb/CVN, https://arxiv.org/abs/2407.19978, https://bips-hb.github.io/CVN/
 BugReports: https://github.com/bips-hb/CVN/issues
 Depends:
-    R (>= 4.0.2),
+    R (>= 4.0.0)
 Imports: 
     crayon,
-    doSNOW,
+    doParallel,
     dplyr,
     foreach,
     ggplot2,
@@ -20,17 +28,21 @@ Imports:
     magrittr,
     Matrix,
     parallel,
-    progress,
     Rcpp,
     reshape2,
-    snow,
     stats,
     utils,
     visNetwork
+Suggests: 
+    htmltools,
+    igraph,
+    knitr,
+    progress,
+    rmarkdown
 LinkingTo: 
     Rcpp
+VignetteBuilder: 
+    knitr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
-Suggests: 
-    igraph
