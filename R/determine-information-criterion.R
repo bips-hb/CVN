@@ -46,6 +46,10 @@ determine_information_criterion <- function (Theta, adj_matrices, Sigma, n_obs, 
 #' @param gamma The gamma value for the eBIC (default: 0.5)
 #'
 #' @export
+#' @examples 
+#' path <- system.file("cvnfit.RData", package = "CVN")
+#' load(path)
+#' determine_information_criterion_cvn(fit, gamma = 0.7)
 determine_information_criterion_cvn <- function (cvn, gamma = 0.5) 
 {
   if (!("cvn" %in% class(cvn))) {

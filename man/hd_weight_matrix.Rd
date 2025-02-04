@@ -2,7 +2,7 @@
 % Please edit documentation in R/hd-weight-matrix.R
 \name{hd_weight_matrix}
 \alias{hd_weight_matrix}
-\title{Heat Map Plot of the Weight Matrix}
+\title{Heatmap Plot of the Weight Matrix}
 \usage{
 hd_weight_matrix(
   W,
@@ -35,12 +35,11 @@ is add to the plot (Default: \code{TRUE})}
 A heatmap plot
 }
 \description{
-Returns a heat map of the weight matrix
+Returns a heatmap of the weight matrix
 }
 \examples{
-W_uniform <- create_weight_matrix(type="uniform-random", 3,3)
-W_uniform <- round(W_uniform, 2)
-hd_weight_matrix(W_uniform)
+W_uniform <- round(create_weight_matrix(type="uniform-random", 3, 2), 2)
+hd_weight_matrix(W_uniform, title = "2 external covariates with 3 and 2 categories respectively")
             
 }
 \seealso{

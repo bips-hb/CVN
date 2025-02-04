@@ -8,7 +8,7 @@
 #' @param Y A list with matrices with the current values of \eqn{Y} 
 #' 
 #' @return A list with matrices with the new values of \eqn{Y}
-#'        
+#' @noRd        
 #' @keywords internal
 updateY <- function(Theta, Z, Y) { 
    # Y_new = Y_old + Theta_new - Z_new

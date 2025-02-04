@@ -114,8 +114,12 @@
 #' lambda1 = 1  # can also be lambda1 = 1:2 
 #' lambda2 = 1
 #' 
-#' (fit <- CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, 
-#'             eps = 1e-3, maxiter = 1000, verbose = TRUE))
+#' (fit <- CVN(data = grid, 
+#'             W = W, 
+#'             lambda1 = lambda1, lambda2 = lambda2, 
+#'             n_cores = 1,
+#'             eps = 1e-2, maxiter = 200, # fast but imprecise
+#'             verbose = TRUE))
 #' @export
 CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
                 gamma1 = NULL, gamma2 = NULL,

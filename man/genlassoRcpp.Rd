@@ -2,15 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{genlassoRcpp}
 \alias{genlassoRcpp}
-\title{Solving Generalized LASSO with fixed \eqn{\lambda = 1}
-Solves efficiently the generalized LASSO problem of the form
-\deqn{
-  \hat{\beta} = \text{argmin } \frac{1}{2} || y - \beta ||_2^2 + ||D\beta||_1
-}
-where \eqn{\beta} and \eqn{y} are \eqn{m}-dimensional vectors and
-\eqn{D} is a \eqn{(c \times m)}-matrix where \eqn{c \geq m}.
-We solve this optimization problem using an adaption of the ADMM
-algorithm presented in Zhu (2017).}
+\title{Generalized LASSO}
 \usage{
 genlassoRcpp(Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
@@ -61,4 +53,7 @@ Generalized Lasso Problem. Journal of Computational and Graphical Statistics,
 }
 \seealso{
 \code{\link{genlasso_wrapper}}
+}
+\author{
+Louis Dijkstra
 }

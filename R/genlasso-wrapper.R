@@ -19,6 +19,7 @@
 #'
 #' @seealso \code{\link[CVN]{relative_difference_precision_matrices}}
 #' @keywords internal
+#' @noRd
 #'
 #' @seealso \code{\link{genlassoRcpp}}
 #' @export

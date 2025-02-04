@@ -2,14 +2,15 @@ Package: CVN
 Title: Covariate-varying Networks
 Version: 1.1
 Authors@R: c(
-    person("Ronja", "Foraita", , "foraita@leibniz-bips.de", role = "cre"),
+    person("Ronja", "Foraita", , "foraita@leibniz-bips.de", role = c("aut","cre")),
     person("Louis", "Dijkstra", role = "aut"),
     person("Lukas", "Burk", role = "ctb"),
-    person(, "DFG", role = "fnd")
+    person(, "DFG", role = "fnd"),
+    person("Leibniz Institute for Prevention Research and Epidemiology - BIPS",
+           email = "R@leibniz-bips.de",
+           role = "cph",
+           comment = c("ROR" = "02c22vc57"))
   )
-Author: Louis Dijkstra [aut], Lukas Burk [ctb], DFG [fnd], Ronja Foraita
-    [cre]
-Maintainer: Ronja Foraita <foraita@leibniz-bips.de>
 Description: Inferring high-dimensional Gaussian graphical networks that
     change with multiple discrete covariates.  Louis Dijkstra, Arne Godt,
     Ronja Foraita (2024) <arXiv:2407.19978>.

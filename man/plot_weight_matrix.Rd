@@ -21,7 +21,7 @@ This function requires the igraph package to be installed.
 }
 \examples{
 # Requires to have the igraph package to be installed
-W <- create_weight_matrix(type = "grid", k = 2, l = 3, plot = FALSE)
+W <- create_weight_matrix(type = "full", k = 2, l = 3)
 plot_weight_matrix(W, k=2, l=3)
 
 }

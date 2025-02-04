@@ -12,6 +12,7 @@
 #'    \item{\code{hits_border_bic}}{If \code{TRUE}, hits the border for the BIC}
 #'    
 #' @keywords internal
+
 hits_end_lambda_intervals <- function(results) { 
 
   hits_border_aic <- FALSE

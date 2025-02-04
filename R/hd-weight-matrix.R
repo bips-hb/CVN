@@ -1,6 +1,6 @@
-#' Heat Map Plot of the Weight Matrix
+#' Heatmap Plot of the Weight Matrix
 #' 
-#' Returns a heat map of the weight matrix
+#' Returns a heatmap of the weight matrix
 #'
 #' @param W Weight matrix 
 #' @param title Title plot (Default is none)
@@ -20,9 +20,8 @@
 #' @return A heatmap plot       
 #' 
 #' @examples
-#' W_uniform <- create_weight_matrix(type="uniform-random", 3,3)
-#' W_uniform <- round(W_uniform, 2)
-#' hd_weight_matrix(W_uniform)
+#' W_uniform <- round(create_weight_matrix(type="uniform-random", 3, 2), 2)
+#' hd_weight_matrix(W_uniform, title = "2 external covariates with 3 and 2 categories respectively")
 #'             
 #' @export
 hd_weight_matrix <- function(W,

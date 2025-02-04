@@ -18,15 +18,12 @@ A list of adjacency matrix, one for each
 Function that finds edges that are only present in one subgraph of the CVN model.
 }
 \examples{
-data(grid)
+path <- system.file("cvnfit.RData", package = "CVN")
+load(path)
+                  
+ue <- find_unique_edges(fit)
 
-W <- create_weight_matrix("grid", 3, 3)
+# Graph 3 has unique edges
+ue[[1]][[3]]
 
-# lambdas:
-lambda1 = 1  # can also be lambda1 = 1:2 
-lambda2 = .2
-
-fit <- CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2)
-                 
-find_unique_edges(fit)
 }

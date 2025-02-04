@@ -4,12 +4,12 @@
 \alias{extract_cvn}
 \title{Extract CVN}
 \usage{
-extract_cvn(cvn, nr)
+extract_cvn(cvn, id)
 }
 \arguments{
 \item{cvn}{A CVN object, see \code{\link{CVN}}}
 
-\item{nr}{Integer; Which id from the CVN object should be extracted}
+\item{id}{Integer; Which id from the CVN object should be extracted}
 }
 \value{
 A CVN object
@@ -24,10 +24,10 @@ Its helpful when just one tuning parameter constellation wants to be, e.g., plot
 
 data(grid)
 W <- create_weight_matrix("grid", 3, 3)
-fit <-  CVN(grid, W, 
+fit <-  CVN(grid, W, n_cores = 1,
             lambda1 = c(0.5, 1), 
             lambda2 = c(0.1, 0.5)) 
-(fit2 <- extract_cvn(fit, 2))
+(fit2 <- extract_cvn(fit, id = 2))
 }
 
 

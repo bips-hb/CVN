@@ -14,6 +14,13 @@
 \description{
 Print contents of CVN object
 }
+\examples{
+path <- system.file("cvnfit.RData", package = "CVN")
+load(path)
+
+print(fit)
+
+}
 \seealso{
 \code{\link{CVN}}
 }

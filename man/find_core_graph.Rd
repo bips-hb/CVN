@@ -17,3 +17,10 @@ A list of adjacency matrix, one for each
 Finds the 'core graph', i.e., those edges that are 
 present in all of the estimated graphs
 }
+\examples{
+path <- system.file("cvnfit.RData", package = "CVN")
+load(path)
+fit2 <- extract_cvn(fit, id=2)
+core_graph <- find_core_graph(fit2) 
+
+}

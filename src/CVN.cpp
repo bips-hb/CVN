@@ -1,6 +1,8 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
+//' Generalized LASSO
+//' 
 //' Solving Generalized LASSO with fixed \eqn{\lambda = 1}
 //' Solves efficiently the generalized LASSO problem of the form
 //' \deqn{
@@ -26,9 +28,8 @@ using namespace Rcpp;
 //'            is halted
 //' @param truncate Values below \code{truncate} are
 //'                 set to \code{0}
-//'
 //' @return The estimated vector \eqn{\hat{\beta}}
-//'
+//' @author Louis Dijkstra
 //' @references
 //' Zhu, Y. (2017). An Augmented ADMM Algorithm With Application to the
 //' Generalized Lasso Problem. Journal of Computational and Graphical Statistics,
@@ -214,6 +215,7 @@ using namespace Rcpp;
  
 
 //' The \eqn{Z}-update Step
+//' 
 //' A \code{C} implementation of the \eqn{Z}-update step. We
 //' solve a generalized LASSO problem repeatedly for each of the
 //' individual edges
@@ -235,7 +237,7 @@ using namespace Rcpp;
 //'            is halted
 //' @param truncate Values below \code{truncate} are
 //'                 set to \code{0}
-//'
+//' @author Louis Dijkstra
 //' @return The estimated vector \eqn{\hat{\beta}}
 //'
 // [[Rcpp::export]]

@@ -7,6 +7,12 @@
 #' @aliases plot.cvn 
 #' @method plot cvn 
 #' @seealso \code{CVN}
+#' 
+#' @examples
+#' path <- system.file("cvnfit.RData", package = "CVN")
+#' load(path)
+#' fit <- plot(fit) 
+#' fit$plots[[1]][[4]]
 #'
 #' @export
 plot.cvn <- function(x, ...) {

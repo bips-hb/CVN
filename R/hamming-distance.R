@@ -6,8 +6,13 @@
 #' @param adj_matrices A list of adjacency matrices
 #' 
 #' @return Matrix of Hamming distances
-#' @importFrom Matrix Matrix
 #' @export
+#' @examples 
+#' path <- system.file("cvnfit.RData", package = "CVN")
+#' load(path)
+#' 
+#' hamming_distance_adj_matrices(fit$adj_matrices[[1]])
+#' 
 hamming_distance_adj_matrices <- function(adj_matrices) { 
   
   # number of graphs

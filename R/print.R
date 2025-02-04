@@ -4,6 +4,11 @@
 #' @param x  Object of classs 'CVN'
 #' @param ... Additional arguments to pass
 #' @seealso \code{\link{CVN}}
+#' @examples 
+#' path <- system.file("cvnfit.RData", package = "CVN")
+#' load(path)
+#' 
+#' print(fit)
 #' 
 #' @export
 print.cvn <- function(x, ...) {  

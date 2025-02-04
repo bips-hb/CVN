@@ -18,7 +18,8 @@ data(grid)
 W <- create_weight_matrix(type = "grid", k=3, l=3, plot = FALSE)
 
 cvn <- CVN(grid, W, lambda1 = 1, lambda2 = 1:2, 
-           eps = 1e-3, maxiter = 1000, verbose = TRUE)
+           n_cores = 1,
+           eps = 1e-2, maxiter = 1000, verbose = TRUE)
 }
 \references{
 Dijkstra L, Godt A, Foraita R 
@@ -30,6 +31,7 @@ Useful links:
 \itemize{
   \item \url{https://github.com/bips-hb/CVN}
   \item \url{https://arxiv.org/abs/2407.19978}
+  \item \url{https://bips-hb.github.io/CVN/}
   \item Report bugs at \url{https://github.com/bips-hb/CVN/issues}
 }
 
@@ -46,6 +48,7 @@ Other contributors:
 \itemize{
   \item Lukas Burk [contributor]
   \item  DFG [funder]
+  \item Leibniz Institute for Prevention Research and Epidemiology - BIPS \email{R@leibniz-bips.de} (02c22vc57) [copyright holder]
 }
 
 

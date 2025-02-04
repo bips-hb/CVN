@@ -8,7 +8,8 @@
 #'             (Default: \code{1:n_nodes})
 #'
 #' @return Data frame with two columns: \code{id} and \code{title}  
-#' @export 
+#' @export
+#' @noRd
 
 create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
   nodes <- data.frame(id = 1:n_nodes)
@@ -26,9 +27,9 @@ create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
 #' @param adj_matrix A symmetric adjacency matrix
 #' 
 #' @return Data frame that be used as input for \code{visNetwork} 
-#' 
-#' @importFrom dplyr %>% rename arrange
 #' @export
+#' @noRd
+
 create_edges_visnetwork <- function(adj_matrix) {
 
   # needs to be of the type 'matrix' when using the function which
@@ -67,6 +68,7 @@ create_edges_visnetwork <- function(adj_matrix) {
 #'
 #' @return A data frame that can be used by the \code{visNetwork} package
 #' @export
+#' @noRd
 set_attributes_to_edges_visnetwork <- function(edges,
                                                subset_edges,
                                                width = c(NA, NA),
@@ -184,17 +186,22 @@ visnetwork <- function(nodes,
 #' @param node_titles Vector with title of the nodes (Default: \code{1:p})
 #' @param titles A list with \code{n_lambda_values} vectors. Each vector is of the
 #'         lenght \code{m}. Regulates the titles of the graphs (Default: no title)
-#' @param show_core_graph,width,color Show the core graph using the width and colors
+#' @param show_core_graph Shall the core graph be visualized (Default = TRUE)
+#' @param width Edge width of the core graph
+#' @param color String vector with two colors. The first color marks the edges in the
+#'              core graph (Default: c("red", "blue")) 
 #' @param igraph_layout igraph layout (default: layout_in_circle)
 #' @param verbose Verbose (Default: \code{TRUE}) 
 #' 
 #' @seealso \code{\link{CVN}}, \code{\link{visnetwork}}
 #' 
-#' @return List 
+#' @return The cvn input which is extended by the list element 'plots'
 #' @export
 #' @examples 
 #' path <- system.file("cvnfit.RData", package = "CVN")
 #' load(path)
+#' fit_plot <- visnetwork_cvn(fit)
+#' fit_plot$plots[[1]][[1]]
 visnetwork_cvn <- function(cvn, 
                            node_titles = 1:cvn$p, 
                            titles = lapply(1:cvn$n_lambda_values, 

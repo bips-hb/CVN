@@ -23,14 +23,19 @@ visnetwork_cvn(
 \item{titles}{A list with \code{n_lambda_values} vectors. Each vector is of the
 lenght \code{m}. Regulates the titles of the graphs (Default: no title)}
 
-\item{show_core_graph, width, color}{Show the core graph using the width and colors}
+\item{show_core_graph}{Shall the core graph be visualized (Default = TRUE)}
+
+\item{width}{Edge width of the core graph}
+
+\item{color}{String vector with two colors. The first color marks the edges in the
+core graph (Default: c("red", "blue"))}
 
 \item{igraph_layout}{igraph layout (default: layout_in_circle)}
 
 \item{verbose}{Verbose (Default: \code{TRUE})}
 }
 \value{
-List
+The cvn input which is extended by the list element 'plots'
 }
 \description{
 Creates all \code{visNetwork} plots, see \code{\link{visnetwork}},
@@ -39,6 +44,8 @@ for all graphs in a \code{cvn} object
 \examples{
 path <- system.file("cvnfit.RData", package = "CVN")
 load(path)
+fit_plot <- visnetwork_cvn(fit)
+fit_plot$plots[[1]][[1]]
 }
 \seealso{
 \code{\link{CVN}}, \code{\link{visnetwork}}

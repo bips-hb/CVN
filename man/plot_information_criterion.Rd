@@ -55,11 +55,15 @@ Returns a heat map of the AIC or BIC for a fitted CVN
 data(grid)
 m <- 9
 
-W <- create_weight_matrix(type="grid", 3, 3, plot=FALSE)
-(cvn <- CVN(grid, W, lambda1 = 2, lambda2 = .5))
+W <- create_weight_matrix(type="grid", 3, 3)
+cvn <- CVN(grid, W, 
+           lambda1 = 1:2, lambda2 = .5, n_cores = 1)
+cvn$results          
 
+# The smaller the IC value, the better the fit. 
 plot_information_criterion(cvn, criterion = "aic")
 plot_information_criterion(cvn, criterion = "bic")
 plot_information_criterion(cvn, criterion = "ebic")
+
 
 }

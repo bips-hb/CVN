@@ -14,6 +14,13 @@
 \description{
 Custom plot method for CVN objects.
 }
+\examples{
+path <- system.file("cvnfit.RData", package = "CVN")
+load(path)
+fit <- plot(fit) 
+fit$plots[[1]][[4]]
+
+}
 \seealso{
 \code{CVN}
 }

@@ -4,7 +4,7 @@
 #' Its helpful when just one tuning parameter constellation wants to be, e.g., plotted.
 #'
 #' @param cvn A CVN object, see \code{\link{CVN}}
-#' @param nr  Integer; Which id from the CVN object should be extracted
+#' @param id  Integer; Which id from the CVN object should be extracted
 #'
 #' @return A CVN object
 #' @export
@@ -15,26 +15,26 @@
 #' 
 #' data(grid)
 #' W <- create_weight_matrix("grid", 3, 3)
-#' fit <-  CVN(grid, W, 
+#' fit <-  CVN(grid, W, n_cores = 1,
 #'             lambda1 = c(0.5, 1), 
 #'             lambda2 = c(0.1, 0.5)) 
-#' (fit2 <- extract_cvn(fit, 2))
+#' (fit2 <- extract_cvn(fit, id = 2))
 #' }
 #' 
 #' 
-extract_cvn <- function(cvn, nr){
+extract_cvn <- function(cvn, id){
   
   if (!inherits(cvn, "cvn")) {
     stop("The input object is not of class 'cvn'")
   }
-  if(!(nr %in% cvn$results$id)){
-     stop("nr must be a number within cvn$results$id")
+  if(!(id %in% cvn$results$id)){
+     stop("id must be a number within cvn$results$id")
   }
   
   # Subset the class objects
   new_cvn <- list(
-    Theta = list(cvn$Theta[[nr]]),
-    adj_matrices = list(cvn$adj_matrices[[nr]]),
+    Theta = list(cvn$Theta[[id]]),
+    adj_matrices = list(cvn$adj_matrices[[id]]),
     Sigma = cvn$Sigma,
     m = cvn$m,
     p = cvn$p,
@@ -53,7 +53,7 @@ extract_cvn <- function(cvn, nr){
     normalized = cvn$normalized,
     warstart = cvn$warmstart,
     minimal = cvn$minimal,
-    results = cvn$results[nr,]
+    results = cvn$results[id,]
     )
   
   # Set the class back to "irgendwas"

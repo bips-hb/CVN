@@ -10,7 +10,7 @@ cvn_edge_summary(cvn)
 \item{cvn}{A \code{cvn} object}
 }
 \value{
-A data.frame.Shows the number of edges in each subgraph, the number of 
+A data.frame showing the number of edges in each subgraph, the number of 
 edges present in all graphs (core edges) and the number of edges that are unique
 for a subgraph
 }
@@ -20,15 +20,19 @@ fitted CVN models.
 }
 \examples{
 data(grid)
-
 W <- create_weight_matrix("grid", 3, 3)
 
 # lambdas:
-lambda1 = 1  # can also be lambda1 = 1:2 
+lambda1 = c(1, 1.5)
 lambda2 = .2
 
-fit <- CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2)
-                 
+fit <- CVN(grid, W, lambda1 = lambda1, lambda2 = lambda2, n_cores = 1)
+
+# Edge summary for a list of CVN models
 cvn_edge_summary(fit)
-                 
+
+# Edge summary for a single CVN
+fit2 <- extract_cvn(fit, id = 2)
+cvn_edge_summary(fit2)                 
+
 }

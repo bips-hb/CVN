@@ -6,6 +6,13 @@
 #' @param cvn_interpolated A interpolated CVN from a fitted CVN model with \eqn{m} graphs
 #'
 #' @return A 'cvn_interpolated' object (see \code{\link{interpolate}}).
+#' @examples
+#' path <- system.file("cvnfit.RData", package = "CVN")
+#' load(path)
+#' 
+#' interpolate <- interpolate(fit, c(0,0,0,0,0,0,0,0.5,0.5), truncate = 0.05)
+#' fit10 <- combine_cvn_interpolated(fit, interpolate)
+#' 
 #' @export
 #'
 combine_cvn_interpolated <- function(cvn, cvn_interpolated){

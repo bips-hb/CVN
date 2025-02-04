@@ -24,6 +24,23 @@
 #'   \item{\code{lambda2}}{\eqn{\lambda_2} value}
 #'   
 #' @export
+#' @examples
+#' path <- system.file("cvnfit.RData", package = "CVN")
+#' load(path)
+#' 
+#' interpolate <- interpolate(fit, c(0,0,0,0,0,0,0,0.5,0.5), truncate = 0.05)
+#' fit10 <- combine_cvn_interpolated(fit, interpolate)
+#' fit10 <- visnetwork_cvn(fit10)
+#' 
+#' if (requireNamespace("htmltools", quietly = TRUE)) {
+#' htmltools::browsable(htmltools::tagList(
+#'   htmltools::div(style = "display: grid; grid-template-columns: repeat(3, 1fr); 
+#'                  column-gap: 1px; row-gap: -10px",
+#'     fit10$plots[[1]][8:10])))
+#' } else {
+#' plot10$plots[[1]][8:10]
+#' } 
+#'              
 interpolate <- function(cvn, weights, truncate = NULL) { 
   
   

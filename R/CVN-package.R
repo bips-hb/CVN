@@ -75,5 +75,6 @@ utils::globalVariables(c(
 #' W <- create_weight_matrix(type = "grid", k=3, l=3, plot = FALSE)
 #' 
 #' cvn <- CVN(grid, W, lambda1 = 1, lambda2 = 1:2, 
-#'            eps = 1e-3, maxiter = 1000, verbose = TRUE)
+#'            n_cores = 1,
+#'            eps = 1e-2, maxiter = 1000, verbose = TRUE)
 NULL

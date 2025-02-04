@@ -2,10 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{updateZRcpp}
 \alias{updateZRcpp}
-\title{The \eqn{Z}-update Step
-A \code{C} implementation of the \eqn{Z}-update step. We
-solve a generalized LASSO problem repeatedly for each of the
-individual edges}
+\title{The \eqn{Z}-update Step}
 \usage{
 updateZRcpp(m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
 }
@@ -43,8 +40,10 @@ set to \code{0}}
 The estimated vector \eqn{\hat{\beta}}
 }
 \description{
-The \eqn{Z}-update Step
 A \code{C} implementation of the \eqn{Z}-update step. We
 solve a generalized LASSO problem repeatedly for each of the
 individual edges
+}
+\author{
+Louis Dijkstra
 }

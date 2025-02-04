@@ -17,3 +17,11 @@ A 'cvn_interpolated' object (see \code{\link{interpolate}}).
 \description{
 Combine an interpolated CVN to an original CVN
 }
+\examples{
+path <- system.file("cvnfit.RData", package = "CVN")
+load(path)
+
+interpolate <- interpolate(fit, c(0,0,0,0,0,0,0,0.5,0.5), truncate = 0.05)
+fit10 <- combine_cvn_interpolated(fit, interpolate)
+
+}
