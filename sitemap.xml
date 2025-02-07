@@ -9,6 +9,8 @@
 <url><loc>https://bips-hb.github.io/CVN/reference/CVN.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/check_correctness_input.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/combine_cvn_interpolated.html</loc></url>
+<url><loc>https://bips-hb.github.io/CVN/reference/create_edges_visnetwork.html</loc></url>
+<url><loc>https://bips-hb.github.io/CVN/reference/create_nodes_visnetwork.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/create_weight_matrix.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/cvn_edge_summary.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/determine_information_criterion_cvn.html</loc></url>
@@ -17,6 +19,7 @@
 <url><loc>https://bips-hb.github.io/CVN/reference/find_core_graph.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/find_unique_edges.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/genlassoRcpp.html</loc></url>
+<url><loc>https://bips-hb.github.io/CVN/reference/genlasso_wrapper.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/grid.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/hamming_distance.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/hamming_distance_adj_matrices.html</loc></url>
@@ -30,6 +33,7 @@
 <url><loc>https://bips-hb.github.io/CVN/reference/plot_information_criterion.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/plot_weight_matrix.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/print.cvn.html</loc></url>
+<url><loc>https://bips-hb.github.io/CVN/reference/set_attributes_to_edges_visnetwork.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/strip_cvn.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/updateZRcpp.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/visnetwork.html</loc></url>
