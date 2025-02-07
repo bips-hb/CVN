@@ -27,12 +27,15 @@
 <url><loc>https://bips-hb.github.io/CVN/reference/hits_end_lambda_intervals.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/index.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/interpolate.html</loc></url>
+<url><loc>https://bips-hb.github.io/CVN/reference/matrix_A_inner_ADMM.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/pipe.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/plot.cvn.html</loc></url>
+<url><loc>https://bips-hb.github.io/CVN/reference/plot_hamming_distances.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/plot_hamming_distances_cvn.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/plot_information_criterion.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/plot_weight_matrix.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/print.cvn.html</loc></url>
+<url><loc>https://bips-hb.github.io/CVN/reference/relative_difference_precision_matrices.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/set_attributes_to_edges_visnetwork.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/strip_cvn.html</loc></url>
 <url><loc>https://bips-hb.github.io/CVN/reference/updateZRcpp.html</loc></url>
