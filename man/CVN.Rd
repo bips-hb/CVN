@@ -53,7 +53,6 @@ is set, the value of \code{lambda2} is ignored.(Default: \code{NULL}).}
 
 \item{eps}{If the relative difference between two update steps is
 smaller than \eqn{\epsilon}, the algorithm stops.
-See \code{\link{relative_difference_precision_matrices}}
 (Default: \code{1e-4})}
 
 \item{maxiter}{Maximum number of iterations (Default: \code{100})}

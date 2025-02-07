@@ -11,8 +11,7 @@
 #' @examples
 #' path <- system.file("cvnfit.RData", package = "CVN")
 #' load(path)
-#' fit2 <- extract_cvn(fit, id=2)
-#' core_graph <- find_core_graph(fit2) 
+#' find_core_graph(fit) 
 #' 
 find_core_graph <- function(cvn) { 
   # if (!("cvn" %in% class(cvn))) { 

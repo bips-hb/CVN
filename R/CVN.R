@@ -27,7 +27,6 @@
 #' @param rho The \eqn{\rho} penalty parameter for the global ADMM algorithm (Default: \code{1})
 #' @param eps If the relative difference between two update steps is
 #'                smaller than \eqn{\epsilon}, the algorithm stops.
-#'                See \code{\link{relative_difference_precision_matrices}}
 #'                (Default: \code{1e-4})
 #' @param maxiter Maximum number of iterations (Default: \code{100})
 #' @param truncate All values of the final \eqn{\hat{\Theta}_i}'s below \code{truncate} will be
