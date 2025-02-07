@@ -9,7 +9,6 @@
 #' @param Theta_old A list with matrices with the old values of \eqn{\Theta}
 #' 
 #' @return The relative difference between \eqn{\Theta(k+1)} and \eqn{\Theta(k)}
-#' @noRd      
 #' @export
 relative_difference_precision_matrices <- function(Theta_new, Theta_old) { 
   sum( mapply(function(theta_new, theta_old) {norm(theta_new - theta_old)}, 

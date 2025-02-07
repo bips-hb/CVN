@@ -17,8 +17,13 @@
 #' 
 #' @import ggplot2
 #' 
-#' @return A heatmap plot                   
-#' @noRd
+#' @return A heatmap plot         
+#' @examples          
+#' path <- system.file("cvnfit.RData", package = "CVN")
+#' load(path)
+#' hd <- hamming_distance(fit, verbose = FALSE)
+#' 
+#' plot_hamming_distances(hd$distance[[1]])
 #' @export 
 plot_hamming_distances <- function(distance_matrix, 
                                    absolute = TRUE,

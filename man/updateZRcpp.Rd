@@ -23,7 +23,7 @@ updateZRcpp(m, p, Theta, Y, W, eta1, eta2, a, rho, max_iter, eps, truncate)
 
 \item{a}{Value added to the diagonal of \eqn{-D'D} so that
 the matrix is positive definite, see
-\code{\link{matrix_A_inner_ADMM}}}
+\code{matrix_A_inner_ADMM}}
 
 \item{rho}{The ADMM's parameter}
 
