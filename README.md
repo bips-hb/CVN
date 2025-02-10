@@ -19,3 +19,16 @@ To install, simply type in R
 devtools::install_github("bips-hb/CVN")
 ```
 
+### Reference
+*Louis Dijkstra, Arne Godt, Ronja Foraita* (2024).\
+**Inferring High-Dimensional Dynamic Networks Changing with Multiple Covariates**\
+[https://arxiv.org/abs/2407.19978](https://arxiv.org/abs/2407.19978)
+
+
+### Acknowledgement
+DFG - Deutsche Forschungsgemeinschaft (FO 1045/2-1)
+
+### Contact
+Ronja Foraita\
+Leibniz Institute for Prevention Research and Epidemiology - BIPS\
+E-Mail: R (at) leibniz-bips.de
