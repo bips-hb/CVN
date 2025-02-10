@@ -28,6 +28,13 @@ devtools::install_github("bips-hb/CVN")
 ### Acknowledgement
 DFG - Deutsche Forschungsgemeinschaft (FO 1045/2-1)
 
+### Author Team
+
+Louis Dijkstra (Creator and main author)\
+Ronja Foraita (Maintainer, author)\
+Lukas Burk (Contributor)
+
+
 ### Contact
 Ronja Foraita\
 Leibniz Institute for Prevention Research and Epidemiology - BIPS\
