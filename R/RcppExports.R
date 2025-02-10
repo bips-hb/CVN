@@ -55,7 +55,7 @@ genlassoRcpp <- function(Y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate) {
 #' @param eta2 Equals \eqn{\lambda_2 / rho}
 #' @param a Value added to the diagonal of \eqn{-D'D} so that
 #'          the matrix is positive definite, see
-#'          \code{matrix_A_inner_ADMM}
+#'          \code{\link{matrix_A_inner_ADMM}}
 #' @param rho The ADMM's parameter
 #' @param max_iter Maximum number of iterations
 #' @param eps Stopping criterion. If differences

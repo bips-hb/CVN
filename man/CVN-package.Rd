@@ -3,12 +3,8 @@
 \docType{package}
 \name{CVN-package}
 \alias{CVN-package}
-\alias{CVN-package
-_PACKAGE}
-\title{CVN: Covariate-varying Networks}
+\title{Covariate-varying Networks}
 \description{
-Inferring high-dimensional Gaussian graphical networks that change with multiple discrete covariates. Louis Dijkstra, Arne Godt, Ronja Foraita (2024) \href{https://arxiv.org/abs/2407.19978}{arXiv:2407.19978}.
-
 Inferring high-dimensional Gaussian graphical networks that 
 change with multiple discrete covariates.
 }
@@ -37,24 +33,8 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Ronja Foraita \email{foraita@leibniz-bips.de}
-
-Authors:
-\itemize{
-  \item Louis Dijkstra
-}
-
-Other contributors:
-\itemize{
-  \item Lukas Burk [contributor]
-  \item  DFG [funder]
-  \item Leibniz Institute for Prevention Research and Epidemiology - BIPS \email{R@leibniz-bips.de} (02c22vc57) [copyright holder]
-}
-
-
 Louis Dijkstra\cr Maintainer and contributors:
 Lukas Burk, Ronja Foraita <foraita@leibniz-bips.de>
 }
 \keyword{graphical}
-\keyword{internal}
 \keyword{models}

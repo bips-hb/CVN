@@ -1,15 +1,16 @@
 #' Data for a grid of graphs (3 x 3)
 #'
 #' Data generated for 9 graphs in total, organized in a grid of
-#' (3x3). See the package \code{CVNSim} for more information
-#' on how the grid is constructed: \url{https://github.com/bips-hb/CVNSim}
+#' (3x3). Each data set has 10 variables drawn from a multinormal distribution given
+#' 9 adjacency matrices reflecting a graph structure that follows an Erdös-Rényi graph
+#' with probability 0.5. The number of edges that are removed or added 
+#' in each step of the `x`- and `y` direction is 2. 
+#' 
 #'
 #' @name grid
 #' @usage data(grid)
 #' @docType data
 #' @keywords datasets
-#' @format List
-#' @references \url{https://github.com/bips-hb/CVNSim}
 grid
 
 

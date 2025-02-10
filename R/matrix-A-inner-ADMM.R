@@ -24,7 +24,8 @@
 #' @references 
 #' Zhu, Y. (2017). An Augmented ADMM Algorithm With Application to the 
 #' Generalized Lasso Problem. Journal of Computational and Graphical Statistics, 
-#' 26(1), 195–204. https://doi.org/10.1080/10618600.2015.1114491
+#' 26(1), 195–204.\cr \doi{10.1080/10618600.2015.1114491}
+#' @author Louis Dijkstra
 #' 
 #' @export
 matrix_A_inner_ADMM <- function(W, eta1, eta2) { 
