@@ -1,5 +1,5 @@
 Package: CVN
-Title: Covariate-varying Networks
+Title: Covariate-Varying Networks
 Version: 1.1
 Authors@R: c(
     person(given = "Ronja", 
