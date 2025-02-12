@@ -8,7 +8,6 @@
 #' \emph{Inferring High-Dimensional Dynamic Networks Changing with Multiple Covariates (2024), Arxiv},
 #' \url{https://arxiv.org/abs/2407.19978}.
 #' @keywords graphical models 
-#' @rdname CVN-package
 #' @examples
 #'
 #' data(grid)
