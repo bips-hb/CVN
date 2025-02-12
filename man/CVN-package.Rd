@@ -33,8 +33,20 @@ Useful links:
 
 }
 \author{
-Louis Dijkstra\cr Maintainer and contributors:
-Lukas Burk, Ronja Foraita <foraita@leibniz-bips.de>
+\strong{Maintainer}: Ronja Foraita \email{foraita@leibniz-bips.de} (\href{https://orcid.org/0000-0003-2216-6653}{ORCID})
+
+Authors:
+\itemize{
+  \item Louis Dijkstra (\href{https://orcid.org/0000-0003-1476-6202}{ORCID})
+}
+
+Other contributors:
+\itemize{
+  \item Lukas Burk (\href{https://orcid.org/0000-0001-7528-3795}{ORCID}) [contributor]
+  \item DFG [funder]
+  \item Leibniz Institute for Prevention Research and Epidemiology - BIPS \email{R@leibniz-bips.de} (\href{https://ror.org/02c22vc57}{ROR}) [copyright holder]
+}
+
 }
 \keyword{graphical}
 \keyword{models}
