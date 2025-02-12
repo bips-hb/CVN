@@ -23,12 +23,12 @@ genlasso_wrapper(y, W, m, eta1, eta2, a, rho, max_iter, eps, truncate)
 
 \item{max_iter}{Maximum number of iterations (Default: \code{100})}
 
-\item{eps}{If the relative difference between two update steps is 
-smaller than \eqn{\epsilon}, the algorithm stops. 
+\item{eps}{If the relative difference between two update steps is
+smaller than \eqn{\epsilon}, the algorithm stops.
 See \code{relative_difference_precision_matrices}
 (Default: \code{1e-4})}
 
-\item{truncate}{All values of the final \eqn{\hat{\Theta}_i}'s below \code{truncate} will be 
+\item{truncate}{All values of the final \eqn{\hat{\Theta}_i}'s below \code{truncate} will be
 set to \code{0}. (Default: \code{1e-4})}
 }
 \description{

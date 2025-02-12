@@ -19,28 +19,28 @@ plot_information_criterion(
 \arguments{
 \item{cvn}{Fitted CVN, see \code{\link{CVN}}}
 
-\item{criterion}{The information criterion, must be either \code{'aic'} 
+\item{criterion}{The information criterion, must be either \code{'aic'}
 or \code{'bic'}. Default: \code{'bic'}}
 
-\item{use_gammas}{If \code{TRUE}, plots the \eqn{\gamma}-values. Otherwise, 
+\item{use_gammas}{If \code{TRUE}, plots the \eqn{\gamma}-values. Otherwise,
 the \eqn{\lambda}-values are used}
 
-\item{show_minimum}{If \code{TRUE}, an orange dot is put on the point with the 
-minimum value of the information criterion is. If \code{FALSE}, 
+\item{show_minimum}{If \code{TRUE}, an orange dot is put on the point with the
+minimum value of the information criterion is. If \code{FALSE},
 no dot is added. Default: \code{TRUE}.}
 
 \item{title}{Title plot (Default is none)}
 
-\item{xlabel}{Label for the \eqn{x}-axis. Default depends on \code{use_gammas}. 
-If \code{use_gammas = TRUE}, then the label is 'gamma1'. Otherwise, 
+\item{xlabel}{Label for the \eqn{x}-axis. Default depends on \code{use_gammas}.
+If \code{use_gammas = TRUE}, then the label is 'gamma1'. Otherwise,
 'lambda1'}
 
-\item{ylabel}{Label for the \eqn{x}-axis. Default depends on \code{use_gammas}. 
-If \code{use_gammas = TRUE}, then the label is 'gamma1'. Otherwise, 
+\item{ylabel}{Label for the \eqn{x}-axis. Default depends on \code{use_gammas}.
+If \code{use_gammas = TRUE}, then the label is 'gamma1'. Otherwise,
 'lambda1'}
 
-\item{legend_label}{Title for the legend. Default depends on \code{criterion}. 
-If \code{'aic'}, then the label is 'AIC'. 
+\item{legend_label}{Title for the legend. Default depends on \code{criterion}.
+If \code{'aic'}, then the label is 'AIC'.
 Otherwise, 'BIC'.}
 
 \item{limits}{The limits for the values of the Hamming distance}

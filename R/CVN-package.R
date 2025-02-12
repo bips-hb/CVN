@@ -4,8 +4,6 @@
 #' change with multiple discrete covariates. 
 #'
 #' @name CVN-package
-#' @author Louis Dijkstra\cr Maintainer and contributors:
-#' Lukas Burk, Ronja Foraita <foraita@@leibniz-bips.de>
 #' @references Dijkstra L, Godt A, Foraita R 
 #' \emph{Inferring High-Dimensional Dynamic Networks Changing with Multiple Covariates (2024), Arxiv},
 #' \url{https://arxiv.org/abs/2407.19978}.

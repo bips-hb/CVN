@@ -11,7 +11,7 @@ strip_cvn(cvn)
 }
 \value{
 Reduced CVN where \code{Theta}, \code{data} and \code{Sigma}
-        are removed
+are removed
 }
 \description{
 Function that removes most of the items to make the CVN object

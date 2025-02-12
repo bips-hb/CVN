@@ -10,11 +10,11 @@ find_core_graph(cvn)
 \item{cvn}{A \code{cvn} object}
 }
 \value{
-A list of adjacency matrix, one for each 
-        value of (lambda1, lambda2)
+A list of adjacency matrix, one for each
+value of (lambda1, lambda2)
 }
 \description{
-Finds the 'core graph', i.e., those edges that are 
+Finds the 'core graph', i.e., those edges that are
 present in all of the estimated graphs
 }
 \examples{

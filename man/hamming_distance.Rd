@@ -7,15 +7,15 @@
 hamming_distance(cvn, verbose = TRUE)
 }
 \arguments{
-\item{cvn}{A \code{cvn} object 
+\item{cvn}{A \code{cvn} object
 created by the \code{\link[CVN]{CVN}} function}
 
 \item{verbose}{If \code{TRUE}, shows a progress bar}
 }
 \value{
-A list of symmetric matrices. Each matrix contains the structural 
-        Hamming distances between the different graphs. Each item in the 
-        list corresponds to one \eqn{(\lambda_1, \lambda_2)} pair
+A list of symmetric matrices. Each matrix contains the structural
+Hamming distances between the different graphs. Each item in the
+list corresponds to one \eqn{(\lambda_1, \lambda_2)} pair
 }
 \description{
 Returns the structural Hamming distances

@@ -15,7 +15,7 @@ extract_cvn(cvn, id)
 A CVN object
 }
 \description{
-Function that extracts one CVN if the CVN object contains more than one. 
+Function that extracts one CVN if the CVN object contains more than one.
 Its helpful when just one tuning parameter constellation wants to be, e.g., plotted.
 }
 \examples{

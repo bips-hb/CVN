@@ -24,15 +24,15 @@ create_weight_matrix(
 Weight matrix
 }
 \description{
-This function generates different weight matrices for two external covariates, \eqn{W}. 
-There are several types: 
+This function generates different weight matrices for two external covariates, \eqn{W}.
+There are several types:
 \describe{
 \item{\code{full} }{All graphs are fully connected with weight 1}
-\item{\code{glasso} }{All graphs are disconnected with weight 0. This 
-             mimicks the GLASSO, where each graph is estimated independently}
+\item{\code{glasso} }{All graphs are disconnected with weight 0. This
+mimicks the GLASSO, where each graph is estimated independently}
 \item{\code{grid} }{A weight matrix for a \eqn{k \times l} grid}
-\item{\code{uniform-random} }{Fully-connected, but the entries are drawn 
-                   from a uniform distribution}
+\item{\code{uniform-random} }{Fully-connected, but the entries are drawn
+from a uniform distribution}
 }
 }
 \examples{

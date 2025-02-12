@@ -35,10 +35,10 @@ Number of observations can differ}
 \item{W}{The \eqn{(m \times m)}-dimensional symmetric
 weight matrix \eqn{W}}
 
-\item{lambda1}{Vector with different \eqn{\lambda_1}. LASSO penalty terms 
+\item{lambda1}{Vector with different \eqn{\lambda_1}. LASSO penalty terms
 (Default: \code{1:2})}
 
-\item{lambda2}{Vector with different \eqn{\lambda_2}. The global smoothing parameter values 
+\item{lambda2}{Vector with different \eqn{\lambda_2}. The global smoothing parameter values
 (Default: \code{1:2})}
 
 \item{gamma1}{A vector of \eqn{\gamma_1}'s LASSO penalty terms, where
@@ -93,52 +93,52 @@ returned (Default: \code{FALSE})}
 }
 \value{
 A \code{CVN} object containing the estimates for all the graphs
-   for each different value of \eqn{(\lambda_1, \lambda_2)}. General results for
-   the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data frame
-   \code{results}. It consists of multiple columns, namely:
-   \item{\code{id}}{The id. This corresponds to the indices of the lists}
-   \item{\code{lambda1}}{\eqn{\lambda_1} value}
-   \item{\code{lambda2}}{\eqn{\lambda_2} value}
-   \item{\code{gamma1}}{\eqn{\gamma_1} value}
-   \item{\code{gamma2}}{\eqn{\gamma_2} value}    
-   \item{\code{converged}}{whether algorithm converged or not}
-   \item{\code{value}}{value of the negative log-likelihood function}
-   \item{\code{n_iterations}}{number of iterations of the ADMM}
-   \item{\code{aic}}{Aikake information criterion}
-   \item{\code{bic}}{Bayesian information criterion}
-   \item{\code{ebic}}{Extended Bayesian information criterion}
-   \item{\code{edges_median}}{Median number of edges across the m estimated graphs}
-   \item{\code{edges_iqr}}{Interquartile range of edges across the m estimated graphs}    
-   The estimates of the precision matrices and the corresponding adjacency matrices
-   for the different values of \eqn{(\lambda_1, \lambda_2)} can be found
-   \item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m},
-                       (only if \code{minimal = FALSE})}
-   \item{\code{adj_matrices}}{A list with the estimated adjacency matrices corresponding to the
-                              estimated precision matrices in \code{Theta}. The entries
-                              are \code{1} if there is an edge, \code{0} otherwise.
-                              The matrices are sparse using package \code{\link[Matrix]{Matrix}}}
-   In addition, the input given to the CVN function is stored in the object as well:
-   \item{\code{Sigma}}{Empirical covariance matrices \eqn{\{\hat{\Sigma}_i\}_{i = 1}^m},
-                             (only if \code{minimal = FALSE})}
-   \item{\code{m}}{Number of graphs}
-   \item{\code{p}}{Number of variables}
-   \item{\code{n_obs}}{Vector of length \eqn{m} with number of observations for each graph}
-  \item{\code{data}}{The \code{data}, but then normalized or centered (only if \code{minimal = FALSE})}
-  \item{\code{W}}{The \eqn{(m \times m)}-dimensional weight matrix \eqn{W}}
-  \item{\code{maxiter}}{Maximum number of iterations for the ADMM}
-  \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter}
-  \item{\code{eps}}{The stopping criterion \eqn{\epsilon}}
-  \item{\code{truncate}}{Truncation value for \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
-  \item{\code{maxiter_genlasso}}{Maximum number of iterations for the generarlzed LASSO}
-  \item{\code{rho_genlasso}}{The \eqn{\rho} generalized LASSO penalty parameter}
-  \item{\code{eps_genlasso}}{The stopping criterion \eqn{\epsilon} for the generalized LASSO}
-  \item{\code{truncate_genlasso}}{Truncation value for \eqn{\beta} of the generalized LASSO}
-  \item{\code{n_lambda_values}}{Total number of \eqn{(\lambda_1, \lambda_2)} value combinations}
-  \item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
-  \item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
-  \item{\code{minimal}}{If \code{TRUE}, \code{data}, \code{Theta} and \code{Sigma} are not added}
-  \item{\code{hits_border_aic}}{If \code{TRUE}, the optimal model based on the AIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
-  \item{\code{hits_border_bic}}{If \code{TRUE}, the optimal model based on the BIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
+for each different value of \eqn{(\lambda_1, \lambda_2)}. General results for
+the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data frame
+\code{results}. It consists of multiple columns, namely:
+\item{\code{id}}{The id. This corresponds to the indices of the lists}
+\item{\code{lambda1}}{\eqn{\lambda_1} value}
+\item{\code{lambda2}}{\eqn{\lambda_2} value}
+\item{\code{gamma1}}{\eqn{\gamma_1} value}
+\item{\code{gamma2}}{\eqn{\gamma_2} value}
+\item{\code{converged}}{whether algorithm converged or not}
+\item{\code{value}}{value of the negative log-likelihood function}
+\item{\code{n_iterations}}{number of iterations of the ADMM}
+\item{\code{aic}}{Aikake information criterion}
+\item{\code{bic}}{Bayesian information criterion}
+\item{\code{ebic}}{Extended Bayesian information criterion}
+\item{\code{edges_median}}{Median number of edges across the m estimated graphs}
+\item{\code{edges_iqr}}{Interquartile range of edges across the m estimated graphs}
+The estimates of the precision matrices and the corresponding adjacency matrices
+for the different values of \eqn{(\lambda_1, \lambda_2)} can be found
+\item{\code{Theta}}{A list with the estimated precision matrices \eqn{\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m},
+(only if \code{minimal = FALSE})}
+\item{\code{adj_matrices}}{A list with the estimated adjacency matrices corresponding to the
+estimated precision matrices in \code{Theta}. The entries
+are \code{1} if there is an edge, \code{0} otherwise.
+The matrices are sparse using package \code{\link[Matrix]{Matrix}}}
+In addition, the input given to the CVN function is stored in the object as well:
+\item{\code{Sigma}}{Empirical covariance matrices \eqn{\{\hat{\Sigma}_i\}_{i = 1}^m},
+(only if \code{minimal = FALSE})}
+\item{\code{m}}{Number of graphs}
+\item{\code{p}}{Number of variables}
+\item{\code{n_obs}}{Vector of length \eqn{m} with number of observations for each graph}
+\item{\code{data}}{The \code{data}, but then normalized or centered (only if \code{minimal = FALSE})}
+\item{\code{W}}{The \eqn{(m \times m)}-dimensional weight matrix \eqn{W}}
+\item{\code{maxiter}}{Maximum number of iterations for the ADMM}
+\item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter}
+\item{\code{eps}}{The stopping criterion \eqn{\epsilon}}
+\item{\code{truncate}}{Truncation value for \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
+\item{\code{maxiter_genlasso}}{Maximum number of iterations for the generarlzed LASSO}
+\item{\code{rho_genlasso}}{The \eqn{\rho} generalized LASSO penalty parameter}
+\item{\code{eps_genlasso}}{The stopping criterion \eqn{\epsilon} for the generalized LASSO}
+\item{\code{truncate_genlasso}}{Truncation value for \eqn{\beta} of the generalized LASSO}
+\item{\code{n_lambda_values}}{Total number of \eqn{(\lambda_1, \lambda_2)} value combinations}
+\item{\code{normalized}}{If \code{TRUE}, \code{data} was normalized. Otherwise \code{data} was only centered}
+\item{\code{warmstart}}{If \code{TRUE}, warmstart was used}
+\item{\code{minimal}}{If \code{TRUE}, \code{data}, \code{Theta} and \code{Sigma} are not added}
+\item{\code{hits_border_aic}}{If \code{TRUE}, the optimal model based on the AIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
+\item{\code{hits_border_bic}}{If \code{TRUE}, the optimal model based on the BIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 }
 \description{
 Estimates a covariate-varying network model (CVN), i.e., \eqn{m}

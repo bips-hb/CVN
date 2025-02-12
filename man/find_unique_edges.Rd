@@ -10,9 +10,9 @@ find_unique_edges(cvn)
 \item{cvn}{A \code{cvn} object}
 }
 \value{
-A list of adjacency matrix, one for each 
-        value of (lambda1, lambda2), showing the edges that are unique for each
-        single subgraph.
+A list of adjacency matrix, one for each
+value of (lambda1, lambda2), showing the edges that are unique for each
+single subgraph.
 }
 \description{
 Function that finds edges that are only present in one subgraph of the CVN model.

@@ -19,7 +19,7 @@ plot_hamming_distances(
 \arguments{
 \item{distance_matrix}{Symmetric matrix with distances}
 
-\item{absolute}{If \code{FALSE}, rescaled to [0,1]}
+\item{absolute}{If \code{FALSE}, rescaled to \verb{[0,1]}}
 
 \item{limits}{The limits for the values of the Hamming distance}
 
@@ -27,7 +27,7 @@ plot_hamming_distances(
 
 \item{legend_label}{Title of the legend (Default: "Hamming Distance")}
 
-\item{add_counts_to_cells}{If \code{TRUE}, counts from the matrix are 
+\item{add_counts_to_cells}{If \code{TRUE}, counts from the matrix are
 added to the plot (Default: \code{TRUE})}
 
 \item{add_ticks_labels}{If \code{TRUE}, the number corresponding to the graph
@@ -41,7 +41,7 @@ is add to the plot (Default: \code{TRUE})}
 A heatmap plot
 }
 \description{
-Returns a heat map of the distance matrix for 
+Returns a heat map of the distance matrix for
 a particular CVN
 }
 \examples{

@@ -10,7 +10,7 @@ cvn_edge_summary(cvn)
 \item{cvn}{A \code{cvn} object}
 }
 \value{
-A data.frame showing the number of edges in each subgraph, the number of 
+A data.frame showing the number of edges in each subgraph, the number of
 edges present in all graphs (core edges) and the number of edges that are unique
 for a subgraph
 }

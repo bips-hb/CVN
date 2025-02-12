@@ -20,16 +20,16 @@ plot_hamming_distances_cvn(
 \arguments{
 \item{cvn}{A \code{cvn} object}
 
-\item{absolute}{If \code{FALSE}, rescaled to [0,1]}
+\item{absolute}{If \code{FALSE}, rescaled to \verb{[0,1]}}
 
-\item{same_range}{If \code{TRUE}, all heatmaps have the same range of values 
+\item{same_range}{If \code{TRUE}, all heatmaps have the same range of values
 of the Hamming distance shown (Default: TRUE)}
 
 \item{titles}{Title of the plots (Default is none)}
 
 \item{legend_label}{Title of the legend (Default: "Hamming Distance")}
 
-\item{add_counts_to_cells}{If \code{TRUE}, counts from the matrix are 
+\item{add_counts_to_cells}{If \code{TRUE}, counts from the matrix are
 added to the plot (Default: \code{TRUE})}
 
 \item{add_ticks_labels}{If \code{TRUE}, the number corresponding to the graph
@@ -45,7 +45,7 @@ is add to the plot (Default: \code{TRUE})}
 List of plots
 }
 \description{
-Creates all the heatmaps for a CVN, a heatmap for each 
+Creates all the heatmaps for a CVN, a heatmap for each
 pair of \eqn{(\lambda_1, \lambda_2)}
 }
 \examples{

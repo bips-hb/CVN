@@ -11,8 +11,8 @@ hits_end_lambda_intervals(results)
 }
 \value{
 List with two values:
-   \item{\code{hits_border_aic}}{If \code{TRUE}, hits the border for the AIC}
-   \item{\code{hits_border_bic}}{If \code{TRUE}, hits the border for the BIC}
+\item{\code{hits_border_aic}}{If \code{TRUE}, hits the border for the AIC}
+\item{\code{hits_border_bic}}{If \code{TRUE}, hits the border for the BIC}
 }
 \description{
 One often selected the optimal model for the \eqn{(\lambda_1, \lambda_2)}-values

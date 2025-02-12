@@ -12,7 +12,7 @@ determine_information_criterion_cvn(cvn, gamma = 0.5)
 \item{gamma}{The gamma value for the eBIC (default: 0.5)}
 }
 \description{
-Determines a given information criteria for a \code{cvn} object, 
+Determines a given information criteria for a \code{cvn} object,
 see \code{\link{CVN}}.
 }
 \examples{

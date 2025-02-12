@@ -7,20 +7,20 @@
 check_correctness_input(raw_data, W, lambda1, lambda2, gamma1, gamma2, rho)
 }
 \arguments{
-\item{raw_data}{A list with matrices. The number of columns should be the 
+\item{raw_data}{A list with matrices. The number of columns should be the
 same for each matrix}
 
-\item{W}{The \eqn{(m \times m)}-dimensional upper-triangular 
+\item{W}{The \eqn{(m \times m)}-dimensional upper-triangular
 weight matrix \eqn{W}}
 
 \item{lambda1}{A vector of \eqn{\lambda_1}'s LASSO penalty terms}
 
 \item{lambda2}{A vector of \eqn{\lambda_2}'s global smoothing parameters}
 
-\item{gamma1}{A vector of \eqn{\gamma_1}'s LASSO penalty terms. Note that 
+\item{gamma1}{A vector of \eqn{\gamma_1}'s LASSO penalty terms. Note that
 \eqn{\gamma_1 = \frac{2 \lambda_1}{m p (1 - p)}}}
 
-\item{gamma2}{A vector of \eqn{\gamma_2}'s global smoothing parameters. Note 
+\item{gamma2}{A vector of \eqn{\gamma_2}'s global smoothing parameters. Note
 that \eqn{\gamma_2 = \frac{4 \lambda_2}{m(m-1)p(p-1)}}}
 
 \item{rho}{The \eqn{\rho} ADMM's penalty parameter}

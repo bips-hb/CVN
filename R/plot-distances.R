@@ -4,7 +4,7 @@
 #' a particular CVN 
 #'
 #' @param distance_matrix Symmetric matrix with distances 
-#' @param absolute If \code{FALSE}, rescaled to [0,1]
+#' @param absolute If \code{FALSE}, rescaled to `[0,1]`
 #' @param limits The limits for the values of the Hamming distance 
 #' @param title Title plot (Default is none)
 #' @param legend_label Title of the legend (Default: "Hamming Distance")
@@ -95,7 +95,7 @@ plot_hamming_distances <- function(distance_matrix,
 #' pair of \eqn{(\lambda_1, \lambda_2)}
 #' 
 #' @param cvn A \code{cvn} object
-#' @param absolute If \code{FALSE}, rescaled to [0,1]
+#' @param absolute If \code{FALSE}, rescaled to `[0,1]`
 #' @param same_range If \code{TRUE}, all heatmaps have the same range of values 
 #'                   of the Hamming distance shown (Default: TRUE)
 #' @param titles Title of the plots (Default is none)

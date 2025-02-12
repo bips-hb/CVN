@@ -21,7 +21,7 @@ hd_weight_matrix(
 
 \item{legend_label}{Title of the legend (Default: "weight")}
 
-\item{add_counts_to_cells}{If \code{TRUE}, counts from the matrix are 
+\item{add_counts_to_cells}{If \code{TRUE}, counts from the matrix are
 added to the plot (Default: \code{TRUE})}
 
 \item{add_ticks_labels}{If \code{TRUE}, the number corresponding to the graph

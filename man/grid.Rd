@@ -11,7 +11,7 @@ data(grid)
 Data generated for 9 graphs in total, organized in a grid of
 (3x3). Each data set has 10 variables drawn from a multinormal distribution given
 9 adjacency matrices reflecting a graph structure that follows an Erdös-Rényi graph
-with probability 0.5. The number of edges that are removed or added 
-in each step of the `x`- and `y` direction is 2.
+with probability 0.5. The number of edges that are removed or added
+in each step of the \code{x}- and \code{y} direction is 2.
 }
 \keyword{datasets}

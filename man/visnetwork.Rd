@@ -13,14 +13,14 @@ visnetwork(
 )
 }
 \arguments{
-\item{nodes}{A data frame with rows equal to the number of nodes with columns "id" and "title". 
+\item{nodes}{A data frame with rows equal to the number of nodes with columns "id" and "title".
 Can be created with \code{\link{create_nodes_visnetwork}}.}
 
 \item{edges}{A data frame with columns "from" and "to. Each row represents an edge between two nodes (integer)}
 
 \item{node_titles}{Vector with title of the nodes (Default: \code{1:p})}
 
-\item{title}{A list with \code{n_lambda_values} vectors. Each vector is of the 
+\item{title}{A list with \code{n_lambda_values} vectors. Each vector is of the
 lenght \code{m}. Regulates the titles of the graphs (Default: no title)}
 
 \item{igraph_layout}{igraph layout (default: layout_in_circle)}
@@ -29,11 +29,11 @@ lenght \code{m}. Regulates the titles of the graphs (Default: no title)}
 A \code{visNetwork} plot
 }
 \description{
-Creates a \code{visNetwork} plot given a list of 
-nodes and edges. The nodes data frame can be 
-created with \code{\link{create_nodes_visnetwork}}; 
-the edges with \code{create_edges_visnetwork}.  
-In order to highlight edges, you can use 
+Creates a \code{visNetwork} plot given a list of
+nodes and edges. The nodes data frame can be
+created with \code{\link{create_nodes_visnetwork}};
+the edges with \code{create_edges_visnetwork}.
+In order to highlight edges, you can use
 \code{\link{set_attributes_to_edges_visnetwork}}.
 }
 \examples{

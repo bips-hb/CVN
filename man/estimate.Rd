@@ -28,7 +28,7 @@ estimate(
 )
 }
 \description{
-A function for estimating a CVN for a single \eqn{(\lambda_1, \lambda_2)}-value. 
+A function for estimating a CVN for a single \eqn{(\lambda_1, \lambda_2)}-value.
 See for more details \code{\link{CVN}}
 }
 \keyword{internal}
