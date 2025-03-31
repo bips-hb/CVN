@@ -188,120 +188,120 @@ returned (Default: <code>FALSE</code>)</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>CVN</code> object containing the estimates for all the graphs
-   for each different value of \((\lambda_1, \lambda_2)\). General results for
-   the different values of \((\lambda_1, \lambda_2)\) can be found in the data frame
-   <code>results</code>. It consists of multiple columns, namely:</p>
+for each different value of \((\lambda_1, \lambda_2)\). General results for
+the different values of \((\lambda_1, \lambda_2)\) can be found in the data frame
+<code>results</code>. It consists of multiple columns, namely:</p>
 <dl><dt><code>id</code></dt>
 <dd><p>The id. This corresponds to the indices of the lists</p></dd>
 
-   <dt><code>lambda1</code></dt>
+<dt><code>lambda1</code></dt>
 <dd><p>\(\lambda_1\) value</p></dd>
 
-   <dt><code>lambda2</code></dt>
+<dt><code>lambda2</code></dt>
 <dd><p>\(\lambda_2\) value</p></dd>
 
-   <dt><code>gamma1</code></dt>
+<dt><code>gamma1</code></dt>
 <dd><p>\(\gamma_1\) value</p></dd>
 
-   <dt><code>gamma2</code></dt>
+<dt><code>gamma2</code></dt>
 <dd><p>\(\gamma_2\) value</p></dd>
 
-   <dt><code>converged</code></dt>
+<dt><code>converged</code></dt>
 <dd><p>whether algorithm converged or not</p></dd>
 
-   <dt><code>value</code></dt>
+<dt><code>value</code></dt>
 <dd><p>value of the negative log-likelihood function</p></dd>
 
-   <dt><code>n_iterations</code></dt>
+<dt><code>n_iterations</code></dt>
 <dd><p>number of iterations of the ADMM</p></dd>
 
-   <dt><code>aic</code></dt>
+<dt><code>aic</code></dt>
 <dd><p>Aikake information criterion</p></dd>
 
-   <dt><code>bic</code></dt>
+<dt><code>bic</code></dt>
 <dd><p>Bayesian information criterion</p></dd>
 
-   <dt><code>ebic</code></dt>
+<dt><code>ebic</code></dt>
 <dd><p>Extended Bayesian information criterion</p></dd>
 
-   <dt><code>edges_median</code></dt>
+<dt><code>edges_median</code></dt>
 <dd><p>Median number of edges across the m estimated graphs</p></dd>
 
-   <dt><code>edges_iqr</code></dt>
+<dt><code>edges_iqr</code></dt>
 <dd><p>Interquartile range of edges across the m estimated graphs</p></dd>
 
 </dl><p>The estimates of the precision matrices and the corresponding adjacency matrices
-   for the different values of \((\lambda_1, \lambda_2)\) can be found</p>
+for the different values of \((\lambda_1, \lambda_2)\) can be found</p>
 <dl><dt><code>Theta</code></dt>
 <dd><p>A list with the estimated precision matrices \(\{ \hat{\Theta}_i(\lambda_1, \lambda_2) \}_{i = 1}^m\),
-                       (only if <code>minimal = FALSE</code>)</p></dd>
+(only if <code>minimal = FALSE</code>)</p></dd>
 
-   <dt><code>adj_matrices</code></dt>
+<dt><code>adj_matrices</code></dt>
 <dd><p>A list with the estimated adjacency matrices corresponding to the
-                              estimated precision matrices in <code>Theta</code>. The entries
-                              are <code>1</code> if there is an edge, <code>0</code> otherwise.
-                              The matrices are sparse using package <code><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix</a></code></p></dd>
+estimated precision matrices in <code>Theta</code>. The entries
+are <code>1</code> if there is an edge, <code>0</code> otherwise.
+The matrices are sparse using package <code><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix</a></code></p></dd>
 
 </dl><p>In addition, the input given to the CVN function is stored in the object as well:</p>
 <dl><dt><code>Sigma</code></dt>
 <dd><p>Empirical covariance matrices \(\{\hat{\Sigma}_i\}_{i = 1}^m\),
-                             (only if <code>minimal = FALSE</code>)</p></dd>
+(only if <code>minimal = FALSE</code>)</p></dd>
 
-   <dt><code>m</code></dt>
+<dt><code>m</code></dt>
 <dd><p>Number of graphs</p></dd>
 
-   <dt><code>p</code></dt>
+<dt><code>p</code></dt>
 <dd><p>Number of variables</p></dd>
 
-   <dt><code>n_obs</code></dt>
+<dt><code>n_obs</code></dt>
 <dd><p>Vector of length \(m\) with number of observations for each graph</p></dd>
 
-  <dt><code>data</code></dt>
+<dt><code>data</code></dt>
 <dd><p>The <code>data</code>, but then normalized or centered (only if <code>minimal = FALSE</code>)</p></dd>
 
-  <dt><code>W</code></dt>
+<dt><code>W</code></dt>
 <dd><p>The \((m \times m)\)-dimensional weight matrix \(W\)</p></dd>
 
-  <dt><code>maxiter</code></dt>
+<dt><code>maxiter</code></dt>
 <dd><p>Maximum number of iterations for the ADMM</p></dd>
 
-  <dt><code>rho</code></dt>
+<dt><code>rho</code></dt>
 <dd><p>The \(\rho\) ADMM's penalty parameter</p></dd>
 
-  <dt><code>eps</code></dt>
+<dt><code>eps</code></dt>
 <dd><p>The stopping criterion \(\epsilon\)</p></dd>
 
-  <dt><code>truncate</code></dt>
+<dt><code>truncate</code></dt>
 <dd><p>Truncation value for \(\{ \hat{\Theta}_i \}_{i = 1}^m\)</p></dd>
 
-  <dt><code>maxiter_genlasso</code></dt>
+<dt><code>maxiter_genlasso</code></dt>
 <dd><p>Maximum number of iterations for the generarlzed LASSO</p></dd>
 
-  <dt><code>rho_genlasso</code></dt>
+<dt><code>rho_genlasso</code></dt>
 <dd><p>The \(\rho\) generalized LASSO penalty parameter</p></dd>
 
-  <dt><code>eps_genlasso</code></dt>
+<dt><code>eps_genlasso</code></dt>
 <dd><p>The stopping criterion \(\epsilon\) for the generalized LASSO</p></dd>
 
-  <dt><code>truncate_genlasso</code></dt>
+<dt><code>truncate_genlasso</code></dt>
 <dd><p>Truncation value for \(\beta\) of the generalized LASSO</p></dd>
 
-  <dt><code>n_lambda_values</code></dt>
+<dt><code>n_lambda_values</code></dt>
 <dd><p>Total number of \((\lambda_1, \lambda_2)\) value combinations</p></dd>
 
-  <dt><code>normalized</code></dt>
+<dt><code>normalized</code></dt>
 <dd><p>If <code>TRUE</code>, <code>data</code> was normalized. Otherwise <code>data</code> was only centered</p></dd>
 
-  <dt><code>warmstart</code></dt>
+<dt><code>warmstart</code></dt>
 <dd><p>If <code>TRUE</code>, warmstart was used</p></dd>
 
-  <dt><code>minimal</code></dt>
+<dt><code>minimal</code></dt>
 <dd><p>If <code>TRUE</code>, <code>data</code>, <code>Theta</code> and <code>Sigma</code> are not added</p></dd>
 
-  <dt><code>hits_border_aic</code></dt>
+<dt><code>hits_border_aic</code></dt>
 <dd><p>If <code>TRUE</code>, the optimal model based on the AIC hits the border of \((\lambda_1, \lambda_2)\)</p></dd>
 
-  <dt><code>hits_border_bic</code></dt>
+<dt><code>hits_border_bic</code></dt>
 <dd><p>If <code>TRUE</code>, the optimal model based on the BIC hits the border of \((\lambda_1, \lambda_2)\)</p></dd>
 
 </dl></div>
