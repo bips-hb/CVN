@@ -100,6 +100,7 @@
 #'   \item{\code{minimal}}{If \code{TRUE}, \code{data}, \code{Theta} and \code{Sigma} are not added}
 #'   \item{\code{hits_border_aic}}{If \code{TRUE}, the optimal model based on the AIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 #'   \item{\code{hits_border_bic}}{If \code{TRUE}, the optimal model based on the BIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
+#'   \item{\code{gamma_ebic}}{Gamma value used to calculate eBIC} 
 #'   
 #' @aliases CVN
 #' @examples 
@@ -312,7 +313,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
     res$aic[i] <- ic$aic
     res$bic[i] <- ic$bic
     res$ebic[i] <- ic$ebic
-    
+
     # Median edges
     res$edges_median[i] <- median(mapply(sum, est[[i]]$adj_matrices) / 2)
     res$edges_iqr[i] <- IQR(mapply(sum, est[[i]]$adj_matrices) / 2)
@@ -334,6 +335,7 @@ CVN <- function(data, W, lambda1 = 1:2, lambda2 = 1:2,
   hit <- hits_end_lambda_intervals(res)
   global_res$hits_border_aic <- hit$hits_border_aic
   global_res$hits_border_bic <- hit$hits_border_bic
+  global_res$gamma_ebic <- gamma_ebic
 
   # Collect all the results & input ---------------------------
   global_res$results  <- res
