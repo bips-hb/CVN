@@ -4,7 +4,7 @@
 #' more memory sufficient. This is especially important when the
 #' graphs are rather larger
 #'
-#' @param cvn Object of classs 'CVN'
+#' @param cvn Object of class 'CVN'
 #'
 #' @return Reduced CVN where \code{Theta}, \code{data} and \code{Sigma}
 #'         are removed

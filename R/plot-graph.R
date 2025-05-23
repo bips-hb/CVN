@@ -62,8 +62,9 @@ create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#'
-#' visnetwork(nodes, edges) 
+#' if(interactive()){
+#'   visnetwork(nodes, edges) 
+#' }
 #' @export
 
 create_edges_visnetwork <- function(adj_matrix) {
@@ -120,8 +121,9 @@ create_edges_visnetwork <- function(adj_matrix) {
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#'
-#' visnetwork(nodes, edges)
+#' if(interactive()){
+#'   visnetwork(nodes, edges)
+#' }
 #' @export
 set_attributes_to_edges_visnetwork <- function(edges,
                                                subset_edges,
@@ -211,8 +213,9 @@ set_attributes_to_edges_visnetwork <- function(edges,
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#'
-#' visnetwork(nodes, edges)
+#' if(interactive()){
+#'   visnetwork(nodes, edges)
+#' }
 #' @export
 visnetwork <- function(nodes,
                        edges,
@@ -252,10 +255,12 @@ visnetwork <- function(nodes,
 #' @return The cvn input which is extended by the list element 'plots'
 #' @export
 #' @examples 
+#' \donttest{
 #' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #' fit_plot <- visnetwork_cvn(fit)
 #' fit_plot$plots[[1]][[1]]
+#' }
 visnetwork_cvn <- function(cvn, 
                            node_titles = 1:cvn$p, 
                            titles = lapply(1:cvn$n_lambda_values, 
@@ -266,11 +271,11 @@ visnetwork_cvn <- function(cvn,
                            igraph_layout = "layout_in_circle", 
                            verbose = TRUE) {
 
-  if(!inherits(cvn, "cvn") & !inherits(cvn, "cvn_interpolated")) {
+  if (!inherits(cvn, "cvn") & !inherits(cvn, "cvn_interpolated")) {
     stop("The input object must be of class 'cvn' or 'cvn_interpolated'.")
   }
   if (inherits(cvn, "cvn_interpolated")) {
-    warning("Works only if the original cvn was combined with an interpolated cvn using 
+    message("Note: Works only if the original cvn was combined with an interpolated cvn using 
             the function 'combine_cvn_interpolated'.")
   }
   if (!(length(node_titles) == cvn$p)) {
@@ -328,7 +333,6 @@ visnetwork_cvn <- function(cvn,
   }
   
   # create the edge dataframes for all the graphs
-  # browser()
   all_edges <- lapply(1:cvn$n_lambda_values, function(i) {
     lapply(1:cvn$m, function(k) {
       # cat(sprintf("%d\t%d\n", i,k))

@@ -52,6 +52,7 @@ A heatmap plot
 Returns a heat map of the AIC or BIC for a fitted CVN
 }
 \examples{
+\donttest{
 data(grid)
 m <- 9
 
@@ -64,6 +65,6 @@ cvn$results
 plot_information_criterion(cvn, criterion = "aic")
 plot_information_criterion(cvn, criterion = "bic")
 plot_information_criterion(cvn, criterion = "ebic")
-
+}
 
 }

@@ -35,6 +35,7 @@ edges <- set_attributes_to_edges_visnetwork(edges,
                                             subset_edges = shared_edges,
                                             width = c(3, .5),
                                             color = c("red", "blue"))
-
-visnetwork(nodes, edges) 
+if(interactive()){
+  visnetwork(nodes, edges) 
+}
 }

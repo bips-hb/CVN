@@ -108,7 +108,7 @@ combine_cvn <- function(cvn_list, minimal = TRUE){
   }
   
   # Set the class back to "irgendwas"
-  class(combined_cvn) <- "cvn"
+  class(combined_cvn) <- c("cvn", "list")
   return(combined_cvn)
   
 }

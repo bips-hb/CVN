@@ -9,11 +9,12 @@
 #' @seealso \code{CVN}
 #' 
 #' @examples
+#' \donttest{
 #' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #' fit <- plot(fit) 
 #' fit$plots[[1]][[4]]
-#'
+#' }
 #' @export
 plot.cvn <- function(x, ...) {
   if (!inherits(x, "cvn")){

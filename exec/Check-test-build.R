@@ -34,6 +34,8 @@ rcmdcheck::rcmdcheck()
 
 # Build package and submit to
 # https://cran.r-project.org/submit.html
+devtools::clean_dll()
+devtools::document()
 devtools::build()
-devtools::build_manual()
-devtools::build(ignore = TRUE)  # Dateien, die ignoriert werden
+# devtools::build_manual()
+devtools::check()

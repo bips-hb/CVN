@@ -56,8 +56,8 @@ extract_cvn <- function(cvn, id){
     results = cvn$results[id,]
     )
   
-  # Set the class back to "irgendwas"
-  class(new_cvn) <- "cvn"
+  # Set the class back to "cvn"
+  class(new_cvn) <- c("cvn", "list")
   
   return(new_cvn)
   

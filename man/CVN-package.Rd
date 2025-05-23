@@ -42,7 +42,8 @@ Authors:
 Other contributors:
 \itemize{
   \item Lukas Burk (\href{https://orcid.org/0000-0001-7528-3795}{ORCID}) [contributor]
-  \item Leibniz Institute for Prevention Research and Epidemiology - BIPS \email{R@leibniz-bips.de} (02c22vc57) [copyright holder]
+  \item Leibniz Institute for Prevention Research and Epidemiology - BIPS (02c22vc57) [copyright holder, funder]
+  \item Deutsche Forschungsgemeinschaft (DFG) [funder]
 }
 
 }

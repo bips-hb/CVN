@@ -15,11 +15,12 @@
 Custom plot method for CVN objects.
 }
 \examples{
+\donttest{
 path <- system.file("cvnfit.rda", package = "CVN")
 load(path)
 fit <- plot(fit) 
 fit$plots[[1]][[4]]
-
+}
 }
 \seealso{
 \code{CVN}

@@ -28,6 +28,7 @@
 #' @importFrom dplyr %>% 
 #' 
 #' @examples 
+#' \donttest{
 #' data(grid)
 #' m <- 9
 #' 
@@ -40,7 +41,7 @@
 #' plot_information_criterion(cvn, criterion = "aic")
 #' plot_information_criterion(cvn, criterion = "bic")
 #' plot_information_criterion(cvn, criterion = "ebic")
-#' 
+#' }
 #' 
 #' @export                  
 plot_information_criterion <- function(cvn,

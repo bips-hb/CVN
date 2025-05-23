@@ -18,3 +18,4 @@
 ^CVN\.Rcheck$
 ^CVN.*\.tar\.gz$
 ^CVN.*\.tgz$
+^vignettes$

@@ -43,7 +43,7 @@ combine_cvn_interpolated <- function(cvn, cvn_interpolated){
   }
 
   # combine
-  combined_cvn_interpolated <- list(
+  cvn_interpolated_combined <- list(
     adj_matrices = list(c(cvn$adj_matrices[[1]], cvn_interpolated$adj_matrices)),
     m = cvn$m + 1, 
     p = cvn$p, 
@@ -55,8 +55,8 @@ combine_cvn_interpolated <- function(cvn, cvn_interpolated){
   )
   
   # Set the class back to "irgendwas"
-  class(combined_cvn_interpolated) <- "cvn_interpolated"
+  class(cvn_interpolated_combined) <- c("cvn_interpolated", "list")
   
-  return(combined_cvn_interpolated)
+  return(cvn_interpolated_combined)
   
 }

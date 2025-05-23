@@ -7,7 +7,7 @@
 strip_cvn(cvn)
 }
 \arguments{
-\item{cvn}{Object of classs 'CVN'}
+\item{cvn}{Object of class 'CVN'}
 }
 \value{
 Reduced CVN where \code{Theta}, \code{data} and \code{Sigma}

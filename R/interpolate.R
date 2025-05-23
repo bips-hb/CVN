@@ -25,6 +25,7 @@
 #'   
 #' @export
 #' @examples
+#' \donttest{
 #' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #' 
@@ -32,14 +33,16 @@
 #' fit10 <- combine_cvn_interpolated(fit, interpolate)
 #' fit10 <- visnetwork_cvn(fit10)
 #' 
+#' 
 #' if (requireNamespace("htmltools", quietly = TRUE)) {
 #' htmltools::browsable(htmltools::tagList(
 #'   htmltools::div(style = "display: grid; grid-template-columns: repeat(3, 1fr); 
 #'                  column-gap: 1px; row-gap: -10px",
 #'     fit10$plots[[1]][8:10])))
 #' } else {
-#' plot10$plots[[1]][8:10]
+#'  fit10$plots[[1]][8:10]
 #' } 
+#' }
 #'              
 interpolate <- function(cvn, weights, truncate = NULL) { 
   
@@ -120,7 +123,7 @@ interpolate <- function(cvn, weights, truncate = NULL) {
   )
   
   # Set the class back to "irgendwas"
-  class(cvn_interpolated) <- "cvn_interpolated"
+  class(cvn_interpolated) <- c("cvn_interpolated", "list")
   
   return(cvn_interpolated)
 }
