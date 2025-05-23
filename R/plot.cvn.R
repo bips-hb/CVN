@@ -9,7 +9,7 @@
 #' @seealso \code{CVN}
 #' 
 #' @examples
-#' path <- system.file("cvnfit.RData", package = "CVN")
+#' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #' fit <- plot(fit) 
 #' fit$plots[[1]][[4]]

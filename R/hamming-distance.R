@@ -8,7 +8,7 @@
 #' @return Matrix of Hamming distances
 #' @export
 #' @examples 
-#' path <- system.file("cvnfit.RData", package = "CVN")
+#' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #' 
 #' hamming_distance_adj_matrices(fit$adj_matrices[[1]])

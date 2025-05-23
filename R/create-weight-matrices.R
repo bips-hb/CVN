@@ -5,7 +5,7 @@
 #' \describe{
 #' \item{\code{full} }{All graphs are fully connected with weight 1}
 #' \item{\code{glasso} }{All graphs are disconnected with weight 0. This 
-#'              mimicks the GLASSO, where each graph is estimated independently}
+#'              mimics the GLASSO, where each graph is estimated independently}
 #' \item{\code{grid} }{A weight matrix for a \eqn{k \times l} grid}
 #' \item{\code{uniform-random} }{Fully-connected, but the entries are drawn 
 #'                    from a uniform distribution}

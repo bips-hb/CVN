@@ -26,7 +26,6 @@ Dijkstra L, Godt A, Foraita R
 Useful links:
 \itemize{
   \item \url{https://github.com/bips-hb/CVN}
-  \item \url{https://arxiv.org/abs/2407.19978}
   \item \url{https://bips-hb.github.io/CVN/}
   \item Report bugs at \url{https://github.com/bips-hb/CVN/issues}
 }
@@ -43,7 +42,6 @@ Authors:
 Other contributors:
 \itemize{
   \item Lukas Burk (\href{https://orcid.org/0000-0001-7528-3795}{ORCID}) [contributor]
-  \item DFG [funder]
   \item Leibniz Institute for Prevention Research and Epidemiology - BIPS \email{R@leibniz-bips.de} (02c22vc57) [copyright holder]
 }
 

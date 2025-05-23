@@ -25,7 +25,7 @@ devtools::install_github("bips-hb/CVN")
 [https://arxiv.org/abs/2407.19978](https://arxiv.org/abs/2407.19978)
 
 
-### Acknowledgement
+### Acknowledgment
 DFG - Deutsche Forschungsgemeinschaft (FO 1045/2-1)
 
 ### Author Team

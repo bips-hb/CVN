@@ -19,7 +19,7 @@
 #' 
 #' @return A heatmap plot         
 #' @examples          
-#' path <- system.file("cvnfit.RData", package = "CVN")
+#' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #' hd <- hamming_distance(fit, verbose = FALSE)
 #' 
@@ -112,7 +112,7 @@ plot_hamming_distances <- function(distance_matrix,
 #' 
 #' @return List of plots 
 #' @examples 
-#' path <- system.file("cvnfit.RData", package = "CVN")
+#' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #' 
 #' plot_hamming_distances_cvn(fit)

@@ -1,11 +1,11 @@
 #' Print contents of CVN object
 #' 
 #' @title Print CVN
-#' @param x  Object of classs 'CVN'
+#' @param x  Object of class 'CVN'
 #' @param ... Additional arguments to pass
 #' @seealso \code{\link{CVN}}
 #' @examples 
-#' path <- system.file("cvnfit.RData", package = "CVN")
+#' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #' 
 #' print(fit)

@@ -189,7 +189,7 @@ set_attributes_to_edges_visnetwork <- function(edges,
 #' @param edges A data frame with columns "from" and "to. Each row represents an edge between two nodes (integer)
 #' @param node_titles Vector with title of the nodes (Default: \code{1:p}) 
 #' @param title A list with \code{n_lambda_values} vectors. Each vector is of the 
-#'         lenght \code{m}. Regulates the titles of the graphs (Default: no title)
+#'         length \code{m}. Regulates the titles of the graphs (Default: no title)
 #' @param igraph_layout igraph layout (default: layout_in_circle)
 #' 
 #' @return A \code{visNetwork} plot
@@ -239,7 +239,7 @@ visnetwork <- function(nodes,
 #' @param cvn A \code{cvn} object, see \code{\link{CVN}}
 #' @param node_titles Vector with title of the nodes (Default: \code{1:p})
 #' @param titles A list with \code{n_lambda_values} vectors. Each vector is of the
-#'         lenght \code{m}. Regulates the titles of the graphs (Default: no title)
+#'         length \code{m}. Regulates the titles of the graphs (Default: no title)
 #' @param show_core_graph Shall the core graph be visualized (Default = TRUE)
 #' @param width Edge width of the core graph
 #' @param color String vector with two colors. The first color marks the edges in the
@@ -252,7 +252,7 @@ visnetwork <- function(nodes,
 #' @return The cvn input which is extended by the list element 'plots'
 #' @export
 #' @examples 
-#' path <- system.file("cvnfit.RData", package = "CVN")
+#' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #' fit_plot <- visnetwork_cvn(fit)
 #' fit_plot$plots[[1]][[1]]

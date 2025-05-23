@@ -9,7 +9,7 @@
 #'         value of (lambda1, lambda2)
 #' @export
 #' @examples
-#' path <- system.file("cvnfit.RData", package = "CVN")
+#' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #' find_core_graph(fit) 
 #' 
@@ -47,7 +47,7 @@ find_core_graph <- function(cvn) {
 #' @export
 #'
 #' @examples
-#' path <- system.file("cvnfit.RData", package = "CVN")
+#' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #'                   
 #' ue <- find_unique_edges(fit)
@@ -115,7 +115,7 @@ cvn_edge_summary <- function(cvn){
   if (!inherits(cvn, "cvn")) stop("The input object is not of class 'cvn'")
 
   # How many edges are in each graph
-  edges <- sapply(cvn$adj_matrices, function(adj_matrices){mapply(sum, adj_matrices)})
+  edges <- sapply(cvn$adj_matrices, function(adj_matrices){mapply(sum, adj_matrices)}) / 2
 
   #edges <- mapply(sum, cvn$adj_matrices[[1]])
   
@@ -129,7 +129,7 @@ cvn_edge_summary <- function(cvn){
   unique_edges <- find_unique_edges(cvn)
   
   # How many edges are unique in each graph?
-  unique_edges <- sapply(unique_edges, function(x) {mapply(sum, x)})
+  unique_edges <- sapply(unique_edges, function(x) {mapply(sum, x)}) / 2
   
   # Together
   if(length(core_edges) == 1){

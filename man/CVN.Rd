@@ -104,7 +104,7 @@ the different values of \eqn{(\lambda_1, \lambda_2)} can be found in the data fr
 \item{\code{converged}}{whether algorithm converged or not}
 \item{\code{value}}{value of the negative log-likelihood function}
 \item{\code{n_iterations}}{number of iterations of the ADMM}
-\item{\code{aic}}{Aikake information criterion}
+\item{\code{aic}}{Akaike information criterion}
 \item{\code{bic}}{Bayesian information criterion}
 \item{\code{ebic}}{Extended Bayesian information criterion}
 \item{\code{edges_median}}{Median number of edges across the m estimated graphs}
@@ -129,7 +129,7 @@ In addition, the input given to the CVN function is stored in the object as well
 \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter}
 \item{\code{eps}}{The stopping criterion \eqn{\epsilon}}
 \item{\code{truncate}}{Truncation value for \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
-\item{\code{maxiter_genlasso}}{Maximum number of iterations for the generarlzed LASSO}
+\item{\code{maxiter_genlasso}}{Maximum number of iterations for the generalized LASSO}
 \item{\code{rho_genlasso}}{The \eqn{\rho} generalized LASSO penalty parameter}
 \item{\code{eps_genlasso}}{The stopping criterion \eqn{\epsilon} for the generalized LASSO}
 \item{\code{truncate_genlasso}}{Truncation value for \eqn{\beta} of the generalized LASSO}
@@ -139,6 +139,7 @@ In addition, the input given to the CVN function is stored in the object as well
 \item{\code{minimal}}{If \code{TRUE}, \code{data}, \code{Theta} and \code{Sigma} are not added}
 \item{\code{hits_border_aic}}{If \code{TRUE}, the optimal model based on the AIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
 \item{\code{hits_border_bic}}{If \code{TRUE}, the optimal model based on the BIC hits the border of \eqn{(\lambda_1, \lambda_2)}}
+\item{\code{gamma_ebic}}{Gamma value used to calculate eBIC}
 }
 \description{
 Estimates a covariate-varying network model (CVN), i.e., \eqn{m}

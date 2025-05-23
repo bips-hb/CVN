@@ -7,7 +7,7 @@
 \method{print}{cvn}(x, ...)
 }
 \arguments{
-\item{x}{Object of classs 'CVN'}
+\item{x}{Object of class 'CVN'}
 
 \item{...}{Additional arguments to pass}
 }

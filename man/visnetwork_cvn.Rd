@@ -21,7 +21,7 @@ visnetwork_cvn(
 \item{node_titles}{Vector with title of the nodes (Default: \code{1:p})}
 
 \item{titles}{A list with \code{n_lambda_values} vectors. Each vector is of the
-lenght \code{m}. Regulates the titles of the graphs (Default: no title)}
+length \code{m}. Regulates the titles of the graphs (Default: no title)}
 
 \item{show_core_graph}{Shall the core graph be visualized (Default = TRUE)}
 

@@ -192,7 +192,7 @@ names(data_list) <-
 
 
 
-### Weigth Matrix and Meta-Graph
+### Weight Matrix and Meta-Graph
 
 We set the *meta-graph* $W$ in our example to the following:
 ![*Unweighted meta-graph showing a grid.*](pics/mg-ex-uw.png){width=50%}
@@ -379,7 +379,7 @@ knitr::kable(m)
 ```
 
 Based on the information criteria,  we select CVN 6. Here, all IC measures decide
-in favour of ID 6. However, this is not always the case. In principle, the AIC
+in favor of ID 6. However, this is not always the case. In principle, the AIC
 selects slightly denser models than the BIC. For tuning graphs, many 
 prefer the eBIC, although you have specify a value for $\gamma_{eBIC}$ as well. 
 
@@ -494,7 +494,7 @@ the number of edges that are unique for each subgraph _(E(g1_u),..., E(g9_u))_.
 cvn_edge_summary(cvn)
 ```
 You can also print the summary for one extracted CVN (fit6 in the example).
-The ouptut shows than the number of edges in each subgraph _(edges)_, 
+The output shows than the number of edges in each subgraph _(edges)_, 
 the number of edges that are shared by all subgraphs _(core_edges)_, 
 and the number of edges that are unique for this particular subgraph _(unique_edges)_.
 
@@ -566,3 +566,7 @@ its performance in simulation study. It should therefore be used with caution.
 ```{r stop_building, echo=FALSE}
 knitr::knit_exit()
 ```
+
+
+## Acknowledgment
+DFG - Deutsche Forschungsgemeinschaft (FO 1045/2-1)

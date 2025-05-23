@@ -47,6 +47,7 @@ utils::globalVariables(c(
 #' @importFrom dplyr slice  
 #' @importFrom glasso glasso
 #' @importFrom Matrix Matrix 
+#' @importFrom methods is
 #' @importFrom parallel clusterEvalQ
 #' @importFrom parallel detectCores
 #' @importFrom parallel makeCluster

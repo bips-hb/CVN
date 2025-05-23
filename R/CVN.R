@@ -65,7 +65,7 @@
 #'    \item{\code{converged}}{whether algorithm converged or not}
 #'    \item{\code{value}}{value of the negative log-likelihood function}
 #'    \item{\code{n_iterations}}{number of iterations of the ADMM}
-#'    \item{\code{aic}}{Aikake information criterion}
+#'    \item{\code{aic}}{Akaike information criterion}
 #'    \item{\code{bic}}{Bayesian information criterion}
 #'    \item{\code{ebic}}{Extended Bayesian information criterion}
 #'    \item{\code{edges_median}}{Median number of edges across the m estimated graphs}
@@ -90,7 +90,7 @@
 #'   \item{\code{rho}}{The \eqn{\rho} ADMM's penalty parameter}
 #'   \item{\code{eps}}{The stopping criterion \eqn{\epsilon}}
 #'   \item{\code{truncate}}{Truncation value for \eqn{\{ \hat{\Theta}_i \}_{i = 1}^m}}
-#'   \item{\code{maxiter_genlasso}}{Maximum number of iterations for the generarlzed LASSO}
+#'   \item{\code{maxiter_genlasso}}{Maximum number of iterations for the generalized LASSO}
 #'   \item{\code{rho_genlasso}}{The \eqn{\rho} generalized LASSO penalty parameter}
 #'   \item{\code{eps_genlasso}}{The stopping criterion \eqn{\epsilon} for the generalized LASSO}
 #'   \item{\code{truncate_genlasso}}{Truncation value for \eqn{\beta} of the generalized LASSO}
