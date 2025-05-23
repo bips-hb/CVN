@@ -18,7 +18,7 @@ A 'cvn_interpolated' object (see \code{\link{interpolate}}).
 Combine an interpolated CVN to an original CVN
 }
 \examples{
-path <- system.file("cvnfit.RData", package = "CVN")
+path <- system.file("cvnfit.rda", package = "CVN")
 load(path)
 
 interpolate <- interpolate(fit, c(0,0,0,0,0,0,0,0.5,0.5), truncate = 0.05)

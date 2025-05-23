@@ -49,7 +49,7 @@ Creates all the heatmaps for a CVN, a heatmap for each
 pair of \eqn{(\lambda_1, \lambda_2)}
 }
 \examples{
-path <- system.file("cvnfit.RData", package = "CVN")
+path <- system.file("cvnfit.rda", package = "CVN")
 load(path)
 
 plot_hamming_distances_cvn(fit)

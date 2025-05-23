@@ -21,7 +21,7 @@ devtools::build_vignettes()
 ## Run comprehensive tests
 # devtools::check()
 devtools::check(vignettes = FALSE, cran = TRUE)
-devtools::check(cran = TRUE)
+devtools::check(clean = TRUE, cran = TRUE)
 rcmdcheck::rcmdcheck()
 
 ## Final Cleanup

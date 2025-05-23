@@ -18,7 +18,7 @@ single subgraph.
 Function that finds edges that are only present in one subgraph of the CVN model.
 }
 \examples{
-path <- system.file("cvnfit.RData", package = "CVN")
+path <- system.file("cvnfit.rda", package = "CVN")
 load(path)
                   
 ue <- find_unique_edges(fit)

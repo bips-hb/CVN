@@ -46,7 +46,7 @@ a particular CVN
 }
 \examples{
          
-path <- system.file("cvnfit.RData", package = "CVN")
+path <- system.file("cvnfit.rda", package = "CVN")
 load(path)
 hd <- hamming_distance(fit, verbose = FALSE)
 

@@ -15,7 +15,7 @@
 Print contents of CVN object
 }
 \examples{
-path <- system.file("cvnfit.RData", package = "CVN")
+path <- system.file("cvnfit.rda", package = "CVN")
 load(path)
 
 print(fit)

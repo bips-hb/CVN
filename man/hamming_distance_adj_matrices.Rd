@@ -17,7 +17,7 @@ Returns the structural Hamming distance between multiple
 graphs
 }
 \examples{
-path <- system.file("cvnfit.RData", package = "CVN")
+path <- system.file("cvnfit.rda", package = "CVN")
 load(path)
 
 hamming_distance_adj_matrices(fit$adj_matrices[[1]])

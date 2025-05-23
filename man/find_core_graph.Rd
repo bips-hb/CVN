@@ -18,7 +18,7 @@ Finds the 'core graph', i.e., those edges that are
 present in all of the estimated graphs
 }
 \examples{
-path <- system.file("cvnfit.RData", package = "CVN")
+path <- system.file("cvnfit.rda", package = "CVN")
 load(path)
 find_core_graph(fit) 
 

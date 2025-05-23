@@ -16,7 +16,7 @@ Determines a given information criteria for a \code{cvn} object,
 see \code{\link{CVN}}.
 }
 \examples{
-path <- system.file("cvnfit.RData", package = "CVN")
+path <- system.file("cvnfit.rda", package = "CVN")
 load(path)
 determine_information_criterion_cvn(fit, gamma = 0.7)
 }
