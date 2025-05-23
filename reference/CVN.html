@@ -216,7 +216,7 @@ the different values of \((\lambda_1, \lambda_2)\) can be found in the data fram
 <dd><p>number of iterations of the ADMM</p></dd>
 
 <dt><code>aic</code></dt>
-<dd><p>Aikake information criterion</p></dd>
+<dd><p>Akaike information criterion</p></dd>
 
 <dt><code>bic</code></dt>
 <dd><p>Bayesian information criterion</p></dd>
@@ -275,7 +275,7 @@ The matrices are sparse using package <code><a href="https://rdrr.io/pkg/Matrix/
 <dd><p>Truncation value for \(\{ \hat{\Theta}_i \}_{i = 1}^m\)</p></dd>
 
 <dt><code>maxiter_genlasso</code></dt>
-<dd><p>Maximum number of iterations for the generarlzed LASSO</p></dd>
+<dd><p>Maximum number of iterations for the generalized LASSO</p></dd>
 
 <dt><code>rho_genlasso</code></dt>
 <dd><p>The \(\rho\) generalized LASSO penalty parameter</p></dd>
@@ -303,6 +303,9 @@ The matrices are sparse using package <code><a href="https://rdrr.io/pkg/Matrix/
 
 <dt><code>hits_border_bic</code></dt>
 <dd><p>If <code>TRUE</code>, the optimal model based on the BIC hits the border of \((\lambda_1, \lambda_2)\)</p></dd>
+
+<dt><code>gamma_ebic</code></dt>
+<dd><p>Gamma value used to calculate eBIC</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -390,11 +393,11 @@ for other \(\lambda_1\) and \(\lambda_2\) values closest to them.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Ronja Foraita, Louis Dijkstra, DFG.</p>
+  <p>Developed by Ronja Foraita, Louis Dijkstra.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer></div>

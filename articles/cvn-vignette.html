@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">Louis Dijkstra,
 Arne Godt, Ronja Foraita</h4>
             
-            <h4 data-toc-skip class="date">2025-03-31</h4>
+            <h4 data-toc-skip class="date">2025-05-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/bips-hb/CVN/blob/main/vignettes/cvn-vignette.Rmd" class="external-link"><code>vignettes/cvn-vignette.Rmd</code></a></small>
       <div class="d-none name"><code>cvn-vignette.Rmd</code></div>
@@ -204,32 +204,32 @@ can look like:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center"><img src="pics%2Fmg-grid-715_570.png" style="width:60.0%"></td>
-<td align="center"><img src="pics%2Fadj1.png" style="width:80.0%"></td>
+<td align="center"><img src="pics/mg-grid-715_570.png" style="width:60.0%"></td>
+<td align="center"><img src="pics/adj1.png" style="width:80.0%"></td>
 </tr>
 <tr class="even">
 <td align="center"><strong>Grid structure</strong></td>
 <td align="center"><em>Each covariate has 3 categories</em></td>
 </tr>
 <tr class="odd">
-<td align="center"><img src="pics%2Fmg-grid-w-715_570.png" style="width:60.0%"></td>
-<td align="center"><img src="pics%2Fadj5.png" style="width:80.0%"></td>
+<td align="center"><img src="pics/mg-grid-w-715_570.png" style="width:60.0%"></td>
+<td align="center"><img src="pics/adj5.png" style="width:80.0%"></td>
 </tr>
 <tr class="even">
 <td align="center"><strong>Weighted grid structure</strong></td>
 <td align="center"><em>Each covariate has 3 categories</em></td>
 </tr>
 <tr class="odd">
-<td align="center"><img src="pics%2Fmg-2-715_570.png" style="width:60.0%"></td>
-<td align="center"><img src="pics%2Fadj2.png" style="width:80.0%"></td>
+<td align="center"><img src="pics/mg-2-715_570.png" style="width:60.0%"></td>
+<td align="center"><img src="pics/adj2.png" style="width:80.0%"></td>
 </tr>
 <tr class="even">
 <td align="center"><strong>Arbitrary structure</strong></td>
 <td align="center"><em>Each covariate has 3 categories</em></td>
 </tr>
 <tr class="odd">
-<td align="center"><img src="pics%2Fmg-glasso-715_570.png" style="width:60.0%"></td>
-<td align="center"><img src="pics%2Fadj3.png" style="width:80.0%"></td>
+<td align="center"><img src="pics/mg-glasso-715_570.png" style="width:60.0%"></td>
+<td align="center"><img src="pics/adj3.png" style="width:80.0%"></td>
 </tr>
 <tr class="even">
 <td align="center"><strong>GLASSO-type structure</strong></td>
@@ -239,8 +239,8 @@ has 3 categories</em>
 </td>
 </tr>
 <tr class="odd">
-<td align="center"><img src="pics%2Fmg-full.png" style="width:60.0%"></td>
-<td align="center"><img src="pics%2Fadj4.png" style="width:65.0%"></td>
+<td align="center"><img src="pics/mg-full.png" style="width:60.0%"></td>
+<td align="center"><img src="pics/adj4.png" style="width:65.0%"></td>
 </tr>
 <tr class="even">
 <td align="center"><strong>Full/saturated structure</strong></td>
@@ -320,11 +320,11 @@ low income</em>), (<em>underweight - middle income</em>), …,
 <span>        <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="st">"_"</span>, <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="weigth-matrix-and-meta-graph">Weigth Matrix and Meta-Graph<a class="anchor" aria-label="anchor" href="#weigth-matrix-and-meta-graph"></a>
+<h3 id="weight-matrix-and-meta-graph">Weight Matrix and Meta-Graph<a class="anchor" aria-label="anchor" href="#weight-matrix-and-meta-graph"></a>
 </h3>
 <p>We set the <em>meta-graph</em>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
-in our example to the following: <img src="pics%2Fmg-ex-uw.png" style="width:50.0%" alt="Unweighted meta-graph showing a grid."></p>
+in our example to the following: <img src="pics/mg-ex-uw.png" style="width:50.0%" alt="Unweighted meta-graph showing a grid."></p>
 <p>In case of two external covariates, the function
 <code>create_weight_matrix</code> might be used to generated simple
 weight matrices from type <em>full</em> (equals saturated graphs),
@@ -357,7 +357,7 @@ data sets.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">W_random</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/create_weight_matrix.html">create_weight_matrix</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"uniform-random"</span>, k <span class="op">=</span> <span class="fl">3</span>, l <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/hd_weight_matrix.html">hd_weight_matrix</a></span><span class="op">(</span><span class="va">W_random</span><span class="op">)</span>  <span class="co"># randomly chosen weights</span></span></code></pre></div>
-<p><img src="cvn-vignette_tmp_files%2FW-heat-1.png" width="768"></p>
+<p><img src="cvn-vignette_tmp_files/W-heat-1.png" width="768"></p>
 </div>
 </div>
 <div class="section level2">
@@ -678,7 +678,7 @@ tuning parameter combination fitted by CVN. The yellow dot denotes the
 tuning parameter combination which shows the smallest IC value.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_information_criterion.html">plot_information_criterion</a></span><span class="op">(</span><span class="va">cvn</span>, criterion <span class="op">=</span> <span class="st">"aic"</span>, use_gammas <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="cvn-vignette_tmp_files%2Ficplot-1.png" width="100%"></p>
+<p><img src="cvn-vignette_tmp_files/icplot-1.png" width="100%"></p>
 <p>It is also possible to change the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>-value
 for the eBIC. The default is
@@ -714,7 +714,7 @@ for the eBIC. The default is
 </tbody>
 </table>
 <p>Based on the information criteria, we select CVN 6. Here, all IC
-measures decide in favour of ID 6. However, this is not always the case.
+measures decide in favor of ID 6. However, this is not always the case.
 In principle, the AIC selects slightly denser models than the BIC. For
 tuning graphs, many prefer the eBIC, although you have specify a value
 for
@@ -811,36 +811,36 @@ each subgraph <em>(E(g1_u),…, E(g9_u))</em>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cvn_edge_summary.html">cvn_edge_summary</a></span><span class="op">(</span><span class="va">cvn</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   E(g1) E(g2) E(g3) E(g4) E(g5) E(g6) E(g7) E(g8) E(g9) E(core) E(g1_u) E(g2_u)</span></span>
-<span><span class="co">#&gt; 1    68    52    56    64    56    56    68    68    58      12       6       0</span></span>
-<span><span class="co">#&gt; 2    44    32    36    38    32    30    44    38    36       1      14       0</span></span>
-<span><span class="co">#&gt; 3    28    22    20    22    18    16    36    18    14       0      12       2</span></span>
-<span><span class="co">#&gt; 4    90    88    88    88    88    88    90    90    90      44       0       0</span></span>
-<span><span class="co">#&gt; 5    36    28    30    32    32    28    38    38    32       2      12       0</span></span>
-<span><span class="co">#&gt; 6    28    18    16    18    16    16    22    16    14       1      12       0</span></span>
+<span><span class="co">#&gt; 1    34    26    28    32    28    28    34    34    29      12       3       0</span></span>
+<span><span class="co">#&gt; 2    22    16    18    19    16    15    22    19    18       1       7       0</span></span>
+<span><span class="co">#&gt; 3    14    11    10    11     9     8    18     9     7       0       6       1</span></span>
+<span><span class="co">#&gt; 4    45    44    44    44    44    44    45    45    45      44       0       0</span></span>
+<span><span class="co">#&gt; 5    18    14    15    16    16    14    19    19    16       2       6       0</span></span>
+<span><span class="co">#&gt; 6    14     9     8     9     8     8    11     8     7       1       6       0</span></span>
 <span><span class="co">#&gt;   E(g3_u) E(g4_u) E(g5_u) E(g6_u) E(g7_u) E(g8_u) E(g9_u)</span></span>
 <span><span class="co">#&gt; 1       0       0       0       0       0       0       0</span></span>
-<span><span class="co">#&gt; 2       0       0       2       0       4       0       0</span></span>
-<span><span class="co">#&gt; 3       4       0       2       0      10       0       2</span></span>
+<span><span class="co">#&gt; 2       0       0       1       0       2       0       0</span></span>
+<span><span class="co">#&gt; 3       2       0       1       0       5       0       1</span></span>
 <span><span class="co">#&gt; 4       0       0       0       0       0       0       0</span></span>
-<span><span class="co">#&gt; 5       4       0       2       0       4       2       2</span></span>
-<span><span class="co">#&gt; 6       2       0       2       4       4       2       2</span></span></code></pre></div>
+<span><span class="co">#&gt; 5       2       0       1       0       2       1       1</span></span>
+<span><span class="co">#&gt; 6       1       0       1       2       2       1       1</span></span></code></pre></div>
 <p>You can also print the summary for one extracted CVN (fit6 in the
-example). The ouptut shows than the number of edges in each subgraph
+example). The output shows than the number of edges in each subgraph
 <em>(edges)</em>, the number of edges that are shared by all subgraphs
 <em>(core_edges)</em>, and the number of edges that are unique for this
 particular subgraph <em>(unique_edges)</em>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cvn_edge_summary.html">cvn_edge_summary</a></span><span class="op">(</span><span class="va">fit6</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   edges core_edges unique_edges</span></span>
-<span><span class="co">#&gt; 1    28          1           12</span></span>
-<span><span class="co">#&gt; 2    18          1            0</span></span>
-<span><span class="co">#&gt; 3    16          1            2</span></span>
-<span><span class="co">#&gt; 4    18          1            0</span></span>
-<span><span class="co">#&gt; 5    16          1            2</span></span>
-<span><span class="co">#&gt; 6    16          1            4</span></span>
-<span><span class="co">#&gt; 7    22          1            4</span></span>
-<span><span class="co">#&gt; 8    16          1            2</span></span>
-<span><span class="co">#&gt; 9    14          1            2</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    14          1            6</span></span>
+<span><span class="co">#&gt; 2     9          1            0</span></span>
+<span><span class="co">#&gt; 3     8          1            1</span></span>
+<span><span class="co">#&gt; 4     9          1            0</span></span>
+<span><span class="co">#&gt; 5     8          1            1</span></span>
+<span><span class="co">#&gt; 6     8          1            2</span></span>
+<span><span class="co">#&gt; 7    11          1            2</span></span>
+<span><span class="co">#&gt; 8     8          1            1</span></span>
+<span><span class="co">#&gt; 9     7          1            1</span></span></code></pre></div>
 <p>You have the option to return the result as a matrix or as a heatmap
 plot. The number in each cell reflects the number of different edges
 between two graphs.</p>
@@ -850,7 +850,7 @@ between two graphs.</p>
 <span></span>
 <span><span class="va">hd_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hamming_distance_adj_matrices.html">hamming_distance_adj_matrices</a></span><span class="op">(</span><span class="va">fit6</span><span class="op">$</span><span class="va">adj_matrices</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="../reference/plot_hamming_distances.html">plot_hamming_distances</a></span><span class="op">(</span><span class="va">hd_matrix</span><span class="op">)</span></span></code></pre></div>
-<p><img src="cvn-vignette_tmp_files%2Fhamming-distance-1.png" width="768"></p>
+<p><img src="cvn-vignette_tmp_files/hamming-distance-1.png" width="768"></p>
 <p>As expected, the heatmap shows that the graph structures change
 randomly along the two covariates. No pattern can be seen</p>
 </div>
@@ -900,11 +900,11 @@ used with caution.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Ronja Foraita, Louis Dijkstra, DFG.</p>
+  <p>Developed by Ronja Foraita, Louis Dijkstra.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer>
