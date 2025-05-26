@@ -2,13 +2,16 @@ Package: CVN
 Title: Covariate-Varying Networks
 Version: 1.1
 Authors@R: c(
-    person("Louis", "Dijkstra", role = "aut", comment = c(ORCID = "0000-0003-1476-6202")),  
-    person(given = "Ronja", family = "Foraita", 
-          email = "foraita@leibniz-bips.de", role = c("aut", "cre"), 
-          comment = c(ORCID = "0000-0003-2216-6653")),
-    person("Lukas", "Burk", role = "ctb", comment = c(ORCID = "0000-0001-7528-3795")),
-    person("Leibniz Inst Prev Res & Epidemiology - BIPS", role = c("cph","fnd"), comment = c(ROR = "02c22vc57")),           
-    person("Deutsche Forschungsgemeinschaft (DFG)", role = "fnd"))
+    person("Ronja", "Foraita", , "foraita@leibniz-bips.de", role = c("aut", "cre"), 
+           comment = c(ORCID = "0000-0003-2216-6653")),
+    person("Louis", "Dijkstra", role = "aut",
+           comment = c(ORCID = "0000-0003-1476-6202")),
+    person("Lukas", "Burk", role = "ctb",
+           comment = c(ORCID = "0000-0001-7528-3795")),
+    person("Leibniz Institute for Prevention Research and Epidemiology - BIPS", role = c("cph", "fnd"), 
+           comment = c(ROR = "02c22vc57")),
+    person("Deutsche Forschungsgemeinschaft (DFG)", role = "fnd")
+  )
 Description: Inferring high-dimensional Gaussian graphical networks that change with multiple discrete covariates. Louis Dijkstra, Arne Godt, Ronja Foraita (2024) <doi:10.48550/arXiv.2407.19978>.
 License: GPL-3
 URL: https://github.com/bips-hb/CVN, https://bips-hb.github.io/CVN/
@@ -43,4 +46,4 @@ LazyData: true
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Spelling: Arne, Foraita, Godt, Ronja
+Spelling: Arne, Covariate, covariates, Foraita, Godt, Ronja, Approximator, wFLSA 
