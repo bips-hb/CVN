@@ -18,6 +18,11 @@ To install, simply type in R
 ```R
 devtools::install_github("bips-hb/CVN")
 ```
+or 
+```R
+install.packages('CVN', repos = c('https://bips-hb.r-universe.dev', 'https://cloud.r-project.org'))
+```
+
 
 ### Reference
 *Louis Dijkstra, Arne Godt, Ronja Foraita* (2024).\
