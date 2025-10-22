@@ -25,8 +25,12 @@
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#'
-#' visnetwork(nodes, edges) 
+#'                                             
+#' if (requireNamespace("igraph", quietly = TRUE) & interactive()){
+#'   visnetwork(nodes, edges) 
+#' } else {
+#'   print("install the 'igraph' package")
+#' }
 #' @export
 
 create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
@@ -62,8 +66,11 @@ create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#' if(interactive()){
+#'                                             
+#' if(requireNamespace("igraph", quietly = TRUE) & interactive()){
 #'   visnetwork(nodes, edges) 
+#' } else {
+#'   print("install the 'igraph' package")
 #' }
 #' @export
 
@@ -121,8 +128,11 @@ create_edges_visnetwork <- function(adj_matrix) {
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#' if(interactive()){
-#'   visnetwork(nodes, edges)
+#'                                             
+#' if(requireNamespace("igraph", quietly = TRUE) & interactive()){
+#'   visnetwork(nodes, edges) 
+#' } else {
+#'   print("install the 'igraph' package")
 #' }
 #' @export
 set_attributes_to_edges_visnetwork <- function(edges,
@@ -213,8 +223,11 @@ set_attributes_to_edges_visnetwork <- function(edges,
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#' if(interactive()){
-#'   visnetwork(nodes, edges)
+#'                                             
+#' if(requireNamespace("igraph", quietly = TRUE) & interactive()){
+#'   visnetwork(nodes, edges) 
+#' } else {
+#'   print("install the 'igraph' package")
 #' }
 #' @export
 visnetwork <- function(nodes,

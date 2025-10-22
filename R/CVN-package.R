@@ -52,6 +52,7 @@ utils::globalVariables(c(
 #' @importFrom parallel detectCores
 #' @importFrom parallel makeCluster
 #' @importFrom parallel stopCluster
+#' @importFrom progress progress_bar
 #' @importFrom reshape2 melt
 #' @importFrom utils combn 
 #' @importFrom stats cov

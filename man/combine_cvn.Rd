@@ -26,6 +26,7 @@ data(grid)
 W_grid <- create_weight_matrix("grid", k = 3, l = 3)
 
 fit1 <- CVN(data = grid, W = W_grid, lambda1 = 1, lambda2 = 0.5, 
+            gamma_ebic = 0.75,
             n_cores = 1, eps = 1e-2, maxiter = 200, minimal = TRUE)
             
 fit2 <- CVN(data = grid, W = W_grid, lambda1 = 2, lambda2 = 0.75, 
