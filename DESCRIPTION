@@ -26,6 +26,7 @@ Imports:
     Matrix,
     methods,
     parallel,
+    progress,
     Rcpp,
     reshape2,
     stats,
@@ -35,7 +36,6 @@ Suggests:
     htmltools,
     igraph,
     knitr,
-    progress,
     rmarkdown
 LinkingTo: 
     Rcpp
