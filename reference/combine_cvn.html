@@ -74,6 +74,7 @@ foreach loop and n_cores = 1</p>
 <span class="r-in"><span><span class="va">W_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_weight_matrix.html">create_weight_matrix</a></span><span class="op">(</span><span class="st">"grid"</span>, k <span class="op">=</span> <span class="fl">3</span>, l <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="CVN.html">CVN</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">grid</span>, W <span class="op">=</span> <span class="va">W_grid</span>, lambda1 <span class="op">=</span> <span class="fl">1</span>, lambda2 <span class="op">=</span> <span class="fl">0.5</span>, </span></span>
+<span class="r-in"><span>            gamma_ebic <span class="op">=</span> <span class="fl">0.75</span>,</span></span>
 <span class="r-in"><span>            n_cores <span class="op">=</span> <span class="fl">1</span>, eps <span class="op">=</span> <span class="fl">1e-2</span>, maxiter <span class="op">=</span> <span class="fl">200</span>, minimal <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Estimating a CVN with 9 graphs...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -113,7 +114,6 @@ foreach loop and n_cores = 1</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iteration 11  |  0.009990</span>
 <span class="r-in"><span>            </span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">combine_cvn</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">fit1</span>, <span class="va">fit2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>            </span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>gamma for ebic NOT equal in all CVNs!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Covariate-varying Network (CVN)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✓ all converged</span></span>
@@ -138,9 +138,9 @@ foreach loop and n_cores = 1</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id lambda1 lambda2      gamma1      gamma2 converged       value n_iterations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  1       2    0.75 0.004938272 0.000462963      TRUE 0.009989568           12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  2       1    0.50 0.002469136 0.000308642      TRUE 0.008368467            9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        aic      bic     ebic edges_median edges_iqr gamma_ebic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 13891.32 15204.33 18685.83           28         2       0.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 14408.49 15903.86 18547.23           32         0       0.50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        aic      bic     ebic edges_median edges_iqr</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 13891.32 15204.33 18685.83           28         2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 14408.49 15903.86 19868.91           32         0</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
