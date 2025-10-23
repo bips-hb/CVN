@@ -53,8 +53,13 @@ edges <- set_attributes_to_edges_visnetwork(edges,
                                             subset_edges = shared_edges,
                                             width = c(3, .5),
                                             color = c("red", "blue"))
-if(interactive()){
-  visnetwork(nodes, edges)
+           
+\dontrun{                                                                                        
+if(requireNamespace("visnetwork", quietly = TRUE) & interactive()){
+  visnetwork(nodes, edges) 
+} else {
+  print("install the 'igraph' package")
+}
 }
 }
 \seealso{

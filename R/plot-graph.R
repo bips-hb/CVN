@@ -26,7 +26,7 @@
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
 #' \dontrun{                                           
-#' if (requireNamespace("igraph", quietly = TRUE) & interactive()){
+#' if (requireNamespace("visnetwork", quietly = TRUE) & interactive()){
 #'   visnetwork(nodes, edges) 
 #' } else {
 #'   print("install the 'igraph' package")
@@ -68,7 +68,7 @@ create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
 #' \dontrun{                                                                                    
-#' if(requireNamespace("igraph", quietly = TRUE) & interactive()){
+#' if(requireNamespace("visnetwork", quietly = TRUE) & interactive()){
 #'   visnetwork(nodes, edges) 
 #' } else {
 #'   print("install the 'igraph' package")
@@ -131,7 +131,7 @@ create_edges_visnetwork <- function(adj_matrix) {
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
 #' \dontrun{                                                                                       
-#' if(requireNamespace("igraph", quietly = TRUE) & interactive()){
+#' if(requireNamespace("visnetwork", quietly = TRUE) & interactive()){
 #'   visnetwork(nodes, edges) 
 #' } else {
 #'   print("install the 'igraph' package")
@@ -228,7 +228,7 @@ set_attributes_to_edges_visnetwork <- function(edges,
 #'                                             color = c("red", "blue"))
 #'            
 #'\dontrun{                                                                                        
-#' if(requireNamespace("igraph", quietly = TRUE) & interactive()){
+#' if(requireNamespace("visnetwork", quietly = TRUE) & interactive()){
 #'   visnetwork(nodes, edges) 
 #' } else {
 #'   print("install the 'igraph' package")

@@ -42,7 +42,7 @@ Creates all \code{visNetwork} plots, see \code{\link{visnetwork}},
 for all graphs in a \code{cvn} object
 }
 \examples{
-\donttest{
+\dontrun{
 path <- system.file("cvnfit.rda", package = "CVN")
 load(path)
 fit_plot <- visnetwork_cvn(fit)
