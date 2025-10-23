@@ -54,13 +54,8 @@ edges <- set_attributes_to_edges_visnetwork(edges,
                                             width = c(3, .5),
                                             color = c("red", "blue"))
            
-\dontrun{                                                                                        
-if(requireNamespace("visnetwork", quietly = TRUE) & interactive()){
-  visnetwork(nodes, edges) 
-} else {
-  print("install the 'igraph' package")
-}
-}
+visnetwork(nodes, edges) 
+  
 }
 \seealso{
 \code{CVN}, \code{\link{create_nodes_visnetwork}}

@@ -25,13 +25,8 @@
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#' \dontrun{                                           
-#' if (requireNamespace("visnetwork", quietly = TRUE) & interactive()){
-#'   visnetwork(nodes, edges) 
-#' } else {
-#'   print("install the 'igraph' package")
-#' }
-#' }
+#' visnetwork(nodes, edges) 
+#' 
 #' @export
 
 create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
@@ -67,13 +62,8 @@ create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#' \dontrun{                                                                                    
-#' if(requireNamespace("visnetwork", quietly = TRUE) & interactive()){
-#'   visnetwork(nodes, edges) 
-#' } else {
-#'   print("install the 'igraph' package")
-#' }
-#' }
+#' visnetwork(nodes, edges) 
+#'   
 #' @export
 
 create_edges_visnetwork <- function(adj_matrix) {
@@ -130,13 +120,9 @@ create_edges_visnetwork <- function(adj_matrix) {
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#' \dontrun{                                                                                       
-#' if(requireNamespace("visnetwork", quietly = TRUE) & interactive()){
-#'   visnetwork(nodes, edges) 
-#' } else {
-#'   print("install the 'igraph' package")
-#' }
-#' }
+#'                                             
+#' visnetwork(nodes, edges) 
+#'   
 #' @export
 set_attributes_to_edges_visnetwork <- function(edges,
                                                subset_edges,
@@ -177,16 +163,12 @@ set_attributes_to_edges_visnetwork <- function(edges,
   }
 
   # Setting the color of the in- and out group differently
-  # if color is given (not NULL)
   if (!is.null(color[1])) {
     edges$color[1:nrow(edges)] <- NA
     edges$color[in_group] <- color[1]
     edges$color[out_group] <- color[2]
   }
 
-  # remove the initially added 'id' column
-  # id <- NULL
-  # edges %>% select(-c(id))
   select(edges, -"id")
 }
 
@@ -227,23 +209,14 @@ set_attributes_to_edges_visnetwork <- function(edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
 #'            
-#'\dontrun{                                                                                        
-#' if(requireNamespace("visnetwork", quietly = TRUE) & interactive()){
-#'   visnetwork(nodes, edges) 
-#' } else {
-#'   print("install the 'igraph' package")
-#' }
-#' }
+#' visnetwork(nodes, edges) 
+#'   
 #' @export
 visnetwork <- function(nodes,
                        edges,
                        node_titles = nodes$id,
                        title = "",
                        igraph_layout = "layout_in_circle") {
-
-  if (!(requireNamespace("igraph", quietly = TRUE))) {
-    stop("The igraph package is required for visNetwork, please install it first.")
-  }
 
   visNetwork(nodes, edges, width = "100%",
              main = list(text = title)) %>%
@@ -353,7 +326,6 @@ visnetwork_cvn <- function(cvn,
   # create the edge dataframes for all the graphs
   all_edges <- lapply(1:cvn$n_lambda_values, function(i) {
     lapply(1:cvn$m, function(k) {
-      # cat(sprintf("%d\t%d\n", i,k))
       edges <- create_edges_visnetwork(cvn$adj_matrices[[i]][[k]])
       # check whether there are core edges, since sometimes graphs are
       # completely empty

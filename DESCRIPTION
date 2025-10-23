@@ -22,6 +22,7 @@ Imports:
     foreach,
     ggplot2,
     glasso,
+    igraph,
     magrittr,
     Matrix,
     methods,
@@ -34,7 +35,6 @@ Imports:
     visNetwork
 Suggests: 
     htmltools,
-    igraph,
     knitr,
     rmarkdown
 LinkingTo: 
