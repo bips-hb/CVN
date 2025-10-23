@@ -25,7 +25,7 @@
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#' \donttest{                                           
+#' \dontrun{                                           
 #' if (requireNamespace("igraph", quietly = TRUE) & interactive()){
 #'   visnetwork(nodes, edges) 
 #' } else {
@@ -67,7 +67,7 @@ create_nodes_visnetwork <- function(n_nodes, labels = 1:n_nodes) {
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#' \donttest{                                                                                    
+#' \dontrun{                                                                                    
 #' if(requireNamespace("igraph", quietly = TRUE) & interactive()){
 #'   visnetwork(nodes, edges) 
 #' } else {
@@ -130,7 +130,7 @@ create_edges_visnetwork <- function(adj_matrix) {
 #'                                             subset_edges = shared_edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
-#' \donttest{                                                                                       
+#' \dontrun{                                                                                       
 #' if(requireNamespace("igraph", quietly = TRUE) & interactive()){
 #'   visnetwork(nodes, edges) 
 #' } else {
@@ -227,7 +227,7 @@ set_attributes_to_edges_visnetwork <- function(edges,
 #'                                             width = c(3, .5),
 #'                                             color = c("red", "blue"))
 #'            
-#'\donttest{                                                                                        
+#'\dontrun{                                                                                        
 #' if(requireNamespace("igraph", quietly = TRUE) & interactive()){
 #'   visnetwork(nodes, edges) 
 #' } else {
@@ -273,7 +273,7 @@ visnetwork <- function(nodes,
 #' @return The cvn input which is extended by the list element 'plots'
 #' @export
 #' @examples 
-#' \donttest{
+#' \dontrun{
 #' path <- system.file("cvnfit.rda", package = "CVN")
 #' load(path)
 #' fit_plot <- visnetwork_cvn(fit)
